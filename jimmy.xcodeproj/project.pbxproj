@@ -7,19 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639727BE3CDD004F93E0 /* TabView.swift */; };
+		AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639B27BE3D3E004F93E0 /* TabList.swift */; };
+		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
+		AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639F27BE64AA004F93E0 /* ContentParser.swift */; };
+		AB3263A227BE76EF004F93E0 /* LinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A127BE76EF004F93E0 /* LinkView.swift */; };
+		AB3263A427BE77EA004F93E0 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A327BE77EA004F93E0 /* TextView.swift */; };
+		AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A527BE7A5A004F93E0 /* LineView.swift */; };
+		AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A727BE7D6E004F93E0 /* Header.swift */; };
 		ABE3E17C27BDADBE00418606 /* jimmyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E17B27BDADBE00418606 /* jimmyApp.swift */; };
 		ABE3E17E27BDADBE00418606 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E17D27BDADBE00418606 /* ContentView.swift */; };
 		ABE3E18027BDADBF00418606 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABE3E17F27BDADBF00418606 /* Assets.xcassets */; };
 		ABE3E18327BDADBF00418606 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABE3E18227BDADBF00418606 /* Preview Assets.xcassets */; };
+		ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18A27BDB1E000418606 /* ClientConnection.swift */; };
+		ABE3E18D27BDB29400418606 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18C27BDB29400418606 /* Client.swift */; };
+		ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18E27BDC4D400418606 /* UrlView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB32639727BE3CDD004F93E0 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
+		AB32639B27BE3D3E004F93E0 /* TabList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabList.swift; sourceTree = "<group>"; };
+		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
+		AB32639F27BE64AA004F93E0 /* ContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentParser.swift; sourceTree = "<group>"; };
+		AB3263A127BE76EF004F93E0 /* LinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkView.swift; sourceTree = "<group>"; };
+		AB3263A327BE77EA004F93E0 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		AB3263A527BE7A5A004F93E0 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
+		AB3263A727BE7D6E004F93E0 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
+		AB3263AB27BF0D32004F93E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ABE3E17827BDADBE00418606 /* jimmy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jimmy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABE3E17B27BDADBE00418606 /* jimmyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jimmyApp.swift; sourceTree = "<group>"; };
 		ABE3E17D27BDADBE00418606 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		ABE3E17F27BDADBF00418606 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ABE3E18227BDADBF00418606 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		ABE3E18427BDADBF00418606 /* jimmy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = jimmy.entitlements; sourceTree = "<group>"; };
+		ABE3E18A27BDB1E000418606 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
+		ABE3E18C27BDB29400418606 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		ABE3E18E27BDC4D400418606 /* UrlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +75,20 @@
 		ABE3E17A27BDADBE00418606 /* jimmy */ = {
 			isa = PBXGroup;
 			children = (
+				AB3263AB27BF0D32004F93E0 /* Info.plist */,
 				ABE3E17B27BDADBE00418606 /* jimmyApp.swift */,
+				ABE3E18A27BDB1E000418606 /* ClientConnection.swift */,
 				ABE3E17D27BDADBE00418606 /* ContentView.swift */,
+				AB32639B27BE3D3E004F93E0 /* TabList.swift */,
+				AB32639D27BE3D5D004F93E0 /* Tab.swift */,
+				ABE3E18E27BDC4D400418606 /* UrlView.swift */,
+				AB32639727BE3CDD004F93E0 /* TabView.swift */,
+				ABE3E18C27BDB29400418606 /* Client.swift */,
+				AB32639F27BE64AA004F93E0 /* ContentParser.swift */,
+				AB3263A327BE77EA004F93E0 /* TextView.swift */,
+				AB3263A727BE7D6E004F93E0 /* Header.swift */,
+				AB3263A127BE76EF004F93E0 /* LinkView.swift */,
+				AB3263A527BE7A5A004F93E0 /* LineView.swift */,
 				ABE3E17F27BDADBF00418606 /* Assets.xcassets */,
 				ABE3E18427BDADBF00418606 /* jimmy.entitlements */,
 				ABE3E18127BDADBF00418606 /* Preview Content */,
@@ -139,7 +174,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */,
 				ABE3E17E27BDADBE00418606 /* ContentView.swift in Sources */,
+				ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */,
+				AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */,
+				ABE3E18D27BDB29400418606 /* Client.swift in Sources */,
+				AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */,
+				AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */,
+				AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */,
+				AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */,
+				AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */,
+				AB3263A427BE77EA004F93E0 /* TextView.swift in Sources */,
+				AB3263A227BE76EF004F93E0 /* LinkView.swift in Sources */,
 				ABE3E17C27BDADBE00418606 /* jimmyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,6 +322,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = jimmy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -303,6 +351,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = jimmy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
