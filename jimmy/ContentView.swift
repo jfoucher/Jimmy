@@ -33,7 +33,7 @@ struct ContentView: View {
         
     }
     func newTab() {
-        let nt = Tab(url:"localhost/");
+        let nt = Tab(url:"about");
         tabList.tabs.append(nt)
         tabList.activeTabId = nt.id
         nt.load()
