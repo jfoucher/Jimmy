@@ -38,6 +38,15 @@ class Tab: ObservableObject, Hashable, Identifiable {
         if self.url.isEmpty {
             return
         }
+        if (self.url == "about") {
+            if let asset = NSDataAsset(name: "home") {
+                let data = asset.data
+                if let text = String(bytes: data, encoding: .utf8) {
+                    cb(error: nil, message: "20 text/gemini\r\n" +  text)
+                    return
+                }
+            }
+        }
         if let link = URL(string: "gemini://" + self.url) {
             self.loading = true
             if let host = link.host {

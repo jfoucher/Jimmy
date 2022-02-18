@@ -13,7 +13,7 @@ class TabList: ObservableObject {
     @Published var activeTabId: UUID
     
     init() {
-        let tab = Tab(url: "localhost/");
+        let tab = Tab(url: "about");
         self.tabs = [tab]
         self.activeTabId = tab.id
         tab.load()

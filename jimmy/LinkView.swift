@@ -11,6 +11,7 @@ struct LinkView: View {
     @EnvironmentObject private var tabList: TabList
     var label: String
     var link: String
+    var original: String
     var tab: Tab
     
     init(line: String, tab: Tab) {
@@ -30,6 +31,7 @@ struct LinkView: View {
         }
 
         let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
+        self.original = linkString
         self.link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
         self.label = String(line[end..<line.endIndex]).trimmingCharacters(in: .whitespaces)
         if end == line.endIndex {
@@ -46,7 +48,7 @@ struct LinkView: View {
         .buttonStyle(.plain)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
-        .help(link)
+        .help(original)
         .contextMenu {
             Button(action: newTab)
             {

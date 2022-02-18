@@ -13,6 +13,7 @@ struct jimmyApp: App {
     let tabs = TabList()
     
     init() {
+        
 
     }
     

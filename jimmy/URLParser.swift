@@ -25,6 +25,9 @@ class URLParser {
         if link.starts(with: "//") {
             link = link.replacingOccurrences(of: "//", with: "gemini://")
         }
+        if !link.starts(with: "/") && !link.starts(with: "./") {
+            link = "./" + link
+        }
         if link.starts(with: "./") {
             link = link.replacingOccurrences(of: "./", with: "")
             let i = base.lastIndex(of: "/") ?? base.endIndex
