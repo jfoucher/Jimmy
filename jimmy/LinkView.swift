@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct LinkView: View {
-    @EnvironmentObject private var tabList: TabList
     
     var label: String
     var link: String
+    var tab: Tab
     
-    init(line: String) {
+    init(line: String, tab: Tab) {
         var line = line
-        print("line", line)
-        
+        self.tab = tab
         if line.range(of: "=> ") != nil {
             line = line.replacingOccurrences(of: "=> ", with: "=>")
         }
@@ -42,13 +41,18 @@ struct LinkView: View {
         Button (action: ac) {
             Text(label)
         }
+        .frame(alignment: .leading)
+        .buttonStyle(.plain)
+        .foregroundColor(Color.blue)
+        .padding(.bottom, 4)
+        .help(link)
     }
     func ac(){
         // If link start with gemini, replace everything
         if self.link.contains("gemini://") {
-            tabList.activeTab.url = self.link.replacingOccurrences(of: "gemini://", with: "")
-        } else if let link = URL(string: "gemini://" + tabList.activeTab.url) {
-            var url = "gemini://" + tabList.activeTab.url + self.link
+            tab.url = self.link.replacingOccurrences(of: "gemini://", with: "")
+        } else if let link = URL(string: "gemini://" + tab.url) {
+            var url = "gemini://" + tab.url + self.link
             if self.link.starts(with: "/") {
                 url = "gemini://" + link.host! + self.link
             }
@@ -57,11 +61,11 @@ struct LinkView: View {
                 print("link clicked")
                 print(parsedUrl.host! + parsedUrl.relativePath)
                 
-                tabList.activeTab.url = parsedUrl.host! + parsedUrl.relativePath
+                tab.url = parsedUrl.host! + parsedUrl.relativePath
             }
         }
 
-        tabList.load()
+        tab.load()
     }
 }
 

@@ -12,12 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            UrlView()
-            ZStack {
-                Color("background").edgesIgnoringSafeArea(.all)
-                mainView
-            }
-            
+            mainView
         }
         .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
         .toolbar {
@@ -31,7 +26,7 @@ struct ContentView: View {
             })
             ToolbarItem(placement: .confirmationAction, content: {
                 Button(action: newTab) {
-                    Text("+")
+                    Image(systemName: "plus").imageScale(.large).padding()
                 }
             })
         }
@@ -40,31 +35,24 @@ struct ContentView: View {
     func newTab() {
         let nt = Tab(url:"localhost/");
         tabList.tabs.append(nt)
-        tabList.activeTab = nt
+        tabList.activeTabId = nt.id
+        nt.load()
     }
     
     func btn (){}
     
     @ViewBuilder
     private var mainView: some View {
-        if self.tabList.loading {
-            ScrollView {
-                ProgressView()
-                    .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
+        VStack {
+            ForEach(tabList.tabs) { tab in
+                UrlView(tab: tab)
             }
-            .frame(maxWidth: .infinity, minHeight: 200, alignment: .leading)
-            .background(Color.clear)
-            
-        } else {
-            ScrollView {
-                ForEach(tabList.activeTab.content, id: \.self) { view in
-                    view.frame(maxWidth: .infinity, alignment: .leading)
+            ZStack {
+                Color("background").edgesIgnoringSafeArea(.all)
+                ForEach(tabList.tabs) { tab in
+                  TabContentView(tab: tab)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, minHeight: 200, alignment: .leading)
-            .background(Color.clear)
         }
     }
 }

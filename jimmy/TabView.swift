@@ -16,21 +16,20 @@ struct TabView: View {
     }
     
     func a () {
-        tabList.activeTab = tab
+        tabList.activeTabId = tab.id
     }
     
     func close () {
-        print(tabList.tabs.endIndex)
         tabList.tabs = tabList.tabs.filter({$0 != self.tab})
-        print(tabList.tabs.endIndex)
+
         if let last = tabList.tabs.last {
-            tabList.activeTab = last
+            tabList.activeTabId = last.id
         }
     }
     
     @ViewBuilder
     private var activeDependentButton: some View {
-        if self.tabList.activeTab == tab {
+        if self.tabList.activeTabId == tab.id {
             tabButton
         } else {
             tabButton.opacity(0.5)
@@ -41,8 +40,9 @@ struct TabView: View {
     private var closeButton: some View {
         if self.tabList.tabs.count > 1 {
             Button(action: close) {
-                Image(systemName: "xmark").imageScale(.medium).padding(.trailing, 0)
-            }.padding(.trailing, 0)
+                Image(systemName: "xmark").imageScale(.medium).padding(.leading, 4)
+            }
+            .buttonStyle(.borderless)
         }
     }
     
@@ -52,7 +52,7 @@ struct TabView: View {
             closeButton
             Button(action: a) {
                 Text(tab.url).font(.system(size: 14)).opacity(0.8).frame(maxWidth: 300)
-            }.buttonStyle(PlainButtonStyle()).padding(.bottom, 3).padding(.leading, 0)
+            }.buttonStyle(PlainButtonStyle()).padding(.trailing, 8)
         }
     }
 }

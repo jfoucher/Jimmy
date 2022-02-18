@@ -24,8 +24,8 @@ struct jimmyApp: App {
                 .onOpenURL { (url) in
                     let tab = Tab(url: url.absoluteString.replacingOccurrences(of: "gemini://", with: ""));
                     tabs.tabs.append(tab)
-                    tabs.activeTab = tab
-                    tabs.load()
+                    tabs.activeTabId = tab.id
+                    tab.load()
                 } // create new window if doesn't exist
         }
         .windowStyle(HiddenTitleBarWindowStyle())

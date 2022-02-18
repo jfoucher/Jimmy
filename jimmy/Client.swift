@@ -45,7 +45,6 @@ class Client {
     }
 
     func didStopCallback(error: Error?, message: String?) {
-        print("didStopCallback", error)
         if let dataReceivedCallback = self.dataReceivedCallback {
             dataReceivedCallback(error, message)
             self.dataReceivedCallback = nil

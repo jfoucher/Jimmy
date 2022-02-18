@@ -49,7 +49,6 @@ class ClientConnection {
             if let data = data, !data.isEmpty {
                 if let message = String(data: data, encoding: .utf8) {
                     self.read = self.read + message
-                    //print("connection did receive, data: \(data as NSData) string: \(message)")
                 }
             }
             

@@ -13,19 +13,9 @@ class Header {
     var contentType: String
     
     init(line: String) {
-        let p = line.split(separator: " ")
-        if p.count >= 2 {
-            self.code = Int(p[0])!
-            self.contentType = String(p[1]).replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\r", with: "")
-            return
-        }
-        if p.count >= 1 {
-            self.code = Int(p[0])!
-            self.contentType = "unknown"
-            return
-        }
+        var p = line.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\r", with: "").split(separator: " ")
+        self.code = Int(p.removeFirst()) ?? 50
         
-        self.code = 50;
-        self.contentType = "unknown"
+        self.contentType = p.joined(separator: " ")
     }
 }
