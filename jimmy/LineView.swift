@@ -44,7 +44,7 @@ struct LineView: View, Hashable {
                 Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
             }
         } else if type.starts(with: "text/pre") {
-            Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 24).font(.system(size: 14, weight: .light).monospaced())
+            Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).font(.system(size: 14, weight: .light).monospaced())
         } else if type.starts(with: "text/answer") {
             // Line for an answer. The question should be above this
             HStack {

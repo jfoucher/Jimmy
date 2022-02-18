@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LinkView: View {
-    
+    @EnvironmentObject private var tabList: TabList
     var label: String
     var link: String
     var tab: Tab
@@ -29,7 +29,8 @@ struct LinkView: View {
             end = endRange.upperBound
         }
 
-        self.link = line[start..<end].trimmingCharacters(in: .whitespaces)
+        let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
+        self.link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
         self.label = String(line[end..<line.endIndex]).trimmingCharacters(in: .whitespaces)
         if end == line.endIndex {
             self.label = self.link
@@ -46,26 +47,29 @@ struct LinkView: View {
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
         .help(link)
-    }
-    func ac(){
-        // If link start with gemini, replace everything
-        if self.link.contains("gemini://") {
-            tab.url = self.link.replacingOccurrences(of: "gemini://", with: "")
-        } else if let link = URL(string: "gemini://" + tab.url) {
-            var url = "gemini://" + tab.url + self.link
-            if self.link.starts(with: "/") {
-                url = "gemini://" + link.host! + self.link
+        .contextMenu {
+            Button(action: newTab)
+            {
+                Label("Open in new tab", systemImage: "plus.rectangle")
             }
-            if let parsedUrl = URL(string: url) {
-                
-                print("link clicked")
-                print(parsedUrl.host! + parsedUrl.relativePath)
-                
-                tab.url = parsedUrl.host! + parsedUrl.relativePath
-            }
+                .buttonStyle(.plain)
         }
+    }
+    
+    func ac(){
+        // if link starts with // assume gemini
+        tab.url = self.link
+        
+        print("link clicked: ", tab.url)
 
         tab.load()
+    }
+    
+    func newTab() {
+        let nt = Tab(url: self.link)
+        tabList.tabs.append(nt)
+        tabList.activeTabId = nt.id
+        nt.load()
     }
 }
 

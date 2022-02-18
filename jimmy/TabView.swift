@@ -15,6 +15,14 @@ struct TabView: View {
         activeDependentButton
     }
     
+    var host: String? {
+        if let url = URL(string: "gemini://" + tab.url) {
+            return url.host
+        }
+        
+        return nil
+    }
+    
     func a () {
         tabList.activeTabId = tab.id
     }
@@ -51,7 +59,7 @@ struct TabView: View {
         HStack {
             closeButton
             Button(action: a) {
-                Text(tab.url).font(.system(size: 14)).opacity(0.8).frame(maxWidth: 300)
+                Text(self.host ?? tab.url).font(.system(size: 14)).opacity(0.8).frame(maxWidth: 300)
             }.buttonStyle(PlainButtonStyle()).padding(.trailing, 8)
         }
     }
