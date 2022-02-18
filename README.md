@@ -26,3 +26,7 @@ What does not work:
 
 ![Dark mode](screenshots/darkmode.png)
 *Dark mode*
+
+## Installation
+
+Download the latest release zip file from [here](https://github.com/jfoucher/Jimmy/releases/latest), unzip and place the app in your Applications folder. You may have to right-click the app and choose open, as well as click through a few scary dialogs because I am not sure I can sign it properly without paying Apple 99€ for the privilege.
