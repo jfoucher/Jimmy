@@ -16,3 +16,13 @@ What does not work:
 
 - Images and other content types
 - Link handling sometimes flaky, needs proper parser
+
+## Screenshots
+
+
+![Light mode](screenshots/lightmode.png)
+*Light mode*
+
+
+![Dark mode](screenshots/darkmode.png)
+*Dark mode*
