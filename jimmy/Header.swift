@@ -13,9 +13,14 @@ class Header {
     var contentType: String
     
     init(line: String) {
-        var p = line.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\r", with: "").split(separator: " ")
-        self.code = Int(p.removeFirst()) ?? 50
-        
-        self.contentType = p.joined(separator: " ")
+        if line .isEmpty {
+            self.code = 50
+            self.contentType = "text/plain"
+        } else {
+            var p = line.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\r", with: "").split(separator: " ")
+            self.code = Int(p.removeFirst()) ?? 50
+            
+            self.contentType = p.joined(separator: " ")
+        }
     }
 }

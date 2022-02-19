@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB042ABD27C15EA900FB9503 /* Bookmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042ABC27C15EA800FB9503 /* Bookmarks.swift */; };
+		AB042ABF27C160AD00FB9503 /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042ABE27C160AD00FB9503 /* BookmarksView.swift */; };
+		AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC027C1615700FB9503 /* Bookmark.swift */; };
+		AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC227C1761800FB9503 /* BookmarkView.swift */; };
+		AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC427C191D100FB9503 /* LinkContextMenu.swift */; };
 		AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639727BE3CDD004F93E0 /* TabView.swift */; };
 		AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639B27BE3D3E004F93E0 /* TabList.swift */; };
 		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
@@ -27,6 +32,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB042ABC27C15EA800FB9503 /* Bookmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmarks.swift; sourceTree = "<group>"; };
+		AB042ABE27C160AD00FB9503 /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
+		AB042AC027C1615700FB9503 /* Bookmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark.swift; sourceTree = "<group>"; };
+		AB042AC227C1761800FB9503 /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
+		AB042AC427C191D100FB9503 /* LinkContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContextMenu.swift; sourceTree = "<group>"; };
 		AB32639727BE3CDD004F93E0 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		AB32639B27BE3D3E004F93E0 /* TabList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabList.swift; sourceTree = "<group>"; };
 		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
@@ -92,11 +102,16 @@
 				AB32639D27BE3D5D004F93E0 /* Tab.swift */,
 				ABE3E18E27BDC4D400418606 /* UrlView.swift */,
 				AB32639727BE3CDD004F93E0 /* TabView.swift */,
+				AB042ABC27C15EA800FB9503 /* Bookmarks.swift */,
+				AB042AC027C1615700FB9503 /* Bookmark.swift */,
+				AB042ABE27C160AD00FB9503 /* BookmarksView.swift */,
+				AB042AC227C1761800FB9503 /* BookmarkView.swift */,
 				ABE3E18C27BDB29400418606 /* Client.swift */,
 				AB32639F27BE64AA004F93E0 /* ContentParser.swift */,
 				AB3263A327BE77EA004F93E0 /* TextView.swift */,
 				AB3263A727BE7D6E004F93E0 /* Header.swift */,
 				AB3263A127BE76EF004F93E0 /* LinkView.swift */,
+				AB042AC427C191D100FB9503 /* LinkContextMenu.swift */,
 				AB3263A527BE7A5A004F93E0 /* LineView.swift */,
 				AB3263B027C04946004F93E0 /* URLParser.swift */,
 				ABE3E17F27BDADBF00418606 /* Assets.xcassets */,
@@ -187,18 +202,23 @@
 				AB3263B127C04946004F93E0 /* URLParser.swift in Sources */,
 				ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */,
 				ABE3E17E27BDADBE00418606 /* ContentView.swift in Sources */,
+				AB042ABD27C15EA900FB9503 /* Bookmarks.swift in Sources */,
 				ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */,
 				AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */,
 				ABE3E18D27BDB29400418606 /* Client.swift in Sources */,
 				AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */,
 				AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */,
 				AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */,
+				AB042ABF27C160AD00FB9503 /* BookmarksView.swift in Sources */,
 				AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */,
 				AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */,
 				AB3263AD27C02316004F93E0 /* TabContentView.swift in Sources */,
 				AB3263A427BE77EA004F93E0 /* TextView.swift in Sources */,
+				AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */,
 				AB3263A227BE76EF004F93E0 /* LinkView.swift in Sources */,
+				AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */,
 				ABE3E17C27BDADBE00418606 /* jimmyApp.swift in Sources */,
+				AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

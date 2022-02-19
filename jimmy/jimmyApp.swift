@@ -11,6 +11,7 @@ import Network
 @main
 struct jimmyApp: App {
     let tabs = TabList()
+    let bookmarks = Bookmarks()
     
     init() {
         
@@ -20,7 +21,9 @@ struct jimmyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(tabs)
+            ContentView()
+                .environmentObject(tabs)
+                .environmentObject(bookmarks)
                 .handlesExternalEvents(preferring: Set(arrayLiteral: "{path of URL?}"), allowing: Set(arrayLiteral: "*")) // activate existing window if exists
                 .onOpenURL { (url) in
                     let tab = Tab(url: url.absoluteString.replacingOccurrences(of: "gemini://", with: ""));

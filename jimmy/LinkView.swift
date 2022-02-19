@@ -50,11 +50,7 @@ struct LinkView: View {
         .padding(.bottom, 4)
         .help(original)
         .contextMenu {
-            Button(action: newTab)
-            {
-                Label("Open in new tab", systemImage: "plus.rectangle")
-            }
-                .buttonStyle(.plain)
+            LinkContextMenu(link: self.link)
         }
     }
     
@@ -67,11 +63,6 @@ struct LinkView: View {
         tab.load()
     }
     
-    func newTab() {
-        let nt = Tab(url: self.link)
-        tabList.tabs.append(nt)
-        tabList.activeTabId = nt.id
-        nt.load()
-    }
+
 }
 

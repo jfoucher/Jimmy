@@ -16,23 +16,43 @@ class ContentParser {
     var pre = false
     let tab: Tab
     
-    init(content: String, tab: Tab) {
-        var lines = content.replacingOccurrences(of: "\r", with: "").split(separator: "\n")
+    init(content: Data, tab: Tab) {
+        print("got response")
+        print(content)
+        
         self.tab = tab
-        self.header = Header(line: String(lines[0]))
+        self.parsed = []
+        self.header = Header(line: "")
         
-        lines.removeFirst()
-        
-        
-        self.parsed = lines.map { str -> LineView? in
-            if str.starts(with: "```") {
-                self.pre = !self.pre
-                return nil
-            }
+        if let range = content.firstRange(of: Data("\r\n".utf8)) {
+            let headerRange = content.startIndex..<range.lowerBound
+            let firstLineData = content.subdata(in: headerRange)
+            let firstlineString = String(decoding: firstLineData, as: UTF8.self)
+            self.header = Header(line: firstlineString)
             
-            return LineView(line: String(str), type: self.pre ? "text/pre" : self.header.contentType, tab: self.tab)
-        }.filter { $0 != nil }.map { line -> LineView in
-            return line!
+            let contentRange = range.upperBound..<content.endIndex
+            let contentData = content.subdata(in: contentRange)
+            
+            if self.header.code >= 20 && self.header.code < 30 {
+                if self.header.contentType.starts(with: "image/") {
+                    print("is an image", self.header.contentType)
+                    
+                    self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
+                } else {
+                    let lines = String(decoding: contentData, as: UTF8.self).replacingOccurrences(of: "\r", with: "").split(separator: "\n")
+                    self.parsed = lines.map { str -> LineView? in
+                        if str.starts(with: "```") {
+                            self.pre = !self.pre
+                            return nil
+                        }
+                        let type = self.pre ? "text/pre" : self.header.contentType
+                        print("doing line of type", type)
+                        return LineView(data: Data(str.utf8), type: type, tab: self.tab)
+                    }.filter { $0 != nil }.map { line -> LineView in
+                        return line!
+                    }
+                }
+            }
         }
     }
 }

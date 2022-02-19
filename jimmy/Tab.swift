@@ -42,7 +42,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             if let asset = NSDataAsset(name: "home") {
                 let data = asset.data
                 if let text = String(bytes: data, encoding: .utf8) {
-                    cb(error: nil, message: "20 text/gemini\r\n" +  text)
+                    cb(error: nil, message: Data(("20 text/gemini\r\n" + text).utf8))
                     return
                 }
             }
@@ -69,12 +69,12 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
     }
     
-    func cb(error: Error?, message: String?) {
+    func cb(error: Error?, message: Data?) {
         if let error = error {
             DispatchQueue.main.async {
                 self.content = [
-                    LineView(line:"# ERROR", type: "text/gemini", tab: self),
-                    LineView(line: error.localizedDescription, type: "text/plain", tab: self)
+                    LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
+                    LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
                 ]
                 
                 self.loading = false
@@ -83,16 +83,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
         
         if let message = message {
             DispatchQueue.main.async {
-                print("url")
-                print(self.url)
-                print(self.url.hasSuffix("jpg"))
-                if self.url.hasSuffix("jpg") {
-                    //display as image
-                    print(Data(message.utf8))
-                    self.content = [LineView(line: message, type: "image/jpeg", tab: self)]
-                    self.loading = false
-                    return
-                }
                 let parsedMessage = ContentParser(content: message, tab: self)
                 
                 print(parsedMessage.header.code)
@@ -102,8 +92,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 if parsedMessage.header.code >= 10 && parsedMessage.header.code < 20 {
                     // Input
                     self.content = [
-                        LineView(line: parsedMessage.header.contentType, type: "text/gemini", tab: self),
-                        LineView(line: "", type: "text/answer", tab: self),
+                        LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(), type: "text/answer", tab: self),
                     ]
                     // Add to history
                     self.history.append(self.url)
@@ -121,9 +111,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else {
                     self.history.append(self.url)
                     self.content = [
-                        LineView(line:"#" + String(parsedMessage.header.code) + " SERVER ERROR", type: "text/gemini", tab: self),
-                        LineView(line: "The server responded with an error code", type: "text/plain", tab: self),
-                        LineView(line: parsedMessage.header.contentType, type: "text/gemini", tab: self)
+                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " SERVER ERROR").utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data("The server responded with an error code".utf8), type: "text/plain", tab: self),
+                        LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self)
                     ]
                 }
             }

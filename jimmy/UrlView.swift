@@ -12,7 +12,9 @@ import SwiftUI
 
 struct UrlView: View {
     @EnvironmentObject private var tabList: TabList
+    @EnvironmentObject private var bookmarks: Bookmarks
     @ObservedObject var tab: Tab
+    @State var showPopover = false
     
     var body: some View {
         bar
@@ -27,7 +29,16 @@ struct UrlView: View {
                 }
                 .disabled(tab.history.count <= 1)
                 .buttonStyle(.borderless)
-
+                
+                
+                Button(action: showBookmarks) {
+                    Image(systemName: "bookmark").imageScale(.large).padding(.trailing, 8)
+                }
+                .buttonStyle(.borderless)
+                .popover(isPresented: $showPopover, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
+                    BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
+                }
+                
                 HStack {
                     Text("gemini://")
                         .fontWeight(.light)
@@ -44,10 +55,13 @@ struct UrlView: View {
                             go()
                         }
                 }
-                .background(Color(CGColor(red: 128, green: 129, blue: 128, alpha: 0.1)))
+                .background(Color("urlbackground"))
                 .clipShape(RoundedRectangle(cornerRadius:4))
-                
-                
+                Button(action: bookmark) {
+                    Image(systemName: (bookmarked ? "star.fill" : "star")).imageScale(.large).padding(.leading, 8)
+                }
+                .buttonStyle(.borderless)
+                .disabled(tab.url.isEmpty)
                 
                 Button(action: go) {
                     Image(systemName: "arrow.clockwise").imageScale(.large).padding(.leading, 8)
@@ -57,7 +71,26 @@ struct UrlView: View {
             }
             .padding(.leading, 20)
             .padding(.trailing, 20)
+            
         }
+    }
+    
+    func showBookmarks() {
+        self.showPopover = !self.showPopover
+    }
+    
+    var bookmarked: Bool {
+        return bookmarks.items.contains(where: { $0.url == tab.url })
+    }
+    
+    func bookmark() {
+        if (bookmarked) {
+            bookmarks.items = bookmarks.items.filter( { $0.url != tab.url } )
+        } else {
+            bookmarks.items.append(Bookmark(url: tab.url))
+        }
+        
+        bookmarks.save()
     }
     
     func go() {

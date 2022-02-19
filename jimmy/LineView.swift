@@ -10,6 +10,7 @@ import SwiftUI
 struct LineView: View, Hashable {
     
     var line: String
+    var data: Data
     var type: String
     var tab: Tab
     
@@ -17,8 +18,10 @@ struct LineView: View, Hashable {
     
     @State var answer = ""
     
-    init(line: String, type: String, tab:Tab) {
-        self.line = line
+    init(data: Data, type: String, tab:Tab) {
+        self.line = String(decoding: data, as: UTF8.self)
+        self.data = data
+        
         self.type = type
         self.id = UUID()
         self.tab = tab
@@ -29,7 +32,8 @@ struct LineView: View, Hashable {
     
     @ViewBuilder
     private var textView: some View {
-        if type.contains("text/gemini") {
+        
+        if type.starts(with: "text/gemini") {
             if let range = self.line.range(of: "=>"), range.lowerBound == self.line.startIndex {
                 LinkView(line: self.line, tab: tab).frame(alignment: .leading).padding(.leading, 12)
             } else if let range = self.line.range(of: "* "), range.lowerBound == self.line.startIndex {
@@ -55,10 +59,13 @@ struct LineView: View, Hashable {
             }
         }  else if type.starts(with: "image/") {
             // Line for an answer. The question should be above this
-            if let img =  NSImage(data: Data(line.utf8)) {
+            if let img = NSImage(data: Data(self.data)) {
                 Image(nsImage: img)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .layoutPriority(-1)
             } else {
-                Image(systemName: "heart.fill")
+                Image(systemName: "xmark")
             }
         } else {
             Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)

@@ -16,13 +16,16 @@ class ClientConnection {
     let queue = DispatchQueue(label: "Client connection Q")
     
     var read: String
+    
+    var data: Data
 
     init(nwConnection: NWConnection) {
         self.nwConnection = nwConnection
         self.read = ""
+        self.data = Data()
     }
 
-    var didStopCallback: ((Error?, String?) -> Void)? = nil
+    var didStopCallback: ((Error?, Data?) -> Void)? = nil
 
     func start() {
         print("connection will start")
@@ -47,9 +50,7 @@ class ClientConnection {
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 0, maximumLength: 65536) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                if let message = String(data: data, encoding: .utf8) {
-                    self.read = self.read + message
-                }
+                self.data += data
             }
             
             if isComplete {
@@ -86,10 +87,10 @@ class ClientConnection {
 
     private func connectionDidEnd() {
         print("connection did end")
-        self.stop(error: nil, message: self.read)
+        self.stop(error: nil, message: self.data)
     }
 
-    private func stop(error: Error?, message: String?) {
+    private func stop(error: Error?, message: Data?) {
         self.nwConnection.stateUpdateHandler = nil
         self.nwConnection.cancel()
         if let didStopCallback = self.didStopCallback {

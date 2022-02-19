@@ -34,16 +34,15 @@ struct TabContentView: View {
             } else {
                 ScrollView {
                     HStack {
-                        
                         Spacer()
                         VStack {
                             ForEach(tab.content, id: \.self) { view in
                                 view.frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(.leading, 48)
-                            .padding(.trailing, 48)
+                            .padding(.leading, 8)
+                            .padding(.trailing, 8)
                             .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-                        }.padding(.top, 48).frame(minWidth: 200, maxWidth: 800, alignment: .center)
+                        }.padding(.bottom, 12).padding(.top, 12).frame(minWidth: 200, maxWidth: 800, alignment: .center)
                         Spacer()
                     }
                 }

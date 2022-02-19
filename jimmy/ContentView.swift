@@ -30,7 +30,6 @@ struct ContentView: View {
                 }
             })
         }
-        
     }
     func newTab() {
         let nt = Tab(url:"about");
