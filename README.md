@@ -4,18 +4,14 @@
 
 Jimmy is a native [gemini](https://en.wikipedia.org/wiki/Gemini_(protocol)) client for MacOs, written in SwiftUI. It aims to be lightweight and efficient, while having a design that integrates perfectly with MacOs
 
-It is currently a very early prototype, and not much works yet.
+It is currently a very early prototype, but most things are starting to work.
 
 What does work: 
 
 - Basic navigation and error handling
 - Multiple tabs
-- Display of text and links
+- Display of text, links and images
 
-What does not work:
-
-- Images and other content types
-- Link handling sometimes flaky, needs proper parser
 
 ## Screenshots
 
