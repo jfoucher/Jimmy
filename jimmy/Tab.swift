@@ -38,6 +38,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
         if self.url.isEmpty {
             return
         }
+        
+        // When copying the link with "gemini://" in the beginning to Tab area -
+        // remove the protocol and leave only the link
+        if self.url.contains("gemini://") {
+            self.url = self.url.replacingOccurrences(of: "gemini://", with: "")
+        }
+
         if (self.url == "about") {
             if let asset = NSDataAsset(name: "home") {
                 let data = asset.data
