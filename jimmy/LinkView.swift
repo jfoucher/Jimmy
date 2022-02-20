@@ -14,6 +14,7 @@ struct LinkView: View {
     var original: String
     var tab: Tab
     
+    
     init(line: String, tab: Tab) {
         var line = line
         self.tab = tab
@@ -41,16 +42,21 @@ struct LinkView: View {
     
     var body: some View {
         Button (action: ac) {
+            Image(systemName: "arrow.right")
             Text(label)
         }
         .frame(alignment: .leading)
         .buttonStyle(.plain)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
-        .help(original + " " + self.link.absoluteString)
+        .help("This link goes to " + original)
         .contextMenu {
             LinkContextMenu(link: self.link)
         }
+        .onHover(perform: { hovered in
+            let loadingStatus = tab.loading ? "Loading " + tab.url.absoluteString : ""
+            tab.status = hovered ? self.link.absoluteString.replacingOccurrences(of: "gemini://", with: "") : loadingStatus
+        })
     }
     
     func ac(){

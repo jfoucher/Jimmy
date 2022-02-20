@@ -14,6 +14,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var id: UUID
     @Published var loading: Bool = false
     @Published var history: [URL]
+    @Published var status = ""
+
     
     private var client: Client
     
@@ -56,12 +58,11 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         self.loading = true
+        self.status = "Loading " + url.absoluteString
         
         self.client = Client(host: host, port: 1965)
         self.client.start()
         self.client.dataReceivedCallback = cb(error:message:)
-        
-        print("ABS URL", url.absoluteString)
         
         self.client.send(data: (url.absoluteString + "\r\n").data(using: .utf8)!)
     }
@@ -79,6 +80,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     func cb(error: Error?, message: Data?) {
         DispatchQueue.main.async {
             self.content = []
+            self.status = ""
         }
         if let error = error {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {

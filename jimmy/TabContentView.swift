@@ -13,34 +13,53 @@ struct TabContentView: View {
     
     
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            tabView
-            
-            //TODO status bar
-            Text("")
-                .background(Color.gray)
-        }
+        tabView
     }
     
     @ViewBuilder
     private var tabView: some View {
         if tab.id == tabList.activeTabId {
             HStack {
-            Spacer()
-                ScrollView {
-                    ForEach(tab.content, id: \.self) { view in
-                        view.frame(maxWidth: .infinity, alignment: .leading)
-                            .id(view.id)
+                Spacer()
+                ZStack(alignment: .bottomLeading) {
+                    ScrollView {
+                        ForEach(tab.content, id: \.self) { view in
+                            view.frame(maxWidth: .infinity, alignment: .leading)
+                                .id(view.id)
+                        }
+                        .padding(.leading, 8)
+                        .padding(.trailing, 8)
+                        .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding(.leading, 8)
-                    .padding(.trailing, 8)
-                    .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+
+                    status
                 }
                 
                 Spacer()
             }
             .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200, alignment: .center)
             .background(Color.clear)
+        }
+    }
+    
+    @ViewBuilder
+    private var status: some View {
+        if !tab.status.isEmpty {
+            HStack {
+                Text(tab.status)
+                    .font(.system(size: 12, weight: .light))
+                    .padding(.leading, 20)
+                    .padding(.trailing, 12)
+                    .padding(.bottom, 8)
+                    .padding(.top, 2)
+                    .opacity(0.5)
+                    .background(Color("urlbackground").opacity(0.8))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+            }
+            .padding(.leading, -12)
+            .padding(.bottom, -4)
+            
+            
         }
     }
 }

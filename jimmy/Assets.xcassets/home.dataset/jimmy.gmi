@@ -3,3 +3,9 @@
 Jimmy is a simple gemini browser for MacOs
 
 Just type the URL you want to visit above, and press enter!
+
+Save your favorite sites as bookmarks to be able to reference them later.
+
+Here is one site you can visit to start off:
+
+=> gemini://medusae.space/
