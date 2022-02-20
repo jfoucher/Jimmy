@@ -16,6 +16,9 @@ struct UrlView: View {
     @ObservedObject var tab: Tab
     @State var showPopover = false
     
+    
+    
+    
     var body: some View {
         bar
     }
@@ -23,6 +26,12 @@ struct UrlView: View {
     @ViewBuilder
     private var bar: some View {
         if self.tabList.activeTabId == tab.id {
+            let url = Binding<String>(
+                get: { self.tab.url.absoluteString.replacingOccurrences(of: "gemini://", with: "") },
+                set: {
+                    self.tab.url = URL(string: "gemini://" + $0)!
+                }
+           )
             HStack {
                 Button(action: back) {
                     Image(systemName: "arrow.backward").imageScale(.large).padding(.trailing, 8)
@@ -47,13 +56,13 @@ struct UrlView: View {
                         .padding(.top, 4)
                         .padding(.bottom, 6)
                         .padding(.trailing, -8)
-                    TextField("example.org", text: $tab.url)
-                        .textFieldStyle(.plain)
-                        .padding(.trailing, 6)
-                        .padding(.bottom, 2)
+                    TextField("example.org", text: url)
                         .onSubmit {
                             go()
                         }
+                        .textFieldStyle(.plain)
+                        .padding(.trailing, 6)
+                        .padding(.bottom, 2)
                 }
                 .background(Color("urlbackground"))
                 .clipShape(RoundedRectangle(cornerRadius:4))
@@ -61,14 +70,14 @@ struct UrlView: View {
                     Image(systemName: (bookmarked ? "star.fill" : "star")).imageScale(.large).padding(.leading, 8)
                 }
                 .buttonStyle(.borderless)
-                .disabled(tab.url.isEmpty)
+                .disabled(url.wrappedValue.isEmpty)
                 
                 Button(action: go) {
                     Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))
                         .imageScale(.large).padding(.leading, 8)
                 }
                 .buttonStyle(.borderless)
-                .disabled(tab.url.isEmpty)
+                .disabled(url.wrappedValue.isEmpty)
             }
             .padding(.leading, 20)
             .padding(.trailing, 20)

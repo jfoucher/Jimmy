@@ -38,7 +38,7 @@ struct BookmarkView: View {
                     tab.load()
                     close()
                 }) {
-                    Text(bookmark.url).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(bookmark.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")).frame(maxWidth: .infinity, alignment: .leading)
                         
                 }
                 .buttonStyle(.borderless)

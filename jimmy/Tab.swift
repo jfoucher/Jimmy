@@ -9,15 +9,15 @@ import Foundation
 import SwiftUI
 
 class Tab: ObservableObject, Hashable, Identifiable {
-    @Published var url = ""
+    @Published var url: URL
     @Published var content: [LineView]
     @Published var id: UUID
     @Published var loading: Bool = false
-    @Published var history: [String]
+    @Published var history: [URL]
     
     private var client: Client
     
-    init(url: String) {
+    init(url: URL) {
         self.url = url
         self.content = []
         self.id = UUID()
@@ -40,17 +40,12 @@ class Tab: ObservableObject, Hashable, Identifiable {
     
     func load() {
         self.client.stop()
-        if self.url.isEmpty {
+        
+        guard let host = self.url.host else {
             return
         }
-        
-        // When copying the link with "gemini://" in the beginning to Tab area -
-        // remove the protocol and leave only the link
-        if self.url.contains("gemini://") {
-            self.url = self.url.replacingOccurrences(of: "gemini://", with: "")
-        }
 
-        if (self.url == "about") {
+        if (host == "about") {
             if let asset = NSDataAsset(name: "home") {
                 let data = asset.data
                 if let text = String(bytes: data, encoding: .utf8) {
@@ -59,16 +54,16 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 }
             }
         }
-        if let link = URL(string: "gemini://" + self.url) {
-            self.loading = true
-            if let host = link.host {
-                self.client = Client(host: host, port: 1965)
-                self.client.start()
-                self.client.dataReceivedCallback = cb(error:message:)
-                
-                self.client.send(data: (link.relativeString + "\r\n").data(using: .utf8)!)
-            }
-        }
+        
+        self.loading = true
+        
+        self.client = Client(host: host, port: 1965)
+        self.client.start()
+        self.client.dataReceivedCallback = cb(error:message:)
+        
+        print("ABS URL", url.absoluteString)
+        
+        self.client.send(data: (url.absoluteString + "\r\n").data(using: .utf8)!)
     }
     
     func back() {
@@ -119,11 +114,12 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                 } else if parsedMessage.header.code >= 30 && parsedMessage.header.code < 40 {
                     // Redirect
-                    // TODO Handle relative URLs
-                    self.url = parsedMessage.header.contentType.replacingOccurrences(of: "gemini://", with: "")
-
-                    self.load()
+                    if let redirect = URL(string: parsedMessage.header.contentType) {
+                        self.url = redirect
+                        self.load()
+                    }
                 } else {
+                    // Server Error
                     self.history.append(self.url)
                     self.content = [
                         LineView(data: Data(("#" + String(parsedMessage.header.code) + " SERVER ERROR").utf8), type: "text/gemini", tab: self),

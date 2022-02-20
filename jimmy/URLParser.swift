@@ -9,24 +9,25 @@ import Foundation
 
 
 class URLParser {
-    var baseURL: String
+    var baseURL: URL
     var link: String
     
-    init(baseURL: String, link: String) {
+    init(baseURL: URL, link: String) {
         self.baseURL = baseURL
         self.link = link
     }
     
-    func toAbsolute() -> String {
+    func toAbsolute() -> URL {
         // If link start with gemini, replace everything
         if link.contains("gemini://") {
-            return link.replacingOccurrences(of: "gemini://", with: "")
-        } else if let root = URL(string: "gemini://" + baseURL) {
-            if let parsedUrl = URL(string: link, relativeTo: root) {
-                return parsedUrl.absoluteString.replacingOccurrences(of: "gemini://", with: "")
+            if let url = URL(string: link) {
+                return url
+            }
+        } else {
+            if let parsedUrl = URL(string: link, relativeTo: baseURL) {
+                return parsedUrl
             }
         }
-        
-        return baseURL
+        return URL(string: "gemini://about")!
     }
 }

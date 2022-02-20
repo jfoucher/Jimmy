@@ -10,9 +10,9 @@ import Foundation
 struct Bookmark: Identifiable, Decodable, Encodable {
     var id: UUID
     
-    var url: String
+    var url: URL
     
-    init (url: String) {
+    init (url: URL) {
         self.url = url
         self.id = UUID()
     }

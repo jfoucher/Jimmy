@@ -73,7 +73,7 @@ struct LineView: View, Hashable {
     }
     
     func send () {
-        let url = tab.url + "?" + answer;
+        let url = tab.url.appendingPathComponent("?" + answer)
         tab.url = url;
         tab.load()
     }

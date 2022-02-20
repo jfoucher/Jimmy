@@ -35,8 +35,6 @@ class ContentParser {
             
             if self.header.code >= 20 && self.header.code < 30 {
                 if self.header.contentType.starts(with: "image/") {
-                    print("is an image", self.header.contentType)
-                    
                     self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
                 } else {
                     let lines = String(decoding: contentData, as: UTF8.self).replacingOccurrences(of: "\r", with: "").split(separator: "\n")
@@ -46,7 +44,7 @@ class ContentParser {
                             return nil
                         }
                         let type = self.pre ? "text/pre" : self.header.contentType
-                        print("doing line of type", type)
+
                         return LineView(data: Data(str.utf8), type: type, tab: self.tab)
                     }.filter { $0 != nil }.map { line -> LineView in
                         return line!

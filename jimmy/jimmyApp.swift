@@ -26,7 +26,7 @@ struct jimmyApp: App {
                 .environmentObject(bookmarks)
                 .handlesExternalEvents(preferring: Set(arrayLiteral: "{path of URL?}"), allowing: Set(arrayLiteral: "*")) // activate existing window if exists
                 .onOpenURL { (url) in
-                    let tab = Tab(url: url.absoluteString.replacingOccurrences(of: "gemini://", with: ""));
+                    let tab = Tab(url: url)
                     tabs.tabs.append(tab)
                     tabs.activeTabId = tab.id
                     tab.load()

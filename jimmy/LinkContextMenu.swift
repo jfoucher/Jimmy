@@ -9,9 +9,9 @@ import SwiftUI
 
 struct LinkContextMenu: View {
     @EnvironmentObject private var tabList: TabList
-    var link: String
+    var link: URL
     
-    init(link: String) {
+    init(link: URL) {
         self.link = link
     }
     var body: some View {

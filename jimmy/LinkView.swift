@@ -10,7 +10,7 @@ import SwiftUI
 struct LinkView: View {
     @EnvironmentObject private var tabList: TabList
     var label: String
-    var link: String
+    var link: URL
     var original: String
     var tab: Tab
     
@@ -35,9 +35,8 @@ struct LinkView: View {
         self.link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
         self.label = String(line[end..<line.endIndex]).trimmingCharacters(in: .whitespaces)
         if end == line.endIndex {
-            self.label = self.link
+            self.label = self.link.absoluteString
         }
-        
     }
     
     var body: some View {
@@ -48,7 +47,7 @@ struct LinkView: View {
         .buttonStyle(.plain)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
-        .help(original)
+        .help(original + " " + self.link.absoluteString)
         .contextMenu {
             LinkContextMenu(link: self.link)
         }
@@ -58,7 +57,7 @@ struct LinkView: View {
         // if link starts with // assume gemini
         tab.url = self.link
         
-        print("link clicked: ", tab.url)
+        print("link clicked: ", tab.url.absoluteString)
 
         tab.load()
     }
