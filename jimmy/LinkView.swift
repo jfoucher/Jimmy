@@ -49,7 +49,6 @@ struct LinkView: View {
         .buttonStyle(.plain)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
-        .help("This link goes to " + original)
         .contextMenu {
             LinkContextMenu(link: self.link)
         }

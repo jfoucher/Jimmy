@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CryptoKit
 
 struct TabView: View {
     @ObservedObject var tab: Tab
@@ -13,6 +14,7 @@ struct TabView: View {
     @State private var rotation = 0.0
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+    
     
     var body: some View {
         tabButton.opacity(tabList.activeTabId == tab.id ? 1 : 0.5)
@@ -71,11 +73,19 @@ struct TabView: View {
         HStack {
             closeButton
             Button(action: a) {
+                icon
                 Text(self.host ?? tab.url.absoluteString).font(.system(size: 14)).opacity(0.8).frame(maxWidth: 300)
             }
             .buttonStyle(PlainButtonStyle())
             .padding(.trailing, tab.loading ? -6 : 14)
             loading
+        }
+    }
+    
+    @ViewBuilder
+    private var icon: some View {
+        if !tab.icon.isEmpty {
+            Text(tab.icon)
         }
     }
 }

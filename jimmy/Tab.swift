@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CryptoKit
 
 class Tab: ObservableObject, Hashable, Identifiable {
     @Published var url: URL
@@ -15,6 +16,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var loading: Bool = false
     @Published var history: [URL]
     @Published var status = ""
+    @Published var icon = ""
 
     
     private var client: Client
@@ -46,7 +48,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
         guard let host = self.url.host else {
             return
         }
-
+        
+        self.icon = Emojis(host).emoji
+        
         if (host == "about") {
             if let asset = NSDataAsset(name: "home") {
                 let data = asset.data
@@ -80,7 +84,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
     func cb(error: Error?, message: Data?) {
         DispatchQueue.main.async {
             self.content = []
-            self.status = ""
         }
         if let error = error {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -90,13 +93,14 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 ]
                 
                 self.loading = false
+                self.status = ""
             }
         }
         
         if let message = message {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 let parsedMessage = ContentParser(content: message, tab: self)
-                
+                self.status = ""
                 print(parsedMessage.header.code)
                 print(parsedMessage.header.contentType)
                 self.loading = false
@@ -125,8 +129,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                     self.content = [
                         LineView(data: Data(("#" + String(parsedMessage.header.code) + " SERVER ERROR").utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data("The server responded with an error code".utf8), type: "text/plain", tab: self),
-                        LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self)
+                        LineView(data: Data(), type: "text/gemini", tab: self),
+                        LineView(data: Data(("#" + parsedMessage.header.contentType).utf8), type: "text/gemini", tab: self)
                     ]
                 }
             }

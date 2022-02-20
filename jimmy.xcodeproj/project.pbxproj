@@ -29,6 +29,7 @@
 		ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18A27BDB1E000418606 /* ClientConnection.swift */; };
 		ABE3E18D27BDB29400418606 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18C27BDB29400418606 /* Client.swift */; };
 		ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18E27BDC4D400418606 /* UrlView.swift */; };
+		ABF9747D27C2F4B300812AE4 /* Emojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF9747C27C2F4B300812AE4 /* Emojis.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		ABE3E18A27BDB1E000418606 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
 		ABE3E18C27BDB29400418606 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		ABE3E18E27BDC4D400418606 /* UrlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlView.swift; sourceTree = "<group>"; };
+		ABF9747C27C2F4B300812AE4 /* Emojis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emojis.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				AB042AC427C191D100FB9503 /* LinkContextMenu.swift */,
 				AB3263A527BE7A5A004F93E0 /* LineView.swift */,
 				AB3263B027C04946004F93E0 /* URLParser.swift */,
+				ABF9747C27C2F4B300812AE4 /* Emojis.swift */,
 				ABE3E17F27BDADBF00418606 /* Assets.xcassets */,
 				ABE3E18427BDADBF00418606 /* jimmy.entitlements */,
 				ABE3E18127BDADBF00418606 /* Preview Content */,
@@ -199,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABF9747D27C2F4B300812AE4 /* Emojis.swift in Sources */,
 				AB3263B127C04946004F93E0 /* URLParser.swift in Sources */,
 				ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */,
 				ABE3E17E27BDADBE00418606 /* ContentView.swift in Sources */,

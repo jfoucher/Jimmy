@@ -43,6 +43,7 @@ struct ContentView: View {
     @ViewBuilder
     private var mainView: some View {
         VStack {
+            
             ForEach(tabList.tabs) { tab in
                 UrlView(tab: tab)
             }
