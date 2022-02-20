@@ -64,7 +64,8 @@ struct UrlView: View {
                 .disabled(tab.url.isEmpty)
                 
                 Button(action: go) {
-                    Image(systemName: "arrow.clockwise").imageScale(.large).padding(.leading, 8)
+                    Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))
+                        .imageScale(.large).padding(.leading, 8)
                 }
                 .buttonStyle(.borderless)
                 .disabled(tab.url.isEmpty)
@@ -94,7 +95,11 @@ struct UrlView: View {
     }
     
     func go() {
-        tab.load()
+        if (tab.loading) {
+            tab.stop()
+        } else {
+            tab.load()
+        }
     }
     
     func back() {

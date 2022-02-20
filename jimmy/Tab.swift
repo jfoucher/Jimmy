@@ -33,6 +33,11 @@ class Tab: ObservableObject, Hashable, Identifiable {
         hasher.combine(id)
     }
     
+    func stop() {
+        self.client.stop()
+        self.loading = false;
+    }
+    
     func load() {
         self.client.stop()
         if self.url.isEmpty {

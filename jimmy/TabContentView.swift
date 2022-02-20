@@ -23,32 +23,22 @@ struct TabContentView: View {
     @ViewBuilder
     private var tabView: some View {
         if tab.id == tabList.activeTabId {
-            if tab.loading {
-                ScrollView {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
+            ScrollView {
+                HStack {
+                    Spacer()
+                    VStack {
+                        ForEach(tab.content, id: \.self) { view in
+                            view.frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .padding(.leading, 8)
+                        .padding(.trailing, 8)
+                        .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+                    }.padding(.bottom, 12).padding(.top, 12).frame(minWidth: 200, maxWidth: 800, alignment: .center)
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, minHeight: 200, alignment: .leading)
-                .background(Color.clear)
-                
-            } else {
-                ScrollView {
-                    HStack {
-                        Spacer()
-                        VStack {
-                            ForEach(tab.content, id: \.self) { view in
-                                view.frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(.leading, 8)
-                            .padding(.trailing, 8)
-                            .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-                        }.padding(.bottom, 12).padding(.top, 12).frame(minWidth: 200, maxWidth: 800, alignment: .center)
-                        Spacer()
-                    }
-                }
-                .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200, alignment: .center)
-                .background(Color.clear)
             }
+            .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200, alignment: .center)
+            .background(Color.clear)
         }
     }
 }

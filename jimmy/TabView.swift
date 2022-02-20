@@ -10,9 +10,12 @@ import SwiftUI
 struct TabView: View {
     @ObservedObject var tab: Tab
     @EnvironmentObject private var tabList: TabList
+    @State private var rotation = 0.0
+
+    let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        activeDependentButton
+        tabButton.opacity(tabList.activeTabId == tab.id ? 1 : 0.5)
     }
     
     var host: String? {
@@ -36,21 +39,34 @@ struct TabView: View {
     }
     
     @ViewBuilder
-    private var activeDependentButton: some View {
-        if self.tabList.activeTabId == tab.id {
-            tabButton
-        } else {
-            tabButton.opacity(0.5)
+    private var closeButton: some View {
+        if self.tabList.tabs.count > 1 {
+            Button(action: close) {
+                Image(systemName: "xmark")
+                    .imageScale(.medium)
+                    .padding(.leading, 4)
+            }
+            .buttonStyle(.borderless)
+            .padding(.trailing, -4)
+            .padding(.bottom, -2)
         }
     }
     
     @ViewBuilder
-    private var closeButton: some View {
-        if self.tabList.tabs.count > 1 {
-            Button(action: close) {
-                Image(systemName: "xmark").imageScale(.medium).padding(.leading, 4)
-            }
-            .buttonStyle(.borderless)
+    private var loading: some View {
+        if tab.loading {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .resizable()
+                .aspectRatio(1.2, contentMode: .fit)
+                .frame(width: 12, alignment: .leading)
+                .rotationEffect(Angle(degrees: rotation))
+                .foregroundColor(Color.gray)
+                .padding(.leading, 0)
+                .padding(.bottom, -2)
+                .onReceive(timer) { time in
+                    $rotation.wrappedValue += 1.0
+                    //print("The time is now \(time.)")
+                }
         }
     }
     
@@ -60,7 +76,10 @@ struct TabView: View {
             closeButton
             Button(action: a) {
                 Text(self.host ?? tab.url).font(.system(size: 14)).opacity(0.8).frame(maxWidth: 300)
-            }.buttonStyle(PlainButtonStyle()).padding(.trailing, 8)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.trailing, tab.loading ? -6 : 14)
+            loading
         }
     }
 }
