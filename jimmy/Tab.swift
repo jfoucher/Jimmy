@@ -82,8 +82,11 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func cb(error: Error?, message: Data?) {
+        DispatchQueue.main.async {
+            self.content = []
+        }
         if let error = error {
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 self.content = [
                     LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
                     LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
@@ -94,7 +97,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         if let message = message {
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 let parsedMessage = ContentParser(content: message, tab: self)
                 
                 print(parsedMessage.header.code)
