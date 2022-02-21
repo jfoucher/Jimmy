@@ -12,4 +12,4 @@ Here are some sites you can visit to start off:
 
 => gemini://medusae.space/
 => gemini://transjovian.org/
-=> gemini:/geminispace.info/
+=> gemini://geminispace.info/
