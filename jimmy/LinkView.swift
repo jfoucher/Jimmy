@@ -13,7 +13,7 @@ struct LinkView: View {
     var link: URL
     var original: String
     var tab: Tab
-    
+    @State private var isHoveringURL: Bool = false
     
     init(line: String, tab: Tab) {
         var line = line
@@ -30,7 +30,7 @@ struct LinkView: View {
         } else if let endRange = line.range(of: " ") {
             end = endRange.upperBound
         }
-
+        
         let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
         self.original = linkString
         self.link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
@@ -55,6 +55,16 @@ struct LinkView: View {
         .onHover(perform: { hovered in
             let loadingStatus = tab.loading ? "Loading " + tab.url.absoluteString : ""
             tab.status = hovered ? self.link.absoluteString.replacingOccurrences(of: "gemini://", with: "") : loadingStatus
+            
+            // Checking if we hovering URL or not
+            self.isHoveringURL = hovered
+            DispatchQueue.main.async {
+                if (self.isHoveringURL) {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
+            }
         })
     }
     
@@ -63,10 +73,10 @@ struct LinkView: View {
         tab.url = self.link
         
         print("link clicked: ", tab.url.absoluteString)
-
+        
         tab.load()
     }
     
-
+    
 }
 
