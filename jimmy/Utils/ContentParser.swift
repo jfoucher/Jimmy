@@ -115,7 +115,7 @@ class ContentParser {
             return .link
         } else if line.starts(with: "* ") {
             return .list
-        } else if line.trimmingCharacters(in: .whitespacesAndNewlines) == "```" {
+        } else if line.starts(with: "```") {
            return .pre
         } else {
             return .text
