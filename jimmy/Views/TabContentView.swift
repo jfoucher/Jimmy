@@ -29,7 +29,9 @@ struct TabContentView: View {
                         }
                         .padding(48)
                         .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
-                    }.frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+                    }
+                    .textSelection(.enabled)
+                    .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                 }
                 status
             }

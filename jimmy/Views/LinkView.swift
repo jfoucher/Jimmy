@@ -16,7 +16,7 @@ struct LinkView: View {
     @State private var isHoveringURL: Bool = false
     
     init(line: String, tab: Tab) {
-        var line = line
+        var line = line.replacingOccurrences(of: "\n", with: "")
         self.tab = tab
         if line.range(of: "=> ") != nil {
             line = line.replacingOccurrences(of: "=> ", with: "=>")
@@ -34,6 +34,12 @@ struct LinkView: View {
         let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
         self.original = linkString
         self.link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
+        if linkString.starts(with: "gemini://") {
+            if let p = URL(string: linkString) {
+                self.link = p
+            }
+        }
+        
         self.label = String(line[end..<line.endIndex]).trimmingCharacters(in: .whitespaces)
         if end == line.endIndex {
             self.label = self.link.absoluteString
@@ -47,6 +53,7 @@ struct LinkView: View {
         }
         .frame(alignment: .leading)
         .buttonStyle(.plain)
+        .help(original)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
         .contextMenu {

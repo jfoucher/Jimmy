@@ -9,11 +9,20 @@ import Foundation
 
 import SwiftUI
 
+enum BlockType {
+    case text
+    case pre
+    case list
+    case link
+    case title
+    case end
+}
+
 
 class ContentParser {
     var parsed: [LineView] = []
     var header: Header
-    var pre = false
+
     let tab: Tab
     
     init(content: Data, tab: Tab) {
@@ -39,20 +48,36 @@ class ContentParser {
                     self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
                 } else if self.header.contentType.starts(with: "text/") {
                     let lines = String(decoding: contentData, as: UTF8.self).replacingOccurrences(of: "\r", with: "").split(separator: "\n")
-                    self.parsed = lines.map { str -> LineView? in
-                        if str.starts(with: "```") {
-                            self.pre = !self.pre
-                            return nil
+                    var str: String = ""
+                    var pre = false
+                    for (index, line) in lines.enumerated() {
+                        let blockType = getBlockType(String(line))
+                        if blockType == .pre {
+                            pre = !pre
+                            
+                            if !pre {
+                                self.parsed.append(LineView(data: Data(str.utf8), type: "text/pre", tab: self.tab))
+                                str = ""
+                            }
+                            continue
                         }
-                        let type = self.pre ? "text/pre" : self.header.contentType
 
-                        return LineView(data: Data(str.utf8), type: type, tab: self.tab)
-                    }.filter { $0 != nil }.map { line -> LineView in
-                        return line!
+                        str += line + "\n"
+                        if pre {
+                            continue
+                        }
+                        
+                        let nextBlockType: BlockType = index+1 < lines.count ? getBlockType(String(lines[index+1])) : .end
+                        
+                        if (blockType != nextBlockType) || blockType == .link {
+                            // output previous block
+                            str.removeLast()
+                            self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
+                            str = ""
+                        }
                     }
                 } else {
                     // Download unknown file type
-                    
                     DispatchQueue.main.async {
                         let mySave = NSSavePanel()
                         mySave.prompt = "Save"
@@ -80,6 +105,20 @@ class ContentParser {
                     }
                 }
             }
+        }
+    }
+    
+    func getBlockType(_ line: String) -> BlockType {
+        if line.starts(with: "#") {
+            return .title
+        } else if line.starts(with: "=>") {
+            return .link
+        } else if line.starts(with: "* ") {
+            return .list
+        } else if line.trimmingCharacters(in: .whitespacesAndNewlines) == "```" {
+           return .pre
+        } else {
+            return .text
         }
     }
 }

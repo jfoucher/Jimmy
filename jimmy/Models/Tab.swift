@@ -17,6 +17,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var history: [URL]
     @Published var status = ""
     @Published var icon = ""
+    @Published var fontSize = 14.0
 
     
     private var client: Client
@@ -99,21 +100,27 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         if let message = message {
+            // Parse the request response
             let parsedMessage = ContentParser(content: message, tab: self)
-            print(parsedMessage.header.code)
-            print(parsedMessage.header.contentType)
+
             if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
+                // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
                 self.loading = false
                 self.status = ""
                 return
             }
+            DispatchQueue.main.async {
+                // Clear the contents now so that everything refreshes when we load new content
+                self.content = []
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                // Clear status bar
                 self.status = ""
-                
+                // stop loading indicator
                 self.loading = false
                 
                 if (10...19).contains(parsedMessage.header.code) {
-                    // Input
+                    // Input, show answer input box
                     self.content = [
                         LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(), type: "text/answer", tab: self),
@@ -121,7 +128,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     // Add to history
                     self.history.append(self.url)
                 } else if (20...29).contains(parsedMessage.header.code) {
-                    // Success
+                    // Success, show parsed content
                     self.content = parsedMessage.parsed
                     // Add to history
                     self.history.append(self.url)
