@@ -36,15 +36,15 @@ struct LineView: View, Hashable {
             if self.line.starts(with: "=>") {
                 LinkView(line: self.line, tab: tab).frame(alignment: .leading).padding(.leading, 12)
             } else if line.starts(with: "* ") {
-                Text(line.replacingOccurrences(of: "* ", with: "• ")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).padding(.bottom, 5)
+                Text(line.replacingOccurrences(of: "* ", with: "• ")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).padding(.bottom, 5).textSelection(.enabled)
             }  else if self.line.starts(with: "###") {
-                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .leading).font(.title3).padding(.bottom, 5)
+                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .leading).font(.title3).padding(.bottom, 5).textSelection(.enabled)
             } else if self.line.starts(with: "##") {
-                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .leading).font(.title2).padding(.bottom, 5)
+                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .leading).font(.title2).padding(.bottom, 5).textSelection(.enabled)
             } else if self.line.starts(with: "#") {
-                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .center).font(.title).padding(.bottom, 5).padding(.top, 12)
+                Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .center).font(.title).padding(.bottom, 5).padding(.top, 12).textSelection(.enabled)
             } else {
-                Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
+                Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12).textSelection(.enabled)
             }
         } else if type.starts(with: "text/pre") {
             Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).font(.system(size: 14, weight: .light).monospaced())
@@ -67,7 +67,7 @@ struct LineView: View, Hashable {
                 Image(systemName: "xmark")
             }
         } else {
-            Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
+            Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12).textSelection(.enabled)
         }
     }
     
