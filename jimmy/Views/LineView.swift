@@ -57,6 +57,9 @@ struct LineView: View, Hashable {
             // Line for an answer. The question should be above this
             HStack {
                 TextField("Answer", text: $answer)
+                    .onSubmit {
+                        send()
+                    }
                 Button(action: send) {
                     Text("Send")
                 }

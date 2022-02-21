@@ -33,7 +33,8 @@ class ContentParser {
             let contentRange = range.upperBound..<content.endIndex
             let contentData = content.subdata(in: contentRange)
             
-            if self.header.code >= 20 && self.header.code < 30 {
+            if (20...29).contains(self.header.code) {
+                // if we have a success response code
                 if self.header.contentType.starts(with: "image/") {
                     self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
                 } else if self.header.contentType.starts(with: "text/") {

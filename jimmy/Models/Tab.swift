@@ -102,7 +102,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             let parsedMessage = ContentParser(content: message, tab: self)
             print(parsedMessage.header.code)
             print(parsedMessage.header.contentType)
-            if !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
+            if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
                 self.loading = false
                 self.status = ""
                 return
@@ -112,7 +112,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 
                 self.loading = false
                 
-                if parsedMessage.header.code >= 10 && parsedMessage.header.code < 20 {
+                if (10...19).contains(parsedMessage.header.code) {
                     // Input
                     self.content = [
                         LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self),
@@ -120,12 +120,12 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     ]
                     // Add to history
                     self.history.append(self.url)
-                } else if parsedMessage.header.code >= 20 && parsedMessage.header.code < 30 {
+                } else if (20...29).contains(parsedMessage.header.code) {
                     // Success
                     self.content = parsedMessage.parsed
                     // Add to history
                     self.history.append(self.url)
-                } else if parsedMessage.header.code >= 30 && parsedMessage.header.code < 40 {
+                } else if (30...39).contains(parsedMessage.header.code) {
                     // Redirect
                     if let redirect = URL(string: parsedMessage.header.contentType) {
                         self.url = redirect
