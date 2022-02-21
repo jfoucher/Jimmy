@@ -61,6 +61,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             }
         }
         
+        
         self.loading = true
         self.status = "Loading " + url.absoluteString
         
@@ -98,11 +99,17 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         if let message = message {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                let parsedMessage = ContentParser(content: message, tab: self)
+            let parsedMessage = ContentParser(content: message, tab: self)
+            print(parsedMessage.header.code)
+            print(parsedMessage.header.contentType)
+            if !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
+                self.loading = false
                 self.status = ""
-                print(parsedMessage.header.code)
-                print(parsedMessage.header.contentType)
+                return
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                self.status = ""
+                
                 self.loading = false
                 
                 if parsedMessage.header.code >= 10 && parsedMessage.header.code < 20 {
@@ -137,3 +144,4 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
     }
 }
+

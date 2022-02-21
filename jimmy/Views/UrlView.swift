@@ -40,13 +40,7 @@ struct UrlView: View {
                 .buttonStyle(.borderless)
                 
                 
-                Button(action: showBookmarks) {
-                    Image(systemName: "bookmark").imageScale(.large).padding(.trailing, 8)
-                }
-                .buttonStyle(.borderless)
-                .popover(isPresented: $showPopover, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
-                    BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
-                }
+                
                 
                 HStack {
                     Text("gemini://")
@@ -66,18 +60,26 @@ struct UrlView: View {
                 }
                 .background(Color("urlbackground"))
                 .clipShape(RoundedRectangle(cornerRadius:4))
-                Button(action: bookmark) {
-                    Image(systemName: (bookmarked ? "star.fill" : "star")).imageScale(.large).padding(.leading, 8)
-                }
-                .buttonStyle(.borderless)
-                .disabled(url.wrappedValue.isEmpty)
-                
                 Button(action: go) {
                     Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))
                         .imageScale(.large).padding(.leading, 8)
                 }
                 .buttonStyle(.borderless)
                 .disabled(url.wrappedValue.isEmpty)
+                
+                Button(action: bookmark) {
+                    Image(systemName: (bookmarked ? "star.fill" : "star")).imageScale(.large)
+                }
+                .buttonStyle(.borderless)
+                .disabled(url.wrappedValue.isEmpty)
+                
+                Button(action: showBookmarks) {
+                    Image(systemName: "bookmark").imageScale(.large)
+                }
+                .buttonStyle(.borderless)
+                .popover(isPresented: $showPopover, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
+                    BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
+                }
             }
             .padding(.leading, 20)
             .padding(.trailing, 20)

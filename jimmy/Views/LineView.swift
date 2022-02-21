@@ -34,7 +34,7 @@ struct LineView: View, Hashable {
     private var textView: some View {
         if type.starts(with: "text/gemini") {
             if self.line.starts(with: "=>") {
-                LinkView(line: self.line, tab: tab).frame(alignment: .leading).padding(.leading, 12)
+                LinkView(line: self.line, tab: tab).padding(.leading, 12)
             } else if line.starts(with: "* ") {
                 Text(line.replacingOccurrences(of: "* ", with: "• ")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).padding(.bottom, 5)
             }  else if self.line.starts(with: "###") {
@@ -44,7 +44,7 @@ struct LineView: View, Hashable {
             } else if self.line.starts(with: "#") {
                 Text(line.replacingOccurrences(of: "#", with: "")).frame(maxWidth: .infinity, alignment: .center).font(.title).padding(.bottom, 5).padding(.top, 12)
             } else {
-                Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
+                Text(line).fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
             }
         } else if type.starts(with: "text/pre") {
             Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 24).font(.system(size: 14, weight: .light).monospaced())
@@ -67,14 +67,15 @@ struct LineView: View, Hashable {
                 Image(systemName: "xmark")
             }
         } else {
-            Text(line).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
+            Text(line).fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 5).padding(.leading, 12)
         }
     }
     
     func send () {
-        let url = tab.url.appendingPathComponent("?" + answer)
-        tab.url = url;
-        tab.load()
+        if let url = URL(string: tab.url.absoluteString + "?" + answer) {
+            tab.url = url
+            tab.load()
+        }
     }
     
     static func == (lhs: LineView, rhs: LineView) -> Bool {

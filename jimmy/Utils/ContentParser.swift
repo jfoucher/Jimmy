@@ -36,7 +36,7 @@ class ContentParser {
             if self.header.code >= 20 && self.header.code < 30 {
                 if self.header.contentType.starts(with: "image/") {
                     self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
-                } else {
+                } else if self.header.contentType.starts(with: "text/") {
                     let lines = String(decoding: contentData, as: UTF8.self).replacingOccurrences(of: "\r", with: "").split(separator: "\n")
                     self.parsed = lines.map { str -> LineView? in
                         if str.starts(with: "```") {
@@ -48,6 +48,34 @@ class ContentParser {
                         return LineView(data: Data(str.utf8), type: type, tab: self.tab)
                     }.filter { $0 != nil }.map { line -> LineView in
                         return line!
+                    }
+                } else {
+                    // Download unknown file type
+                    
+                    DispatchQueue.main.async {
+                        let mySave = NSSavePanel()
+                        mySave.prompt = "Save"
+                        mySave.title = "Saving " + tab.url.lastPathComponent
+                        mySave.nameFieldStringValue = tab.url.lastPathComponent
+
+                        mySave.begin { (result: NSApplication.ModalResponse) -> Void in
+                            if result == NSApplication.ModalResponse.OK {
+                                print("ok")
+                                
+                                if let fileurl = mySave.url {
+                                    print("file url is", fileurl)
+                                    do {
+                                        try contentData.write(to: fileurl)
+                                    } catch {
+                                        print("error writing")
+                                    }
+                                } else {
+                                    print("no file url")
+                                }
+                            } else {
+                                print ("cancel")
+                            }
+                        }
                     }
                 }
             }

@@ -44,6 +44,7 @@ struct TabView: View {
                     .imageScale(.medium)
                     .padding(.leading, 4)
             }
+            .help("Close " + (tab.url.host ?? ""))
             .buttonStyle(.borderless)
             .padding(.trailing, -4)
             .padding(.bottom, -2)

@@ -21,25 +21,18 @@ struct TabContentView: View {
         if tab.id == tabList.activeTabId {
             ZStack(alignment: .bottomLeading) {
                 HStack {
-                    Spacer()
-                
                     ScrollView {
                         ForEach(tab.content, id: \.self) { view in
-                            view.frame(maxWidth: 800, alignment: .leading)
+                            view
+                                .frame(maxWidth: 800, alignment: .leading)
                                 .id(view.id)
                         }
-                        .padding(.leading, 8)
-                        .padding(.trailing, 8)
-                        .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
-                    }.frame(minWidth: 200, maxWidth: 800, alignment: .leading)
-
-                    Spacer()
+                        .padding(48)
+                        .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+                    }.frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                 }
-                
-                
                 status
             }
-            .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200, alignment: .center)
             .background(Color.clear)
         }
     }
