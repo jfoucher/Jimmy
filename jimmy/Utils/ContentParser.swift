@@ -48,7 +48,7 @@ class ContentParser {
                 // if we have a success response code
                 if self.header.contentType.starts(with: "image/") {
                     self.parsed = [LineView(data: contentData, type: self.header.contentType, tab: tab)]
-                } else if self.header.contentType.starts(with: "text/") {
+                } else if self.header.contentType.starts(with: "text/gemini") {
                     let lines = String(decoding: contentData, as: UTF8.self).replacingOccurrences(of: "\r", with: "").split(separator: "\n")
                     var str: String = ""
                     var pre = false
@@ -78,6 +78,8 @@ class ContentParser {
                             str = ""
                         }
                     }
+                } else if self.header.contentType.starts(with: "text/") {
+                    self.parsed.append(LineView(data: contentData, type: self.header.contentType, tab: self.tab))
                 } else {
                     // Download unknown file type
                     DispatchQueue.main.async {
@@ -88,8 +90,6 @@ class ContentParser {
 
                         mySave.begin { (result: NSApplication.ModalResponse) -> Void in
                             if result == NSApplication.ModalResponse.OK {
-                                print("ok")
-                                
                                 if let fileurl = mySave.url {
                                     print("file url is", fileurl)
                                     do {

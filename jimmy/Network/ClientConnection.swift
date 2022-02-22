@@ -25,7 +25,7 @@ class ClientConnection {
         self.data = Data()
     }
 
-    var didStopCallback: ((Error?, Data?) -> Void)? = nil
+    var didStopCallback: ((NWError?, Data?) -> Void)? = nil
 
     func start() {
         print("connection will start")
@@ -80,7 +80,7 @@ class ClientConnection {
         stop(error: nil, message: nil)
     }
 
-    private func connectionDidFail(error: Error) {
+    private func connectionDidFail(error: NWError) {
         print("connection did fail, error: \(error)")
         self.stop(error: error, message: nil)
     }
@@ -90,7 +90,7 @@ class ClientConnection {
         self.stop(error: nil, message: self.data)
     }
 
-    private func stop(error: Error?, message: Data?) {
+    private func stop(error: NWError?, message: Data?) {
         self.nwConnection.stateUpdateHandler = nil
         self.nwConnection.cancel()
         if let didStopCallback = self.didStopCallback {

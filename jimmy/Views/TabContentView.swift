@@ -18,7 +18,7 @@ struct TabContentView: View {
     
     @ViewBuilder
     private var tabView: some View {
-        if tab.id == tabList.activeTabId {
+//        if tab.id == tabList.activeTabId {
             ZStack(alignment: .bottomLeading) {
                 HStack {
                     ScrollView {
@@ -36,7 +36,7 @@ struct TabContentView: View {
                 status
             }
             .background(Color.clear)
-        }
+//        }
     }
     
     @ViewBuilder

@@ -11,9 +11,8 @@ import SwiftUI
 
 
 struct UrlView: View {
-    @EnvironmentObject private var tabList: TabList
     @EnvironmentObject private var bookmarks: Bookmarks
-    @ObservedObject var tab: Tab
+    @EnvironmentObject private var tab: Tab
     @State var showPopover = false
     
     
@@ -25,11 +24,11 @@ struct UrlView: View {
     
     @ViewBuilder
     private var bar: some View {
-        if self.tabList.activeTabId == tab.id {
+        
             let url = Binding<String>(
                 get: { self.tab.url.absoluteString.replacingOccurrences(of: "gemini://", with: "") },
                 set: {
-                    self.tab.url = URL(string: "gemini://" + $0)!
+                    self.tab.url = URL(string: "gemini://" + $0) ?? URL(string: "gemini://about")!
                 }
            )
             HStack {
@@ -38,10 +37,6 @@ struct UrlView: View {
                 }
                 .disabled(tab.history.count <= 1)
                 .buttonStyle(.borderless)
-                
-                
-                
-                
                 HStack {
                     Text("gemini://")
                         .fontWeight(.light)
@@ -50,6 +45,7 @@ struct UrlView: View {
                         .padding(.top, 4)
                         .padding(.bottom, 6)
                         .padding(.trailing, -8)
+
                     TextField("example.org", text: url)
                         .onSubmit {
                             go()
@@ -57,7 +53,10 @@ struct UrlView: View {
                         .textFieldStyle(.plain)
                         .padding(.trailing, 6)
                         .padding(.bottom, 2)
-                }
+                        .frame(minWidth: 0, idealWidth: 500,maxWidth: .infinity, alignment: .leading)
+
+
+                }.frame(maxWidth: .infinity)
                 .background(Color("urlbackground"))
                 .clipShape(RoundedRectangle(cornerRadius:4))
                 Button(action: go) {
@@ -80,11 +79,11 @@ struct UrlView: View {
                 .popover(isPresented: $showPopover, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
                     BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
                 }
-            }
+            }.frame(maxWidth: .infinity)
             .padding(.leading, 20)
             .padding(.trailing, 20)
             
-        }
+        
     }
     
     func showBookmarks() {

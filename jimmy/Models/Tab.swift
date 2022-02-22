@@ -27,7 +27,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.content = []
         self.id = UUID()
         self.history = []
-        self.client = Client(host: "localhost", port: 1965)
+        self.client = Client(host: "localhost", port: 1965, validateCert: true)
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -66,7 +66,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.loading = true
         self.status = "Loading " + url.absoluteString
         
-        self.client = Client(host: host, port: 1965)
+        self.client = Client(host: host, port: 1965, validateCert: host != "gemini.6px.eu")
         self.client.start()
         self.client.dataReceivedCallback = cb(error:message:)
         
@@ -88,6 +88,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             self.content = []
         }
         if let error = error {
+            print("request error", (error as NSError).hash)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 self.content = [
                     LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
@@ -102,7 +103,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
         if let message = message {
             // Parse the request response
             let parsedMessage = ContentParser(content: message, tab: self)
-
+            print(parsedMessage.header.code)
+            print(parsedMessage.header.contentType)
             if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
                 // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
                 self.loading = false

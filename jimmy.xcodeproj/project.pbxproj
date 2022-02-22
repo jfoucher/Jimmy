@@ -12,7 +12,6 @@
 		AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC027C1615700FB9503 /* Bookmark.swift */; };
 		AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC227C1761800FB9503 /* BookmarkView.swift */; };
 		AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC427C191D100FB9503 /* LinkContextMenu.swift */; };
-		AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639727BE3CDD004F93E0 /* TabView.swift */; };
 		AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639B27BE3D3E004F93E0 /* TabList.swift */; };
 		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
 		AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639F27BE64AA004F93E0 /* ContentParser.swift */; };
@@ -37,7 +36,6 @@
 		AB042AC027C1615700FB9503 /* Bookmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark.swift; sourceTree = "<group>"; };
 		AB042AC227C1761800FB9503 /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		AB042AC427C191D100FB9503 /* LinkContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContextMenu.swift; sourceTree = "<group>"; };
-		AB32639727BE3CDD004F93E0 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		AB32639B27BE3D3E004F93E0 /* TabList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabList.swift; sourceTree = "<group>"; };
 		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		AB32639F27BE64AA004F93E0 /* ContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentParser.swift; sourceTree = "<group>"; };
@@ -95,7 +93,6 @@
 				ABE3E17D27BDADBE00418606 /* ContentView.swift */,
 				AB3263AC27C02316004F93E0 /* TabContentView.swift */,
 				ABE3E18E27BDC4D400418606 /* UrlView.swift */,
-				AB32639727BE3CDD004F93E0 /* TabView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -240,7 +237,6 @@
 				AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */,
 				ABE3E18D27BDB29400418606 /* Client.swift in Sources */,
 				AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */,
-				AB32639827BE3CDD004F93E0 /* TabView.swift in Sources */,
 				AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */,
 				AB042ABF27C160AD00FB9503 /* BookmarksView.swift in Sources */,
 				AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */,

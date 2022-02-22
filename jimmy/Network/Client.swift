@@ -13,15 +13,16 @@ class Client {
     let host: NWEndpoint.Host
     let port: NWEndpoint.Port
     
+    
     var dataReceivedCallback: ((Error?, Data?) -> Void)? = nil
     
-    init(host: String, port: UInt16) {
+    init(host: String, port: UInt16, validateCert: Bool) {
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port)!
         
         let tlsopts = NWProtocolTLS.Options()
         
-        sec_protocol_options_set_peer_authentication_required(tlsopts.securityProtocolOptions, false)
+        sec_protocol_options_set_peer_authentication_required(tlsopts.securityProtocolOptions, validateCert)
         
         let params = NWParameters(tls: tlsopts, tcp: NWProtocolTCP.Options())
     
@@ -44,7 +45,7 @@ class Client {
         connection.send(data: data)
     }
 
-    func didStopCallback(error: Error?, message: Data?) {
+    func didStopCallback(error: NWError?, message: Data?) {
         if let dataReceivedCallback = self.dataReceivedCallback {
             dataReceivedCallback(error, message)
             self.dataReceivedCallback = nil

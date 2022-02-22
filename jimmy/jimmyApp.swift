@@ -6,37 +6,58 @@
 //
 
 import SwiftUI
-import Network
+import Foundation
+
 
 @main
 struct jimmyApp: App {
+    
     let tabs = TabList()
     let bookmarks = Bookmarks()
-    
-    init() {
-        
-
-    }
-    
+    let store = UserDefaults()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(tabs)
                 .environmentObject(bookmarks)
-                .handlesExternalEvents(preferring: Set(arrayLiteral: "{path of URL?}"), allowing: Set(arrayLiteral: "*")) // activate existing window if exists
+                
+                .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
                 .onOpenURL { (url) in
-                    let tab = Tab(url: url)
-                    tabs.tabs.append(tab)
-                    tabs.activeTabId = tab.id
-                    tab.load()
-                } // create new window if doesn't exist
+                    print("opening", url)
+                    //newTab(url)
+                    
+                }
+                .handlesExternalEvents(preferring: ["main"], allowing: ["*"])
+                
         }
+        
         .windowStyle(HiddenTitleBarWindowStyle())
         .windowToolbarStyle(UnifiedWindowToolbarStyle())
+        .commands(content: {
+            CommandGroup(replacing: .newItem) {
+                //Button("New Tab") { newTab(URL(string: "gemini://about")!) }.keyboardShortcut("t")
+                Divider()
+            }
+        })
+        .defaultAppStorage(Store())
+
         
+        
+        
+//        Settings {
+//            VStack {
+//                Text("My Settingsview")
+//                Text("My Settingsview")
+//                Text("My Settingsview")
+//                Text("My Settingsview")
+//            }.padding()
+//        }
             
     }
-    
 
+}
+
+class Store: UserDefaults {
+    override func set(_ value: Int, forKey defaultName: String) {
+    }
 }
