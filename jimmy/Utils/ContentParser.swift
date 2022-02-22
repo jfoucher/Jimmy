@@ -14,7 +14,9 @@ enum BlockType {
     case pre
     case list
     case link
-    case title
+    case title1
+    case title2
+    case title3
     case end
 }
 
@@ -109,8 +111,12 @@ class ContentParser {
     }
     
     func getBlockType(_ line: String) -> BlockType {
-        if line.starts(with: "#") {
-            return .title
+        if line.starts(with: "###") {
+            return .title3
+        } else if line.starts(with: "##") {
+            return .title2
+        } else if line.starts(with: "#") {
+            return .title1
         } else if line.starts(with: "=>") {
             return .link
         } else if line.starts(with: "* ") {
