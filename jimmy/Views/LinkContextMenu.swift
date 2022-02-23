@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LinkContextMenu: View {
+    @Environment(\.openURL) var openURL
     @EnvironmentObject private var tabList: TabList
     var link: URL
     
@@ -30,10 +31,7 @@ struct LinkContextMenu: View {
     }
     
     func newTab() {
-        let nt = Tab(url: self.link)
-        tabList.tabs.append(nt)
-        tabList.activeTabId = nt.id
-        nt.load()
+        openURL(link)
     }
     
     func copyLink() {

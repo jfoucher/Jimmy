@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LinkView: View {
+    @Environment(\.openURL) var openURL
     @EnvironmentObject private var tabList: TabList
     var label: String
     var link: URL
@@ -76,8 +77,13 @@ struct LinkView: View {
     }
     
     func ac(){
+        if (link.scheme == "http" || link.scheme == "https") {
+            openURL(link)
+        }
         // if link starts with // assume gemini
         tab.url = self.link
+        
+        
         
         print("link clicked: ", tab.url.absoluteString)
         

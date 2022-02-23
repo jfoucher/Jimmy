@@ -12,22 +12,20 @@ struct ContentView: View {
     @EnvironmentObject var bookmarks: Bookmarks
     @State var showPopover = false
     @State var searchText = ""
-    
-    init() {
-        tab.load()
-    }
+
     
     var body: some View {
-        let url = Binding<String>(
-            get: { self.tab.url.absoluteString.replacingOccurrences(of: "gemini://", with: "") },
-            set: {
-                self.tab.url = URL(string: "gemini://" + $0) ?? URL(string: "gemini://about")!
-            }
-       )
         VStack {
             //UrlView().frame(maxWidth: .infinity).environmentObject(tab).environmentObject(bookmarks)
             mainView
                 
+        }
+        .onOpenURL { (url) in
+            print("opening", url)
+            //newTab(url)
+            tab.url = url
+            tab.load()
+
         }
             .navigationTitle(tab.url.host ?? "")
             .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
@@ -40,6 +38,7 @@ struct ContentView: View {
                 tab.load()
             })
 
+
 //            .background(VStack {
 //                Divider()
 //                Spacer()
@@ -49,11 +48,20 @@ struct ContentView: View {
     
     func btn (){}
     
+    func setUrl(url: URL) -> ContentView {
+        print("setting tab url to ", url.absoluteString)
+        tab.url = url
+    
+        tab.load()
+        return self
+    }
+    
+    
     @ViewBuilder
     private var mainView: some View {
         
         VStack {
-//            Text(tab.id.uuidString)
+            Text(tab.id.uuidString)
 //            ZStack {
 //                Color("background").edgesIgnoringSafeArea(.all)
 //                ForEach(tabList.tabs) { tab in
@@ -150,6 +158,23 @@ struct ContentView: View {
     
     func back() {
         tab.back()
+    }
+    
+    private func newTab(_ url: URL) {
+        let oldurl = tab.url
+        if let currentWindow = NSApp.keyWindow,
+          let windowController = currentWindow.windowController {
+            windowController.newWindowForTab(nil)
+            if let newWindow = NSApp.keyWindow,
+              currentWindow != newWindow {
+                currentWindow.addTabbedWindow(newWindow, ordered: .above)
+            }
+        }
+        tab.url = url
+        tab.load()
+//        currentWindow.tabbedWindows?.last?.contentView
+
+        
     }
     
 }

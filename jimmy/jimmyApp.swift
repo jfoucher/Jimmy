@@ -16,31 +16,56 @@ struct jimmyApp: App {
     let bookmarks = Bookmarks()
     let store = UserDefaults()
 
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(bookmarks)
                 
                 .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
-                .onOpenURL { (url) in
-                    print("opening", url)
-                    //newTab(url)
+                .onAppear(perform: {
                     
-                }
-                .handlesExternalEvents(preferring: ["main"], allowing: ["*"])
-                
+                    DispatchQueue.main.async {
+                        print("content view appeared ---------------")
+                        
+                        
+                        
+                        
+                        guard let keyWindow = NSApp.keyWindow else { return }
+                        
+                        print("keywindow", NSApp.keyWindow)
+                        
+                        NSApp.windows.forEach({win in
+                            if !win.isKeyWindow {
+                                print("otherwindow",win)
+                                
+                                keyWindow.addTabbedWindow(win, ordered: .above)
+                            }
+                        })
+                        
+                        
+                    }
+                    
+                })
+//                .onOpenURL { (url) in
+//                    print("opening", url)
+//                   // newTab(url)
+//                }
+//
+//                .handlesExternalEvents(preferring: ["ContentView"], allowing: ["*"])
+
         }
-        
+        .handlesExternalEvents(matching: ["*"])
         .windowStyle(.automatic)
         .windowToolbarStyle(.unified(showsTitle: false))
         .commands(content: {
             CommandGroup(replacing: .newItem) {
-                //Button("New Tab") { newTab(URL(string: "gemini://about")!) }.keyboardShortcut("t")
+//                Button("New Tab") { newTab(URL(string: "gemini://about")!) }.keyboardShortcut("t")
                 Divider()
             }
         })
         .defaultAppStorage(Store())
-        
+
         
         
         
@@ -54,6 +79,8 @@ struct jimmyApp: App {
 //        }
             
     }
+    
+
 
 }
 

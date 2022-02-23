@@ -89,6 +89,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             self.content = []
         }
         if let error = error {
+            self.history.append(self.url)
             if error == NWError.tls(-9808) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                     self.content = [
@@ -153,11 +154,24 @@ class Tab: ObservableObject, Hashable, Identifiable {
                         self.url = redirect
                         self.load()
                     }
+                } else if parsedMessage.header.code == 51 {
+                    // Server Error
+                    self.history.append(self.url)
+
+                    var msg = "### Sorry, the page " + self.url.path + " was not found"
+                    if let host = self.url.host {
+                        msg = "### Sorry, the page " + self.url.path + " was not found on " + host
+                    }
+                    self.content = [
+                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " Not found").utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(), type: "text/gemini", tab: self),
+                        LineView(data: Data(msg.utf8), type: "text/gemini", tab: self)
+                    ]
                 } else {
                     // Server Error
                     self.history.append(self.url)
                     self.content = [
-                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " SERVER ERROR").utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " Server Error").utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(), type: "text/gemini", tab: self),
                         LineView(data: Data(("#" + parsedMessage.header.contentType).utf8), type: "text/gemini", tab: self)
                     ]
