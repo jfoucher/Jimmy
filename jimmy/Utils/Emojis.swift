@@ -41,15 +41,11 @@ struct Emojis {
             
             let index = UInt32(hs, radix: 16)! % count + UInt32(codepoint.lowerBound)
             
-            print(String(format: "%06x", index))
-            
             guard let scalar = UnicodeScalar(index) else {
-                print("could not get scalar")
                 self.emoji = "❓"
                 continue
             }
             if Character(scalar).unicodeAvailable() {
-                print("emoji available")
                 self.emoji = String(scalar)
                 return
             }
@@ -74,14 +70,13 @@ extension Character {
     func png(ofSize fontSize: CGFloat) -> Data? {
         let str = String(self)
         let size = str.size(withAttributes: [.font: NSFont.systemFont(ofSize: 16.0)])
-        print(size)
+        
         let img = NSImage(size: size, flipped: false, drawingHandler: { rect in
             str.draw(in: rect, withAttributes: [.font: NSFont.systemFont(ofSize: 16.0)])
             return true
         })
 
         if let png = img.tiffRepresentation {
-            print("image ok")
             return png
         }
 

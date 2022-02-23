@@ -52,6 +52,7 @@ struct LinkView: View {
             Image(systemName: "arrow.right")
             Text(label)
         }
+
         .frame(alignment: .leading)
         .buttonStyle(.plain)
 //        .help(original)

@@ -39,6 +39,7 @@ struct BookmarkView: View {
                     tab.load()
                     close()
                 }) {
+                    Text(Emojis(bookmark.url.host ?? "").emoji)
                     Text(bookmark.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")).frame(maxWidth: .infinity, alignment: .leading)
                         
                 }

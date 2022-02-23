@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LineView: View, Hashable {
-    
+    @EnvironmentObject var certs: IgnoredCertificates
     var line: String
     var data: Data
     var type: String
@@ -34,7 +34,7 @@ struct LineView: View, Hashable {
     private var textView: some View {
         if type.starts(with: "text/gemini") {
             if self.line.starts(with: "=>") {
-                LinkView(line: self.line, tab: tab).padding(.leading, 12)
+                LinkView(line: self.line, tab: tab).frame(alignment: .leading).padding(.leading, 12)
             } else if line.starts(with: "* ") {
                 Text(line.replacingOccurrences(of: "* ", with: "• "))
                     .fixedSize(horizontal: false, vertical: true)
@@ -74,6 +74,17 @@ struct LineView: View, Hashable {
                 .padding(.leading, 24)
                 .font(.system(size: tab.fontSize * 1.1, weight: .light).monospaced())
                 .fixedSize(horizontal: false, vertical: true)
+        } else if type.starts(with: "text/ignore-cert") {
+            Button(action: {
+                if let host = tab.url.host {
+                    certs.items.append(host)
+                    tab.certs.items = certs.items
+                    certs.save()
+                    tab.load()
+                }
+            }, label: {
+                Text("Ignore certificate validation for " + (Emojis(tab.url.host ?? "").emoji) + " " + (tab.url.host ?? ""))
+            })
         } else if type.starts(with: "text/answer") {
             // Line for an answer. The question should be above this
             HStack {
@@ -85,7 +96,7 @@ struct LineView: View, Hashable {
                     Text("Send")
                 }
             }
-        }  else if type.starts(with: "image/") {
+        } else if type.starts(with: "image/") {
             // Line for an answer. The question should be above this
             if let img = NSImage(data: Data(self.data)) {
                 Image(nsImage: img)

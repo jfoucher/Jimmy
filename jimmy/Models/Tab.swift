@@ -11,6 +11,7 @@ import CryptoKit
 import Network
 
 class Tab: ObservableObject, Hashable, Identifiable {
+    var certs: IgnoredCertificates
     @Published var url: URL
     @Published var content: [LineView]
     @Published var id: UUID
@@ -29,6 +30,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.id = UUID()
         self.history = []
         self.client = Client(host: "localhost", port: 1965, validateCert: true)
+        self.certs = IgnoredCertificates()
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -67,7 +69,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.loading = true
         self.status = "Loading " + url.absoluteString
         
-        self.client = Client(host: host, port: 1965, validateCert: true)
+        print("certs.items", certs.items)
+        
+        self.client = Client(host: host, port: 1965, validateCert: !certs.items.contains(url.host ?? ""))
         self.client.start()
         self.client.dataReceivedCallback = cb(error:message:)
         
@@ -94,7 +98,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                     self.content = [
                         LineView(data: Data("# Invalid certificate".utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data(("### The SSL certificate for " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self)
+                        
+                        LineView(data: Data(("### 😔 The SSL certificate for " + Emojis(self.url.host ?? "").emoji + " " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self),
+                        
+                        LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
                     ]
                     
                     self.loading = false
@@ -103,7 +110,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             } else if error == NWError.dns(-65554) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                     self.content = [
-                        LineView(data: Data("# Could not conect".utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data("# Could not connect".utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(("### Please make sure your internet conection is working properly.").utf8), type: "text/gemini", tab: self)
                     ]
                     

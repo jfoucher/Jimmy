@@ -17,7 +17,7 @@ struct ContentView: View {
     var body: some View {
 
         VStack {
-            Text(tab.id.uuidString)
+            //Text(tab.id.uuidString)
 //            ZStack {
 //                Color("background").edgesIgnoringSafeArea(.all)
 //                ForEach(tabList.tabs) { tab in
@@ -29,7 +29,7 @@ struct ContentView: View {
         .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))
         
         
-        .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
+        .frame(maxWidth: .infinity, minHeight: 200)
         .toolbar{
             urlToolBarContent()
         }
@@ -58,10 +58,7 @@ struct ContentView: View {
             .disabled(tab.history.count <= 1)
             .buttonStyle(.borderless)
         }
-        
         ToolbarItemGroup(placement: .principal) {
-
-            Text(Emojis(tab.url.host ?? "").emoji)
             TextField("example.org", text: url)
                 .onSubmit {
                     go()
