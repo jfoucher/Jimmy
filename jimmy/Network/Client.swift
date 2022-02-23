@@ -14,7 +14,7 @@ class Client {
     let port: NWEndpoint.Port
     
     
-    var dataReceivedCallback: ((Error?, Data?) -> Void)? = nil
+    var dataReceivedCallback: ((NWError?, Data?) -> Void)? = nil
     
     init(host: String, port: UInt16, validateCert: Bool) {
         self.host = NWEndpoint.Host(host)

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import CryptoKit
+import Network
 
 class Tab: ObservableObject, Hashable, Identifiable {
     @Published var url: URL
@@ -66,7 +67,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.loading = true
         self.status = "Loading " + url.absoluteString
         
-        self.client = Client(host: host, port: 1965, validateCert: host != "gemini.6px.eu")
+        self.client = Client(host: host, port: 1965, validateCert: true)
         self.client.start()
         self.client.dataReceivedCallback = cb(error:message:)
         
@@ -83,21 +84,33 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
     }
     
-    func cb(error: Error?, message: Data?) {
+    func cb(error: NWError?, message: Data?) {
         DispatchQueue.main.async {
             self.content = []
         }
         if let error = error {
-            print("request error", (error as NSError).hash)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                self.content = [
-                    LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
-                    LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
-                ]
-                
-                self.loading = false
-                self.status = ""
+            if error == NWError.tls(-9808) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.content = [
+                        LineView(data: Data("# Invalid certificate".utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(("### The SSL certificate for " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self)
+                    ]
+                    
+                    self.loading = false
+                    self.status = ""
+                }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.content = [
+                        LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
+                    ]
+                    
+                    self.loading = false
+                    self.status = ""
+                }
             }
+
         }
         
         if let message = message {

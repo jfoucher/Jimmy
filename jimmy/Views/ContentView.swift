@@ -28,7 +28,8 @@ struct ContentView: View {
             //UrlView().frame(maxWidth: .infinity).environmentObject(tab).environmentObject(bookmarks)
             mainView
                 
-        }.navigationTitle(tab.url.host ?? "")
+        }
+            .navigationTitle(tab.url.host ?? "")
             .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
             .toolbar{
                 urlToolBarContent()
@@ -52,13 +53,13 @@ struct ContentView: View {
     private var mainView: some View {
         
         VStack {
-            Text(tab.id.uuidString)
-            ZStack {
-                Color("background").edgesIgnoringSafeArea(.all)
+//            Text(tab.id.uuidString)
+//            ZStack {
+//                Color("background").edgesIgnoringSafeArea(.all)
 //                ForEach(tabList.tabs) { tab in
                   TabContentView(tab: tab)
 //                }
-            }
+//            }
         }
     }
     
@@ -79,12 +80,14 @@ struct ContentView: View {
             .buttonStyle(.borderless)
         }
         
-        ToolbarItemGroup(placement: .navigation) {
+        ToolbarItemGroup(placement: .principal) {
+
+            
             TextField("example.org", text: url)
                 .onSubmit {
                     go()
                 }
-                
+
                 .padding(.trailing, 6)
                 .padding(.bottom, 2)
                 .textFieldStyle(RoundedBorderTextFieldStyle())

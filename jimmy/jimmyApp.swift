@@ -31,8 +31,8 @@ struct jimmyApp: App {
                 
         }
         
-        .windowStyle(HiddenTitleBarWindowStyle())
-        .windowToolbarStyle(UnifiedWindowToolbarStyle())
+        .windowStyle(.automatic)
+        .windowToolbarStyle(.unified(showsTitle: false))
         .commands(content: {
             CommandGroup(replacing: .newItem) {
                 //Button("New Tab") { newTab(URL(string: "gemini://about")!) }.keyboardShortcut("t")
@@ -40,7 +40,7 @@ struct jimmyApp: App {
             }
         })
         .defaultAppStorage(Store())
-
+        
         
         
         

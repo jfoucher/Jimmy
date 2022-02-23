@@ -53,7 +53,7 @@ struct LinkView: View {
         }
         .frame(alignment: .leading)
         .buttonStyle(.plain)
-        .help(original)
+//        .help(original)
         .foregroundColor(Color.blue)
         .padding(.bottom, 4)
         .contextMenu {
