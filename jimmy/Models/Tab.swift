@@ -100,6 +100,16 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.loading = false
                     self.status = ""
                 }
+            } else if error == NWError.dns(-65554) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.content = [
+                        LineView(data: Data("# Could not conect".utf8), type: "text/gemini", tab: self),
+                        LineView(data: Data(("### Please make sure your internet conection is working properly.").utf8), type: "text/gemini", tab: self)
+                    ]
+                    
+                    self.loading = false
+                    self.status = ""
+                }
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                     self.content = [

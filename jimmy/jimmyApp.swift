@@ -21,62 +21,55 @@ struct jimmyApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(bookmarks)
-                
                 .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
+                .onOpenURL(perform: {url in
+                    print(url)
+                })
                 .onAppear(perform: {
-                    
                     DispatchQueue.main.async {
-                        print("content view appeared ---------------")
-                        
-                        
-                        
-                        
-                        guard let keyWindow = NSApp.keyWindow else { return }
-                        
-                        print("keywindow", NSApp.keyWindow)
-                        
+                        guard let firstWindow = NSApp.windows.first(where: { win in
+                            return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
+                        }) else { return }
+
+                        //firstWindow.makeKeyAndOrderFront(nil)
+                        var group = firstWindow
+                        if let g = firstWindow.tabGroup?.selectedWindow {
+                            group = g
+                        }
+
+                        var lastWindow = NSApp.windows.first(where: {win in
+                            return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
+                        })
+
                         NSApp.windows.forEach({win in
-                            if !win.isKeyWindow {
-                                print("otherwindow",win)
-                                
-                                keyWindow.addTabbedWindow(win, ordered: .above)
+                            let className = NSStringFromClass(type(of: win))
+                            if win != firstWindow && className == "SwiftUI.SwiftUIWindow" && win.tabbedWindows?.count == nil {
+                                print("adding window", win)
+
+                                group.addTabbedWindow(win, ordered: .above)
                             }
                         })
-                        
-                        
-                    }
-                    
-                })
-//                .onOpenURL { (url) in
-//                    print("opening", url)
-//                   // newTab(url)
-//                }
-//
-//                .handlesExternalEvents(preferring: ["ContentView"], allowing: ["*"])
 
+                        if let last = lastWindow {
+                            print("last tWindow", last)
+                            last.makeKeyAndOrderFront(nil)
+                        }
+
+                    }
+                })
+                
         }
         .handlesExternalEvents(matching: ["*"])
-        .windowStyle(.automatic)
+        .windowStyle(.titleBar)
+    
         .windowToolbarStyle(.unified(showsTitle: false))
         .commands(content: {
             CommandGroup(replacing: .newItem) {
-//                Button("New Tab") { newTab(URL(string: "gemini://about")!) }.keyboardShortcut("t")
-                Divider()
+                CommandsView()
+                
             }
         })
         .defaultAppStorage(Store())
-
-        
-        
-        
-//        Settings {
-//            VStack {
-//                Text("My Settingsview")
-//                Text("My Settingsview")
-//                Text("My Settingsview")
-//                Text("My Settingsview")
-//            }.padding()
-//        }
             
     }
     

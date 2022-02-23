@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct BookmarkView: View {
+    @Environment(\.openURL) var openURL
     @EnvironmentObject private var bookmarks: Bookmarks
     
     private var tab: Tab
@@ -45,7 +46,20 @@ struct BookmarkView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(4).padding(.leading, 0).padding(.trailing, 8)
                 .contextMenu {
-                    LinkContextMenu(link: bookmark.url)
+                    VStack {
+                        Button(action: {
+                            newTab(self.bookmark.url)
+                        })
+                        {
+                            Label("Open in new tab", systemImage: "plus.rectangle")
+                        }
+                            .buttonStyle(.plain)
+                        Button(action: copyLink)
+                        {
+                            Label("Copy link address", systemImage: "link")
+                        }
+                            .buttonStyle(.plain)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -57,5 +71,14 @@ struct BookmarkView: View {
             .clipShape(RoundedRectangle(cornerRadius: 4))
         }
 
+    }
+    
+    func newTab(_ url: URL) {
+        openURL(url)
+    }
+    
+    func copyLink() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(self.bookmark.url.absoluteString, forType: .string)
     }
 }
