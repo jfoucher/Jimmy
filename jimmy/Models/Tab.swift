@@ -66,8 +66,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         
-        self.loading = true
-        self.status = "Loading " + url.absoluteString
+        DispatchQueue.main.async {
+            self.loading = true
+            self.status = "Loading " + self.url.absoluteString
+        }
         
         print("certs.items", certs.items)
         

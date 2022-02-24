@@ -30,16 +30,18 @@ struct jimmyApp: App {
                     print(url)
                 })
                 .onDisappear(perform: {
-                    print("disappearing")
+                    print("disappearing", getCurrentWindows().count)
                     DispatchQueue.main.async {
-                        if NSApp.windows.count == 1 {
-                            NSApp.windows.forEach({win in
-                                win.toggleTabBar(self)
-                            })
+                        let w = getCurrentWindows()
+                        if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                            w.first!.toggleTabBar(self)
                         }
+                            
+                        
                     }
                 })
                 .onAppear(perform: {
+                    print("appearing")
                     DispatchQueue.main.async {
                         guard let firstWindow = NSApp.windows.first(where: { win in
                             return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
@@ -50,14 +52,15 @@ struct jimmyApp: App {
                         if let g = firstWindow.tabGroup?.selectedWindow {
                             group = g
                         }
-
-                        if NSApp.windows.count == 1 && group.tabGroup?.isTabBarVisible == false {
-                            group.toggleTabBar(self)
-                        } else if NSApp.windows.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
+                        let w = getCurrentWindows()
+                        print(w.count)
+                        print(w.first?.tabGroup?.isTabBarVisible)
+                        if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                            
+                            w.first!.toggleTabBar(self)
+                        } else if w.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
                             NSApp.keyWindow?.toggleTabBar(self)
                         }
-                        
-                        //
 
                         var lastWindow = NSApp.windows.first(where: {win in
                             return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
@@ -73,7 +76,6 @@ struct jimmyApp: App {
                         })
 
                         if let last = lastWindow {
-                            print("last tWindow", last)
                             last.makeKeyAndOrderFront(nil)
                         }
 
@@ -96,6 +98,9 @@ struct jimmyApp: App {
     }
     
 
+    func getCurrentWindows() -> [NSWindow] {
+        return NSApp.windows.filter{ NSStringFromClass(type(of: $0)) == "SwiftUI.SwiftUIWindow" }
+    }
 
 }
 
