@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
     @StateObject var tab: Tab = Tab(url: URL(string: "gemini://about")!)
     @EnvironmentObject var bookmarks: Bookmarks
+    @EnvironmentObject var actions: Actions
     @State var showPopover = false
-    @State var searchText = ""
+    @State private var old = 0
     @State private var rotation = 0.0
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
@@ -21,7 +23,16 @@ struct ContentView: View {
         VStack {
             TabContentView(tab: tab)
         }
-        
+        .onReceive(Just(actions.reload)) { val in
+            //tab.load()
+            if old != val {
+                old = val
+                DispatchQueue.main.async{
+                    tab.load()
+                }
+            }
+            
+        }
         .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))
         
         
@@ -30,12 +41,60 @@ struct ContentView: View {
         .toolbar{
             urlToolBarContent()
         }
+        
         .onOpenURL(perform: { url in
             tab.url = url
             tab.load()
         })
+        .onDisappear(perform: {
+            print("disappearing", getCurrentWindows().count)
+            DispatchQueue.main.async {
+                let w = getCurrentWindows()
+                if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                    w.first!.toggleTabBar(self)
+                }
+            }
+        })
         .onAppear(perform: {
-            tab.load()
+            DispatchQueue.main.async {
+                guard let firstWindow = NSApp.windows.first(where: { win in
+                    return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
+                }) else { return }
+
+                //firstWindow.makeKeyAndOrderFront(nil)
+                var group = firstWindow
+                if let g = firstWindow.tabGroup?.selectedWindow {
+                    group = g
+                }
+                let w = getCurrentWindows()
+                print(w.count)
+                print(w.first?.tabGroup?.isTabBarVisible)
+                if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                    
+                    w.first!.toggleTabBar(self)
+                } else if w.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
+                    NSApp.keyWindow?.toggleTabBar(self)
+                }
+
+                var lastWindow = NSApp.windows.first(where: {win in
+                    return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
+                })
+
+                NSApp.windows.forEach({win in
+                    let className = NSStringFromClass(type(of: win))
+                    if win != firstWindow && className == "SwiftUI.SwiftUIWindow" && win.tabbedWindows?.count == nil {
+                        print("adding window", win)
+
+                        group.addTabbedWindow(win, ordered: .above)
+                    }
+                })
+
+                if let last = lastWindow {
+                    last.makeKeyAndOrderFront(nil)
+                }
+                tab.load()
+
+            }
         })
     }
     
@@ -132,6 +191,10 @@ struct ContentView: View {
     
     func back() {
         tab.back()
+    }
+    
+    func getCurrentWindows() -> [NSWindow] {
+        return NSApp.windows.filter{ NSStringFromClass(type(of: $0)) == "SwiftUI.SwiftUIWindow" }
     }
 }
 

@@ -9,20 +9,12 @@ import SwiftUI
 
 struct CommandsView: View {
     @Environment(\.openURL) var openURL
+    @EnvironmentObject var actions: Actions
     var body: some View {
         Button("New Tab") { openURL(URL(string: "gemini://about")!) }.keyboardShortcut("t")
         Divider()
         Button("Reload") {
-            guard let firstWindow = NSApp.windows.first(where: { win in
-                return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
-            }) else { return }
-
-            //firstWindow.makeKeyAndOrderFront(nil)
-            var group = firstWindow
-            if let g = firstWindow.tabGroup?.selectedWindow {
-                group = g
-            }
-            
+            actions.reload += 1
         }.keyboardShortcut("r")
 
     }
