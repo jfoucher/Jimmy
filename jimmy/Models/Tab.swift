@@ -14,6 +14,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     var certs: IgnoredCertificates
     @Published var url: URL
     @Published var content: [LineView]
+    @Published var textContent: Text
     @Published var id: UUID
     @Published var loading: Bool = false
     @Published var history: [URL]
@@ -31,6 +32,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.history = []
         self.client = Client(host: "localhost", port: 1965, validateCert: true)
         self.certs = IgnoredCertificates()
+        self.textContent = Text("")
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -153,7 +155,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
-                    self.content = parsedMessage.parsed
+                    //self.content = parsedMessage.parsed
+                    self.textContent = parsedMessage.attrStr
                     // Add to history
                     self.history.append(self.url)
                 } else if (30...39).contains(parsedMessage.header.code) {

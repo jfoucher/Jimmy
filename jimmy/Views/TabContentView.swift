@@ -22,15 +22,24 @@ struct TabContentView: View {
             ZStack(alignment: .bottomLeading) {
                 HStack {
                     ScrollView {
-                        ForEach(tab.content, id: \.self) { view in
-                            view
-                                .frame(maxWidth: 800, alignment: .leading)
-                                .id(view.id)
-                        }
-                        .padding(48)
-                        .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+//                        if (tab.content.count > 0) {
+//                            ForEach(tab.content, id: \.self) { view in
+//                                view
+//                                    .textSelection(.enabled)
+//                                    .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
+//                                    .id(view.id)
+//                            }
+//                            .padding(48)
+//                            .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+//                        } else {
+                        HStack {
+                        tab.textContent
+                            .textSelection(.enabled)
+                            .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
+                        }.frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+//                        }
                     }
-                    .textSelection(.enabled)
+                    
                     .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                     .background(Color("background"))
                 }

@@ -12,6 +12,7 @@
 		AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC027C1615700FB9503 /* Bookmark.swift */; };
 		AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC227C1761800FB9503 /* BookmarkView.swift */; };
 		AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC427C191D100FB9503 /* LinkContextMenu.swift */; };
+		AB15E4D427C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB15E4D327C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf */; };
 		AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639B27BE3D3E004F93E0 /* TabList.swift */; };
 		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
 		AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639F27BE64AA004F93E0 /* ContentParser.swift */; };
@@ -42,6 +43,7 @@
 		AB042AC227C1761800FB9503 /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		AB042AC427C191D100FB9503 /* LinkContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContextMenu.swift; sourceTree = "<group>"; };
 		AB15E4D227C7DE4800B36174 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AB15E4D327C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceCodePro-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		AB32639B27BE3D3E004F93E0 /* TabList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabList.swift; sourceTree = "<group>"; };
 		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		AB32639F27BE64AA004F93E0 /* ContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentParser.swift; sourceTree = "<group>"; };
@@ -82,6 +84,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB15E4D527C81A6D00B36174 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AB15E4D327C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		ABA46DE227C3D23500C3DC41 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,6 +162,7 @@
 		ABE3E17A27BDADBE00418606 /* jimmy */ = {
 			isa = PBXGroup;
 			children = (
+				AB15E4D527C81A6D00B36174 /* Fonts */,
 				ABA46DE527C3D2BA00C3DC41 /* Utils */,
 				ABA46DE427C3D29D00C3DC41 /* Network */,
 				ABA46DE327C3D25400C3DC41 /* Views */,
@@ -239,6 +250,7 @@
 				AB47128327C7DD6800D21B94 /* Localizable.strings in Resources */,
 				AB47128027C7DD4000D21B94 /* InfoPlist.strings in Resources */,
 				ABE3E18027BDADBF00418606 /* Assets.xcassets in Resources */,
+				AB15E4D427C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,13 +25,13 @@ enum BlockType {
 class ContentParser {
     var parsed: [LineView] = []
     var header: Header
-
+    var attrStr: Text
     let tab: Tab
     
     init(content: Data, tab: Tab) {
         print("got response")
         print(content)
-        
+        self.attrStr = Text("")
         self.tab = tab
         self.parsed = []
         self.header = Header(line: "")
@@ -59,7 +59,10 @@ class ContentParser {
                             pre = !pre
                             
                             if !pre {
-                                self.parsed.append(LineView(data: Data(str.utf8), type: "text/pre", tab: self.tab))
+                                let pstr = Text(str).font(.system(size: 16, weight: .light, design: .monospaced))
+                                print("pre", pstr)
+                                self.attrStr = self.attrStr + pstr
+                                
                                 str = ""
                             }
                             continue
@@ -74,16 +77,16 @@ class ContentParser {
                         
                         if (blockType != nextBlockType) || blockType == .link {
                             // output previous block
+                            
+                            let pstr = Text(str).font(.system(size: 14, weight: .bold))
+                            self.attrStr = self.attrStr + pstr
                             str.removeLast()
-                            if str.starts(with: ">") {
-                                print("quote", str)
-                            }
                             self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
                             str = ""
                         }
                     }
                 } else if self.header.contentType.starts(with: "text/") {
-                    self.parsed.append(LineView(data: contentData, type: self.header.contentType, tab: self.tab))
+                    self.attrStr = Text(String(decoding: contentData, as: UTF8.self)).font(.system(size: 14, weight: .light, design: .monospaced))
                 } else {
                     // Download unknown file type
                     DispatchQueue.main.async {

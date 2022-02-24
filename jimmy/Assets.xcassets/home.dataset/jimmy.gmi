@@ -16,3 +16,10 @@ Here are some sites you can visit to start off:
 => gemini://geminispace.info/
 
 => gemini://gemini.6px.eu/ My personal capsule
+
+```
+Pos	Artist				Submission 		Score 
+1st	Anthony Jarvis			Tron Recognizer 		424 
+2nd	Klearchos Gourgourinis		Winter Solstice Tree	348 
+3rd	TLF				Amiga Word 		248 
+```
