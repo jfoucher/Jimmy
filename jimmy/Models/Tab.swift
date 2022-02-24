@@ -20,7 +20,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var status = ""
     @Published var icon = ""
     @Published var fontSize = 14.0
-
+    
     
     private var client: Client
     
@@ -67,10 +67,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         
-        
-        self.loading = true
-        self.status = "Loading " + self.url.absoluteString
-        
+        DispatchQueue.main.async {
+            self.loading = true
+            self.status = "Loading " + self.url.absoluteString
+        }
         
         print("certs.items", certs.items)
         
@@ -92,51 +92,57 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func cb(error: NWError?, message: Data?) {
-
-        self.loading = false
-        self.status = ""
-        if let error = error {
-            self.history.append(self.url)
-            if error == NWError.tls(-9808) {
-                DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            self.loading = false
+            self.status = ""
+            self.content = []
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            
+            if let error = error {
+                self.history.append(self.url)
+                if error == NWError.tls(-9808) {
+                    
                     self.content = [
                         LineView(data: Data("# Invalid certificate".utf8), type: "text/gemini", tab: self),
-
+                        
                         LineView(data: Data(("### 😔 The SSL certificate for " + Emojis(self.url.host ?? "").emoji + " " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self),
-
+                        
                         LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
                     ]
-                }
-            } else if error == NWError.dns(-65554) {
-                DispatchQueue.main.async {
+                    
+                } else if error == NWError.dns(-65554) {
+                    
                     self.content = [
                         LineView(data: Data("# Could not connect".utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(("### Please make sure your internet conection is working properly.").utf8), type: "text/gemini", tab: self)
                     ]
-                }
-            } else {
-                DispatchQueue.main.async {
+                    
+                } else {
+                    
                     self.content = [
                         LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
                     ]
+                    
                 }
-            }
-
-        } else if let message = message {
-            // Parse the request response
-            let parsedMessage = ContentParser(content: message, tab: self)
-//            print(parsedMessage.header.code)
-//            print(parsedMessage.header.contentType)
-            if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
-                // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
-                return
-            }
-//            DispatchQueue.main.async {
-//                // Clear the contents now so that everything refreshes when we load new content
-//                self.content = []
-//            }
-            DispatchQueue.main.async {
+                
+            } else if let message = message {
+                // Parse the request response
+                let parsedMessage = ContentParser(content: message, tab: self)
+                //            print(parsedMessage.header.code)
+                //            print(parsedMessage.header.contentType)
+                if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
+                    // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
+                    // Add to history
+                    self.history.append(self.url)
+                    return
+                }
+                //            DispatchQueue.main.async {
+                //                // Clear the contents now so that everything refreshes when we load new content
+                //                self.content = []
+                //            }
+                
                 if (10...19).contains(parsedMessage.header.code) {
                     // Input, show answer input box
                     self.content = [
@@ -159,7 +165,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else if parsedMessage.header.code == 51 {
                     // Server Error
                     self.history.append(self.url)
-
+                    
                     var msg = "### Sorry, the page " + self.url.path + " was not found"
                     if let host = self.url.host {
                         msg = "### Sorry, the page " + self.url.path + " was not found on " + host

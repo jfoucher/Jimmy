@@ -49,7 +49,7 @@ struct LinkView: View {
     
     var body: some View {
         Button (action: ac) {
-            Image(systemName: "arrow.right")
+            Image(systemName: (self.link.scheme?.starts(with: "http") ?? false) ? "network" : "arrow.right")
             Text(label)
         }
 
@@ -77,9 +77,10 @@ struct LinkView: View {
         })
     }
     
-    func ac(){
+    func ac() {
         if (link.scheme == "http" || link.scheme == "https") {
             openURL(link)
+            return
         }
         // if link starts with // assume gemini
         tab.url = self.link

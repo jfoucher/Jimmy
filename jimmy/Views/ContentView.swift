@@ -12,21 +12,18 @@ struct ContentView: View {
     @EnvironmentObject var bookmarks: Bookmarks
     @State var showPopover = false
     @State var searchText = ""
+    @State private var rotation = 0.0
 
+    let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
     var body: some View {
 
         VStack {
-            //Text(tab.id.uuidString)
-//            ZStack {
-//                Color("background").edgesIgnoringSafeArea(.all)
-//                ForEach(tabList.tabs) { tab in
-                  TabContentView(tab: tab)
-//                }
-//            }
+            TabContentView(tab: tab)
         }
         
         .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))
+        
         
         
         .frame(maxWidth: .infinity, minHeight: 200)
@@ -59,19 +56,32 @@ struct ContentView: View {
             .buttonStyle(.borderless)
         }
         ToolbarItemGroup(placement: .principal) {
-            TextField("example.org", text: url)
-                .onSubmit {
-                    go()
+            ZStack(alignment: .trailing) {
+                TextField("example.org", text: url)
+                    .onSubmit {
+                        go()
+                    }
+                    .frame(idealWidth: 600, maxWidth: .infinity)
+                    .background(Color("urlbackground"))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                if (tab.loading) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundColor(Color.gray)
+                    .rotationEffect(Angle(degrees: rotation))
+                        .onReceive(timer) { time in
+                            $rotation.wrappedValue += 1.0
+                        }
+                        .padding(.trailing, 12)
+                        
                 }
-
-                .padding(.trailing, 6)
-                .padding(.bottom, 2)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(idealWidth: 600, maxWidth: .infinity)
+            }
             
+            
+
             Button(action: go) {
                 Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))
-                    .imageScale(.large).padding(.leading, 8)
+                    .imageScale(.large).padding(.leading, 0)
             }
             .buttonStyle(.borderless)
             .disabled(url.wrappedValue.isEmpty)

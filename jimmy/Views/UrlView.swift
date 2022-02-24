@@ -15,7 +15,8 @@ struct UrlView: View {
     @EnvironmentObject private var tab: Tab
     @State var showPopover = false
     
-    
+
+
     
     
     var body: some View {

@@ -60,6 +60,35 @@ struct LineView: View, Hashable {
                     .font(.system(size: tab.fontSize * 2, weight: .heavy, design: .serif))
                     .padding(.bottom, tab.fontSize)
                     .padding(.top, tab.fontSize)
+            } else if self.line.starts(with: ">") {
+                
+                HStack(alignment: .top) {
+                    Image(systemName: "quote.opening")
+                        .resizable()
+                        .imageScale(.large)
+                        .foregroundColor(Color.gray)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .padding(.top, tab.fontSize * 3)
+                        .padding(.leading, 24)
+                    Text(line.replacingOccurrences(of: ">", with: "").trimmingCharacters(in: .whitespaces))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .font(.system(size: tab.fontSize * 1.4, weight: .thin, design: .serif).italic())
+                        .padding(.bottom, tab.fontSize * 3)
+                        .padding(.top, tab.fontSize * 3)
+                        .padding(.leading, 12)
+                        .padding(.trailing, 24)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Image(systemName: "quote.closing")
+                        .resizable()
+                        .imageScale(.large)
+                        .foregroundColor(Color.gray)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .padding(.top, tab.fontSize * 3)
+                        .padding(.trailing, 24)
+                }
+                
             } else {
                 Text(line)
                     .fixedSize(horizontal: false, vertical: true)
@@ -70,10 +99,14 @@ struct LineView: View, Hashable {
             }
         } else if type.starts(with: "text/pre") {
             Text(line)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 24)
-                .font(.system(size: tab.fontSize * 1.1, weight: .light).monospaced())
+                .baselineOffset(0)
+                .lineSpacing(-10)
+                .font(.system(size: tab.fontSize * 1.1, weight: .light, design: .default).monospaced())
+                .lineLimit(Int(INT_MAX))
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 0)
+
         } else if type.starts(with: "text/ignore-cert") {
             Button(action: {
                 if let host = tab.url.host {
@@ -118,7 +151,7 @@ struct LineView: View, Hashable {
     }
     
     func send () {
-        if let url = URL(string: tab.url.absoluteString + "?" + answer) {
+        if let url = URL(string: tab.url.absoluteString + "?" + (answer.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")) {
             tab.url = url
             tab.load()
         }

@@ -17,6 +17,7 @@ enum BlockType {
     case title1
     case title2
     case title3
+    case quote
     case end
 }
 
@@ -74,6 +75,9 @@ class ContentParser {
                         if (blockType != nextBlockType) || blockType == .link {
                             // output previous block
                             str.removeLast()
+                            if str.starts(with: ">") {
+                                print("quote", str)
+                            }
                             self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
                             str = ""
                         }
@@ -121,6 +125,8 @@ class ContentParser {
             return .link
         } else if line.starts(with: "* ") {
             return .list
+        } else if line.starts(with: ">") {
+            return .quote
         } else if line.starts(with: "```") {
            return .pre
         } else {
