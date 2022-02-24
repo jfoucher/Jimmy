@@ -44,6 +44,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     func stop() {
         self.client.stop()
         self.loading = false;
+        self.status = ""
     }
     
     func load() {
@@ -66,10 +67,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
         }
         
         
-        DispatchQueue.main.async {
-            self.loading = true
-            self.status = "Loading " + self.url.absoluteString
-        }
+        
+        self.loading = true
+        self.status = "Loading " + self.url.absoluteString
+        
         
         print("certs.items", certs.items)
         
@@ -91,69 +92,51 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func cb(error: NWError?, message: Data?) {
-        DispatchQueue.main.async {
-            self.content = []
-        }
+
+        self.loading = false
+        self.status = ""
         if let error = error {
             self.history.append(self.url)
             if error == NWError.tls(-9808) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                DispatchQueue.main.async {
                     self.content = [
                         LineView(data: Data("# Invalid certificate".utf8), type: "text/gemini", tab: self),
-                        
+
                         LineView(data: Data(("### 😔 The SSL certificate for " + Emojis(self.url.host ?? "").emoji + " " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self),
-                        
+
                         LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
                     ]
-                    
-                    self.loading = false
-                    self.status = ""
                 }
             } else if error == NWError.dns(-65554) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                DispatchQueue.main.async {
                     self.content = [
                         LineView(data: Data("# Could not connect".utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(("### Please make sure your internet conection is working properly.").utf8), type: "text/gemini", tab: self)
                     ]
-                    
-                    self.loading = false
-                    self.status = ""
                 }
             } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                DispatchQueue.main.async {
                     self.content = [
                         LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
                         LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
                     ]
-                    
-                    self.loading = false
-                    self.status = ""
                 }
             }
 
-        }
-        
-        if let message = message {
+        } else if let message = message {
             // Parse the request response
             let parsedMessage = ContentParser(content: message, tab: self)
-            print(parsedMessage.header.code)
-            print(parsedMessage.header.contentType)
+//            print(parsedMessage.header.code)
+//            print(parsedMessage.header.contentType)
             if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
                 // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
-                self.loading = false
-                self.status = ""
                 return
             }
+//            DispatchQueue.main.async {
+//                // Clear the contents now so that everything refreshes when we load new content
+//                self.content = []
+//            }
             DispatchQueue.main.async {
-                // Clear the contents now so that everything refreshes when we load new content
-                self.content = []
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                // Clear status bar
-                self.status = ""
-                // stop loading indicator
-                self.loading = false
-                
                 if (10...19).contains(parsedMessage.header.code) {
                     // Input, show answer input box
                     self.content = [
