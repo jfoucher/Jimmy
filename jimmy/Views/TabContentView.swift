@@ -10,7 +10,7 @@ import SwiftUI
 struct TabContentView: View {
     @EnvironmentObject private var tabList: TabList
     @ObservedObject var tab: Tab
-    
+    @State var text = ""
     
     var body: some View {
         tabView
@@ -22,22 +22,41 @@ struct TabContentView: View {
             ZStack(alignment: .bottomLeading) {
                 HStack {
                     ScrollView {
-//                        if (tab.content.count > 0) {
-//                            ForEach(tab.content, id: \.self) { view in
-//                                view
-//                                    .textSelection(.enabled)
-//                                    .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
-//                                    .id(view.id)
-//                            }
-//                            .padding(48)
-//                            .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
-//                        } else {
-                        HStack {
-                        tab.textContent
-                            .textSelection(.enabled)
-                            .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
-                        }.frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
-//                        }
+                        if (tab.content.count > 0) {
+                            ForEach(tab.content, id: \.self) { view in
+                                view
+                                    .textSelection(.enabled)
+                                    .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
+                                    .id(view.id)
+                            }
+                            .padding(48)
+                            .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+                        } else {
+                            HStack {
+                                AttributedText(
+                                    tab.textContent,
+                                    onOpenLink: { url in
+                                        print("open url", url)
+                                        tab.url = url
+                                        tab.load()
+                                    }
+                            )
+                                    
+                                .textSelection(.enabled)
+                                .searchable(text: $text)
+                                .onSubmit(of: .search) {
+                                    print("searching for", text)
+                                }
+                                .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
+                                .padding(.top, 24)
+                                .padding(.bottom, 24)
+                                
+                                
+                            }
+
+                            
+                            .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+                        }
                     }
                     
                     .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
@@ -45,7 +64,9 @@ struct TabContentView: View {
                 }
                 status
             }
-            .background(Color.clear)
+            .onTapGesture(count: 1, perform: {
+                print("click")
+            })
 //        }
     }
     

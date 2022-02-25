@@ -14,7 +14,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     var certs: IgnoredCertificates
     @Published var url: URL
     @Published var content: [LineView]
-    @Published var textContent: Text
+    @Published var textContent: NSAttributedString
     @Published var id: UUID
     @Published var loading: Bool = false
     @Published var history: [URL]
@@ -32,7 +32,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.history = []
         self.client = Client(host: "localhost", port: 1965, validateCert: true)
         self.certs = IgnoredCertificates()
-        self.textContent = Text("")
+        self.textContent = NSAttributedString(string: "")
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -74,8 +74,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
             self.status = "Loading " + self.url.absoluteString
         }
         
-        print("certs.items", certs.items)
-        
         self.client = Client(host: host, port: 1965, validateCert: !certs.items.contains(url.host ?? ""))
         self.client.start()
         self.client.dataReceivedCallback = cb(error:message:)
@@ -98,6 +96,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             self.loading = false
             self.status = ""
             self.content = []
+            self.textContent = NSAttributedString(string: "")
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             
@@ -140,10 +139,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                     return
                 }
-                //            DispatchQueue.main.async {
-                //                // Clear the contents now so that everything refreshes when we load new content
-                //                self.content = []
-                //            }
                 
                 if (10...19).contains(parsedMessage.header.code) {
                     // Input, show answer input box
