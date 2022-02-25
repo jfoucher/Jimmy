@@ -12,6 +12,7 @@ struct ContentView: View {
     @StateObject var tab: Tab = Tab(url: URL(string: "gemini://about")!)
     @EnvironmentObject var bookmarks: Bookmarks
     @EnvironmentObject var actions: Actions
+    @EnvironmentObject var history: History
     @State var showPopover = false
     @State private var old = 0
     @State private var rotation = 0.0
@@ -104,6 +105,7 @@ struct ContentView: View {
           get: { tab.url.absoluteString },
           set: {
               tab.url = URL(string: $0) ?? URL(string: "gemini://about")!
+              self.urlChanged($0)
           }
         )
         
@@ -161,6 +163,13 @@ struct ContentView: View {
                 BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
             }
         })
+    }
+    
+    func urlChanged(_ url: String) {
+        guard let url = URL(string: url) else { return }
+        if history.items.contains(url) {
+            print(url)
+        }
     }
     
     func showBookmarks() {

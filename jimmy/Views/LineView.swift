@@ -35,8 +35,8 @@ struct LineView: View, Hashable {
         if type.starts(with: "text/gemini") {
             if self.line.starts(with: "=>") {
                 LinkView(line: self.line, tab: tab).frame(alignment: .leading).padding(.leading, 12)
-            } else if line.starts(with: "* ") {
-                Text(line.replacingOccurrences(of: "* ", with: "• "))
+            } else if line.starts(with: "*") {
+                Text(line.replacingOccurrences(of: "*", with: "•"))
                     .fixedSize(horizontal: false, vertical: true)
                     .font(.system(size: tab.fontSize))
                     .lineSpacing(tab.fontSize * 0.5)
@@ -51,12 +51,17 @@ struct LineView: View, Hashable {
                     .padding(.bottom, 5)
             } else if self.line.starts(with: "##") {
                 Text(line.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
                     .font(.system(size: tab.fontSize*1.6, weight: .thin, design: .serif).italic())
+                    .frame(idealWidth: .greatestFiniteMagnitude, maxWidth: .infinity, alignment: .leading)
+                    
+                    .background(Color.gray)
                     .padding(.bottom, 5)
             } else if self.line.starts(with: "#") {
                 Text(line.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines))
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    .frame(idealWidth: .greatestFiniteMagnitude, maxWidth: .infinity, alignment: .center)
+                    
                     .font(.system(size: tab.fontSize * 2, weight: .heavy, design: .serif))
                     .padding(.bottom, tab.fontSize)
                     .padding(.top, tab.fontSize)

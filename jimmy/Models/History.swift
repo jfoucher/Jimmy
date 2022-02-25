@@ -28,6 +28,11 @@ class History: ObservableObject {
         }
     }
     
+    func addItem(_ url: URL) {
+        self.items.append(url)
+        self.save()
+    }
+    
     func remove(item: URL) {
         self.items = self.items.filter({$0.absoluteString != item.absoluteString})
         self.save();

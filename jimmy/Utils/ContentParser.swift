@@ -72,7 +72,7 @@ class ContentParser {
                         
                         let nextBlockType: BlockType = index+1 < lines.count ? getBlockType(String(lines[index+1])) : .end
                         
-                        if (blockType != nextBlockType) || blockType == .link {
+                        if (blockType != nextBlockType) || blockType == .link || blockType == .title1 || blockType == .title2 || blockType == .title3 {
                             // output previous block
                             str.removeLast()
                             if str.starts(with: ">") {
@@ -123,7 +123,7 @@ class ContentParser {
             return .title1
         } else if line.starts(with: "=>") {
             return .link
-        } else if line.starts(with: "* ") {
+        } else if line.starts(with: "*") {
             return .list
         } else if line.starts(with: ">") {
             return .quote

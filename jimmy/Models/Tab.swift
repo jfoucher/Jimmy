@@ -20,6 +20,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var status = ""
     @Published var icon = ""
     @Published var fontSize = 14.0
+    private var globalHistory: History = History()
     
     
     private var client: Client
@@ -101,6 +102,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
             
             if let error = error {
                 self.history.append(self.url)
+                self.globalHistory.addItem(self.url)
+                
                 if error == NWError.tls(-9808) {
                     
                     self.content = [
@@ -136,6 +139,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
                     // Add to history
                     self.history.append(self.url)
+                    self.globalHistory.addItem(self.url)
                     return
                 }
                 //            DispatchQueue.main.async {
@@ -151,11 +155,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     ]
                     // Add to history
                     self.history.append(self.url)
+                    self.globalHistory.addItem(self.url)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
                     self.content = parsedMessage.parsed
                     // Add to history
                     self.history.append(self.url)
+                    self.globalHistory.addItem(self.url)
                 } else if (30...39).contains(parsedMessage.header.code) {
                     // Redirect
                     if let redirect = URL(string: parsedMessage.header.contentType) {
@@ -165,6 +171,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else if parsedMessage.header.code == 51 {
                     // Server Error
                     self.history.append(self.url)
+                    self.globalHistory.addItem(self.url)
                     
                     var msg = "### Sorry, the page " + self.url.path + " was not found"
                     if let host = self.url.host {
