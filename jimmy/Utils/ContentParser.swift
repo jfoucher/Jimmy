@@ -133,7 +133,7 @@ class ContentParser {
                 let pstr = NSAttributedString(string: str.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines) + "\n", attributes: attr)
                 result.append(pstr)
                 str.removeLast()
-                self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
+                //self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
                 str = ""
             }
         }

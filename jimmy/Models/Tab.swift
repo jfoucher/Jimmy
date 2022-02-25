@@ -71,7 +71,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         
         DispatchQueue.main.async {
             self.loading = true
-            self.status = "Loading " + self.url.absoluteString
+            self.status = "Loading " + self.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")
         }
         
         self.client = Client(host: host, port: 1965, validateCert: !certs.items.contains(url.host ?? ""))
@@ -150,7 +150,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
-                    //self.content = parsedMessage.parsed
+                    self.content = parsedMessage.parsed
                     self.textContent = parsedMessage.attrStr
                     // Add to history
                     self.history.append(self.url)
