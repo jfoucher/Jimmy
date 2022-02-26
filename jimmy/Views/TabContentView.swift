@@ -39,8 +39,18 @@ struct TabContentView: View {
                                         print("open url", url)
                                         tab.url = url
                                         tab.load()
+                                    },
+                                    onHoverLink: { url, hovered in
+                                        let loadingStatus = tab.loading ? "Loading " + tab.url.absoluteString : ""
+                                        if let u = url {
+                                            tab.status = hovered ? u.absoluteString.replacingOccurrences(of: "gemini://", with: "") : loadingStatus
+                                        }
+                                        if hovered == false {
+                                            tab.status = loadingStatus
+                                        }
                                     }
                             )
+
                                     
                                 .textSelection(.enabled)
                                 .searchable(text: $text)

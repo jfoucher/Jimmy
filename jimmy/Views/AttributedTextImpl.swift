@@ -24,6 +24,7 @@
 import Foundation
 
 import SwiftUI
+import Cocoa
 
 final class TextSizeViewModel: ObservableObject {
   @Published var textSize: CGSize?
@@ -31,6 +32,8 @@ final class TextSizeViewModel: ObservableObject {
   func didUpdateTextView(_ textView: AttributedTextImpl.TextView) {
     textSize = textView.intrinsicContentSize
   }
+    
+
 }
 
 struct AttributedTextImpl {
@@ -38,13 +41,16 @@ struct AttributedTextImpl {
     var maxLayoutWidth: CGFloat
     var textSizeViewModel: TextSizeViewModel
     var onOpenLink: ((URL) -> Void)?
-    var onHoverLink: ((URL) -> Void)?
+    var onHoverLink: ((URL?, Bool) -> Void)?
+    
+
 }
 
 extension AttributedTextImpl: NSViewRepresentable {
     func makeNSView(context: Context) -> TextView {
         let nsView = TextView(frame: .zero)
-        
+
+        nsView.onLinkHover = self.onHoverLink
         nsView.drawsBackground = false
         nsView.textContainerInset = .zero
         nsView.isEditable = false
@@ -52,8 +58,11 @@ extension AttributedTextImpl: NSViewRepresentable {
         nsView.textContainer?.lineFragmentPadding = 0
         // we are setting the container's width manually
         nsView.textContainer?.widthTracksTextView = false
-        nsView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: NSColor.red]
-        nsView.displaysLinkToolTips = true
+        nsView.linkTextAttributes = [
+            NSAttributedString.Key.foregroundColor: NSColor.controlAccentColor
+        ]
+
+        nsView.displaysLinkToolTips = false
         nsView.delegate = context.coordinator
         
         return nsView
@@ -62,6 +71,7 @@ extension AttributedTextImpl: NSViewRepresentable {
     func updateNSView(_ nsView: TextView, context: Context) {
         nsView.textStorage?.setAttributedString(attributedText)
         nsView.maxLayoutWidth = maxLayoutWidth
+        nsView.onLinkHover = self.onHoverLink
         
         nsView.textContainer?.maximumNumberOfLines = context.environment.lineLimit ?? 0
         nsView.textContainer?.lineBreakMode = NSLineBreakMode(
@@ -77,6 +87,7 @@ extension AttributedTextImpl: NSViewRepresentable {
 }
 
 extension AttributedTextImpl {
+
     final class TextView: NSTextView {
         var maxLayoutWidth: CGFloat {
             get { textContainer?.containerSize.width ?? 0 }
@@ -91,6 +102,8 @@ extension AttributedTextImpl {
 //            print("link clicked")
 //        }
         
+        var onLinkHover: ((URL?, Bool) -> Void)? = nil
+
 
         override func mouseMoved(with event: NSEvent) {
             //super.mouseMoved(with: event)
@@ -98,13 +111,47 @@ extension AttributedTextImpl {
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return }
             
             let char = self.characterIndex(for: point)
+
+            guard let storage = self.textStorage else { return }
+
             
-            let range = NSRange(location: char-1, length: 1)
-            if let attr = self.textStorage?.attribute(.link, at: char-1, longestEffectiveRange: nil, in: range) {
+            let wholeRange = NSRange(self.string.startIndex..., in: self.string)
+            let attributes = storage.attributes(at: char, effectiveRange: nil)
+            
+            
+
+            if let url = attributes[.link] as? URL  {
                 self.addCursorRect(self.bounds, cursor: .pointingHand)
-                print(attr)
+                storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
+                    if let u = value as? URL {
+                        
+                        if url == u {
+                            storage.addAttributes([
+                                .underlineStyle: 0x1,
+                                .underlineColor: NSColor.controlAccentColor
+                            ], range: range)
+
+                            if let onlinkHover = onLinkHover {
+                                onlinkHover(u, true)
+                            }
+                        } else {
+                            storage.removeAttribute(.underlineStyle, range: range)
+                            storage.removeAttribute(.underlineColor, range: range)
+                        }
+                    }
+                }
+                
             } else {
+                // not a link
                 self.addCursorRect(self.bounds, cursor: .iBeam)
+                storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
+                        storage.removeAttribute(.underlineStyle, range: range)
+                        storage.removeAttribute(.underlineColor, range: range)
+                    if let onlinkHover = onLinkHover {
+//                        print("unhover")
+                        onlinkHover(nil, false)
+                    }
+                }
             }
         }
         
@@ -112,6 +159,34 @@ extension AttributedTextImpl {
 //            
 //        }
 
+        override func menu(for event: NSEvent) -> NSMenu? {
+            print("event", event)
+            let menu = super.menu(for: event)
+            guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return menu }
+            
+            let char = self.characterIndex(for: point)
+
+            guard let storage = self.textStorage else { return menu }
+            
+            let attributes = storage.attributes(at: char, effectiveRange: nil)
+            
+
+            if let url = attributes[.link] as? URL  {
+                let item = CustomMenuItem(title: "Open Link in New Tab", action: #selector(self.newTab), keyEquivalent: "k")
+                
+                item.url = url
+                
+                menu?.insertItem(item, at: 1)
+            }
+                
+            return menu
+        }
+        @objc func newTab(_ sender: CustomMenuItem) {
+            print("nestab yesssss", sender.target, sender.url)
+            if let url = sender.url {
+                NSWorkspace.shared.open(url)
+            }
+        }
         override var intrinsicContentSize: NSSize {
             guard maxLayoutWidth > 0,
                   let textContainer = self.textContainer,
@@ -123,13 +198,16 @@ extension AttributedTextImpl {
             layoutManager.ensureLayout(for: textContainer)
             return layoutManager.usedRect(for: textContainer).size
         }
+        
+        
+        
     }
     
     final class Coordinator: NSObject, NSTextViewDelegate {
         var openLink: ((URL) -> Void)?
-        var hoverLink: ((Link) -> Void)?
         
         func textView(_: NSTextView, clickedOnLink link: Any, at _: Int) -> Bool {
+            print("something in the view")
             guard let openLink = self.openLink,
                   let url = (link as? URL) ?? (link as? String).flatMap(URL.init(string:))
             else {
@@ -139,9 +217,15 @@ extension AttributedTextImpl {
             openLink(url)
             return true
         }
+    
     }
+    
+
 }
 
+class CustomMenuItem: NSMenuItem {
+  var url: URL?
+}
 
 extension NSLineBreakMode {
   init(truncationMode: Text.TruncationMode) {

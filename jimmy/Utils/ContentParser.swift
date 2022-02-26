@@ -97,7 +97,6 @@ class ContentParser {
                 pre = !pre
                 
                 if !pre {
-                    print ("PRE___________________ ", str)
                     let attr = getAttributesForType(.pre, link: nil)
                     let pstr = NSAttributedString(string: "\n" + str + "\n", attributes: attr)
 
@@ -108,7 +107,7 @@ class ContentParser {
                 continue
             }
 
-            str += line + "\n"
+            str += getLineForType(String(line), type: blockType) + "\n"
             if pre {
                 continue
             }
@@ -119,20 +118,47 @@ class ContentParser {
             if (blockType != nextBlockType) || blockType == .link || blockType == .title1 || blockType == .title2 || blockType == .title3 {
                 // output previous block
                 
-                let font = NSFont.systemFont(ofSize: tab.fontSize)
+
                 var url: URL? = nil
+                
+                
+                let image: NSMutableAttributedString = NSMutableAttributedString(string: "")
+                if blockType == .quote {
+                    str = "\n" + str
+                }
                 if blockType == .link {
+                    // create our NSTextAttachment
+                    let image1Attachment = NSTextAttachment()
+                    image1Attachment.image = NSImage(systemSymbolName: "arrow.right", accessibilityDescription: "")
+
+                    // wrap the attachment in its own attributed string so we can append it
+                    let image1String = NSMutableAttributedString(attachment: image1Attachment)
+                    let pst = NSMutableParagraphStyle()
+                    pst.alignment = .left
+                    pst.lineSpacing = 0
+                    pst.paragraphSpacing = tab.fontSize / 2
+                    pst.paragraphSpacingBefore = tab.fontSize / 2
+                    
+                    image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor, range: NSRange(location: 0, length: 1))
+                    image1String.addAttribute(.font, value: NSFont.systemFont(ofSize: tab.fontSize), range: NSRange(location: 0, length: 1))
+                    image1String.addAttribute(.paragraphStyle, value: pst, range: NSRange(location: 0, length: 1))
+
+                    // add the NSTextAttachment wrapper to our full string, then add some more text.
+                    image.append(image1String)
+                    image.append(NSAttributedString(string: " "))
+                    
                     let link = parseLink(str)
                     if let label = link.label {
-                        str = label
+                        str = label + "\n"
+                    } else {
+                        str = link.original + "\n"
                     }
                     url = link.link
                 }
                 let attr = getAttributesForType(blockType, link: url)
-                
-                let pstr = NSAttributedString(string: str.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines) + "\n", attributes: attr)
+                image.append(NSAttributedString(string: str.trimmingCharacters(in: .whitespaces), attributes: attr))
+                let pstr = image
                 result.append(pstr)
-                str.removeLast()
                 //self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
                 str = ""
             }
@@ -161,15 +187,46 @@ class ContentParser {
         }
     }
     
+    func getLineForType(_ str: String, type: BlockType) -> String {
+        switch type {
+        case .text, .pre:
+            return str
+            
+        case .list:
+            return str.replacingOccurrences(of: "*", with: "•", options: [], range: .init(NSRange(location: 0, length: 1), in: str)).trimmingCharacters(in: .whitespaces)
+        
+        case .link:
+            return str.replacingOccurrences(of: "=>", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
+            
+        case .title1:
+            return str.replacingOccurrences(of: "#", with: "", options: [], range: .init(NSRange(location: 0, length: 1), in: str)).trimmingCharacters(in: .whitespaces)
+        case .title2:
+            return str.replacingOccurrences(of: "#", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
+        case .title3:
+            return str.replacingOccurrences(of: "#", with: "", options: [], range: .init(NSRange(location: 0, length: 3), in: str)).trimmingCharacters(in: .whitespaces)
+        case .quote:
+            return str.replacingOccurrences(of: ">", with: "", options: [], range: .init(NSRange(location: 0, length: 1), in: str)).trimmingCharacters(in: .whitespaces)
+        case .end:
+            return str
+        }
+    }
+    
     func getAttributesForType(_ type: BlockType, link: URL?) -> [NSAttributedString.Key: Any] {
         let fontManager: NSFontManager = NSFontManager.shared
         
         switch type {
         case .text:
+            let pst = NSMutableParagraphStyle()
+            pst.alignment = .left
+            pst.paragraphSpacing = tab.fontSize
+            pst.lineSpacing = tab.fontSize / 3
+            pst.paragraphSpacingBefore = tab.fontSize
+                
             let font = NSFont.systemFont(ofSize: tab.fontSize)
             return [
                 .font: font,
-                .foregroundColor: NSColor.white
+                .foregroundColor: NSColor.white,
+                .paragraphStyle: pst
             ]
         case .pre:
             let pst = NSMutableParagraphStyle()
@@ -182,19 +239,21 @@ class ContentParser {
             pst.tabStops = tabs
             return [
                 .font: NSFont.monospacedSystemFont(ofSize: tab.fontSize, weight: NSFont.Weight.light),
-                .foregroundColor: NSColor.white,
+                .foregroundColor: NSColor.textColor,
                 .paragraphStyle: pst
             ]
         case .list:
             let font = NSFont.systemFont(ofSize: tab.fontSize)
             return [
                 .font: font,
-                .foregroundColor: NSColor.white
+                .foregroundColor: NSColor.textColor
             ]
         case .link:
             let pst = NSMutableParagraphStyle()
             pst.alignment = .left
-            pst.paragraphSpacingBefore = tab.fontSize
+            pst.lineSpacing = tab.fontSize * 2
+            pst.paragraphSpacing = tab.fontSize * 1.4
+            pst.paragraphSpacingBefore = tab.fontSize * 3
             let font = NSFont.systemFont(ofSize: tab.fontSize)
 
             return [
@@ -202,50 +261,57 @@ class ContentParser {
                 .link: link,
                 .foregroundColor: NSColor.systemGray,
                 .cursor: NSCursor.pointingHand,
-                .paragraphStyle: pst,
+                .paragraphStyle: pst
             ]
         case .title1:
             let pst = NSMutableParagraphStyle()
             pst.alignment = .center
             pst.lineSpacing = 0
-            pst.paragraphSpacing = tab.fontSize * 1.4
+            pst.paragraphSpacing = tab.fontSize
             pst.paragraphSpacingBefore = tab.fontSize * 3
             let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.unitalicFontMask, weight: 400, size: tab.fontSize * 2) ?? NSFont.systemFont(ofSize: tab.fontSize * 2, weight: .heavy)
             
             return [
                 .font: italic,
                 .paragraphStyle: pst,
-                .foregroundColor: NSColor.white
+                .foregroundColor: NSColor.textColor
             ]
         case .title2:
             let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.italicFontMask, weight: 0, size: tab.fontSize * 1.5) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.5, weight: .thin)
             let pst = NSMutableParagraphStyle()
             pst.alignment = .left
-            pst.paragraphSpacing = tab.fontSize * 0.8
+            pst.paragraphSpacing = 0
             pst.paragraphSpacingBefore = tab.fontSize * 1.2
 
             return [
                 .font: italic,
                 .paragraphStyle: pst,
-                .foregroundColor: NSColor.white
+                .foregroundColor: NSColor.textColor
             ]
         case .title3:
             let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFont", traits: NSFontTraitMask.unitalicFontMask, weight: 0, size: tab.fontSize * 1.3) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.3, weight: .thin)
             let pst = NSMutableParagraphStyle()
             pst.alignment = .left
-            pst.paragraphSpacing = tab.fontSize * 0.8
+            pst.paragraphSpacing = 0
             pst.paragraphSpacingBefore = tab.fontSize * 1.2
 
             return [
                 .font: italic,
                 .paragraphStyle: pst,
-                .foregroundColor: NSColor.white
+                .foregroundColor: NSColor.textColor
             ]
         case .quote:
-            let font = NSFont.systemFont(ofSize: tab.fontSize)
+            let pst = NSMutableParagraphStyle()
+            pst.alignment = .left
+            pst.lineSpacing = tab.fontSize / 3
+            pst.headIndent = tab.fontSize * 4
+            pst.firstLineHeadIndent = tab.fontSize * 6
+            
+            let font: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.italicFontMask, weight: 0, size: tab.fontSize * 1.3) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.3, weight: .thin)
             return [
                 .font: font,
-                .foregroundColor: NSColor.blue
+                .foregroundColor: NSColor.textColor,
+                .paragraphStyle: pst
             ]
         case .end:
             return [:]

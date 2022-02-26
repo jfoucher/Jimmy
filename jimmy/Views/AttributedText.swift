@@ -29,14 +29,14 @@ public struct AttributedText: View {
 
   private let attributedText: NSAttributedString
   private let onOpenLink: ((URL) -> Void)?
-    private let onHoverLink: ((URL) -> Void)?
+    private let onHoverLink: ((URL?, Bool) -> Void)?
 
   /// Creates an attributed text view.
   /// - Parameters:
   ///   - attributedText: An attributed string to display.
   ///   - onOpenLink: The action to perform when the user opens a link in the text. When not specified,
   ///                 the  view opens the links using the `OpenURLAction` from the environment.
-  public init(_ attributedText: NSAttributedString, onOpenLink: ((URL) -> Void)? = nil, onHoverLink: ((URL) -> Void)? = nil) {
+  public init(_ attributedText: NSAttributedString, onOpenLink: ((URL) -> Void)? = nil, onHoverLink: ((URL?, Bool) -> Void)? = nil) {
     self.attributedText = attributedText
     self.onOpenLink = onOpenLink
       self.onHoverLink = onHoverLink
