@@ -23,7 +23,7 @@ struct TabTextView: View {
                 onHoverLink: { url, hovered in
                     let loadingStatus = tab.loading ? "Loading " + tab.url.absoluteString : ""
                     if let u = url {
-                        let newStatus = hovered ? u.absoluteString.replacingOccurrences(of: "gemini://", with: "") : loadingStatus
+                        let newStatus = hovered ? (u.absoluteString.decodedURLString ?? u.absoluteString).replacingOccurrences(of: "gemini://", with: "") : loadingStatus
                         if tab.status != newStatus {
                             tab.status = newStatus
                         }

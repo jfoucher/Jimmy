@@ -1,3 +1,9 @@
+/* page not found title. First argument is the error code */
+"%d Page Not Found" = "%d Pagina indisponible";
+
+/* SSL certificate invalid for this host. first argument is the emoji, the second the host name */
+"😔 The SSL certificate for %@%@ is invalid." = "😔 El certificado SSL de %1$@%2$@ esta invalido";
+
 /* No comment provided by engineer. */
 "Answer" = "Respuesta";
 
@@ -8,10 +14,19 @@
 "Copy link address" = "Copiar el enlace";
 
 /* No comment provided by engineer. */
+"Could not connect" = "Conneccion impossible";
+
+/* Generic server error subtitle. First param is full url */
+"Could not load %@" = "No se pudo cargar %@";
+
+/* No comment provided by engineer. */
 "example.org" = "example.org";
 
 /* No comment provided by engineer. */
 "gemini://" = "gemini://";
+
+/* No comment provided by engineer. */
+"Invalid certificate" = "Certificado invalido";
 
 /* No comment provided by engineer. */
 "New Tab" = "Nueva pestaña";
@@ -23,8 +38,20 @@
 "Open Link in New Tab" = "Abrir en nueva pestaña";
 
 /* No comment provided by engineer. */
+"Please make sure your internet conection is working properly" = "Asegurese de que su conección funcione correctamente";
+
+/* No comment provided by engineer. */
 "Reload" = "Recargar";
 
 /* No comment provided by engineer. */
 "Send" = "Enviar";
+
+/* No comment provided by engineer. */
+"Server Error" = "Error del servidor";
+
+/* Page not found error subtitle. first argument is the path, second the icon, third the host name */
+"Sorry, the page %@ was not found on %@%@" = "Lo sentimos, la pagina %1$@ no se encontró en %2$@%3$@";
+
+/* No comment provided by engineer. */
+"Unknown Error" = "Error desconocido";
 

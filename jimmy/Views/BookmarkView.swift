@@ -40,9 +40,10 @@ struct BookmarkView: View {
                     close()
                 }) {
                     Text(Emojis(bookmark.url.host ?? "").emoji)
-                    Text(bookmark.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")).frame(maxWidth: .infinity, alignment: .leading)
+                    Text((bookmark.url.absoluteString.decodedURLString ?? bookmark.url.absoluteString).replacingOccurrences(of: "gemini://", with: "")).frame(maxWidth: .infinity, alignment: .leading)
                         
                 }
+
                 .buttonStyle(.borderless)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(4).padding(.leading, 0).padding(.trailing, 8)

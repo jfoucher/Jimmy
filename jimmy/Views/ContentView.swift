@@ -36,7 +36,7 @@ struct ContentView: View {
             }
             
         }
-        .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))
+        .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host?.idnaDecoded ?? ""))
         
         .frame(maxWidth: .infinity, minHeight: 200)
         .toolbar{

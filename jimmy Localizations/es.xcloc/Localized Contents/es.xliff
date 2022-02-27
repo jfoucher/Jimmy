@@ -22,6 +22,11 @@
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="13.2.1" build-num="13C100"/>
     </header>
     <body>
+      <trans-unit id="%d Page Not Found" xml:space="preserve">
+        <source>%d Page Not Found</source>
+        <target>%d Pagina indisponible</target>
+        <note>page not found title. First argument is the error code</note>
+      </trans-unit>
       <trans-unit id="Answer" xml:space="preserve">
         <source>Answer</source>
         <target>Respuesta</target>
@@ -35,6 +40,21 @@
       <trans-unit id="Copy link address" xml:space="preserve">
         <source>Copy link address</source>
         <target>Copiar el enlace</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Could not connect" xml:space="preserve">
+        <source>Could not connect</source>
+        <target>Conneccion impossible</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Could not load %@" xml:space="preserve">
+        <source>Could not load %@</source>
+        <target>No se pudo cargar %@</target>
+        <note>Generic server error subtitle. First param is full url</note>
+      </trans-unit>
+      <trans-unit id="Invalid certificate" xml:space="preserve">
+        <source>Invalid certificate</source>
+        <target>Certificado invalido</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="New Tab" xml:space="preserve">
@@ -52,6 +72,11 @@
         <target>Abrir en nueva pestaña</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
+      <trans-unit id="Please make sure your internet conection is working properly" xml:space="preserve">
+        <source>Please make sure your internet conection is working properly</source>
+        <target>Asegurese de que su conección funcione correctamente</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
       <trans-unit id="Reload" xml:space="preserve">
         <source>Reload</source>
         <target>Recargar</target>
@@ -60,6 +85,21 @@
       <trans-unit id="Send" xml:space="preserve">
         <source>Send</source>
         <target>Enviar</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Server Error" xml:space="preserve">
+        <source>Server Error</source>
+        <target>Error del servidor</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Sorry, the page %@ was not found on %@%@" xml:space="preserve">
+        <source>Sorry, the page %1$@ was not found on %2$@%3$@</source>
+        <target>Lo sentimos, la pagina %1$@ no se encontró en %2$@%3$@</target>
+        <note>Page not found error subtitle. first argument is the path, second the icon, third the host name</note>
+      </trans-unit>
+      <trans-unit id="Unknown Error" xml:space="preserve">
+        <source>Unknown Error</source>
+        <target>Error desconocido</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="example.org" xml:space="preserve">
@@ -71,6 +111,11 @@
         <source>gemini://</source>
         <target>gemini://</target>
         <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="😔 The SSL certificate for %@%@ is invalid." xml:space="preserve">
+        <source>😔 The SSL certificate for %1$@%2$@ is invalid.</source>
+        <target>😔 El certificado SSL de %1$@%2$@ esta invalido</target>
+        <note>SSL certificate invalid for this host. first argument is the emoji, the second the host name</note>
       </trans-unit>
     </body>
   </file>
