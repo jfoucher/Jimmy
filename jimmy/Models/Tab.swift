@@ -14,12 +14,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
     var certs: IgnoredCertificates
     @Published var url: URL
     @Published var content: [LineView]
+    @Published var textContent: NSAttributedString
     @Published var id: UUID
     @Published var loading: Bool = false
     @Published var history: [URL]
     @Published var status = ""
     @Published var icon = ""
-    @Published var fontSize = 14.0
+    @Published var fontSize = 16.0
     private var globalHistory: History = History()
     
     
@@ -32,6 +33,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.history = []
         self.client = Client(host: "localhost", port: 1965, validateCert: true)
         self.certs = IgnoredCertificates()
+        self.textContent = NSAttributedString(string: "")
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -70,10 +72,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
         
         DispatchQueue.main.async {
             self.loading = true
-            self.status = "Loading " + self.url.absoluteString
+            self.status = "Loading " + self.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")
         }
-        
-        print("certs.items", certs.items)
         
         self.client = Client(host: host, port: 1965, validateCert: !certs.items.contains(url.host ?? ""))
         self.client.start()
@@ -97,6 +97,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
             self.loading = false
             self.status = ""
             self.content = []
+            self.textContent = NSAttributedString(string: "")
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             
@@ -142,10 +143,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.globalHistory.addItem(self.url)
                     return
                 }
-                //            DispatchQueue.main.async {
-                //                // Clear the contents now so that everything refreshes when we load new content
-                //                self.content = []
-                //            }
                 
                 if (10...19).contains(parsedMessage.header.code) {
                     // Input, show answer input box
@@ -159,6 +156,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
                     self.content = parsedMessage.parsed
+                    self.textContent = parsedMessage.attrStr
                     // Add to history
                     self.history.append(self.url)
                     self.globalHistory.addItem(self.url)

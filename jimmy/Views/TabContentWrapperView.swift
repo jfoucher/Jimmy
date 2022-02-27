@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct TabContentView: View {
+struct TabContentWrapperView: View {
     @EnvironmentObject private var tabList: TabList
     @ObservedObject var tab: Tab
-    
+    @State var text = ""
     
     var body: some View {
         tabView
@@ -22,21 +22,21 @@ struct TabContentView: View {
             ZStack(alignment: .bottomLeading) {
                 HStack {
                     ScrollView {
-                        ForEach(tab.content, id: \.self) { view in
-                            view
-                                .frame(maxWidth: 800, alignment: .leading)
-                                .id(view.id)
+                        if (tab.content.count > 0) {
+                            TabLineView(tab: tab)
+                        } else {
+                            TabTextView(tab: tab)
                         }
-                        .padding(48)
-                        .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
                     }
-                    .textSelection(.enabled)
+                    
                     .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                     .background(Color("background"))
                 }
                 status
             }
-            .background(Color.clear)
+            .onTapGesture(count: 1, perform: {
+                print("click")
+            })
 //        }
     }
     

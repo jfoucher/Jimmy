@@ -101,16 +101,18 @@ struct LineView: View, Hashable {
                     .lineSpacing(tab.fontSize * 0.5)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 5)
+                    .background(Color.red)
             }
         } else if type.starts(with: "text/pre") {
             Text(line)
-                .baselineOffset(0)
-                .lineSpacing(-10)
-                .font(.system(size: tab.fontSize * 1.1, weight: .light, design: .default).monospaced())
-                .lineLimit(Int(INT_MAX))
+                
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 0)
+                .font(Font.custom("Source Code Pro", size: 18))
+
+                .padding(.leading, 12)
+                .padding(.bottom, 5)
+                .background(Color.green)
+                
 
         } else if type.starts(with: "text/ignore-cert") {
             Button(action: {

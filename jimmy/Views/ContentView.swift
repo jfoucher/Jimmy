@@ -17,12 +17,14 @@ struct ContentView: View {
     @State private var old = 0
     @State private var rotation = 0.0
 
+
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+
     
     var body: some View {
 
         VStack {
-            TabContentView(tab: tab)
+            TabContentWrapperView(tab: tab)
         }
         .onReceive(Just(actions.reload)) { val in
             //tab.load()
@@ -35,8 +37,6 @@ struct ContentView: View {
             
         }
         .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))
-        
-        
         
         .frame(maxWidth: .infinity, minHeight: 200)
         .toolbar{
@@ -101,11 +101,12 @@ struct ContentView: View {
     
     @ToolbarContentBuilder
     func urlToolBarContent() -> some ToolbarContent {
+        
         let url = Binding<String>(
           get: { tab.url.absoluteString },
-          set: {
-              tab.url = URL(string: $0) ?? URL(string: "gemini://about")!
-              self.urlChanged($0)
+          set: { s in
+              tab.url = URL(string: s) ?? URL(string: "gemini://about")!
+              self.urlChanged(s)
           }
         )
         
@@ -194,6 +195,10 @@ struct ContentView: View {
         if (tab.loading) {
             tab.stop()
         } else {
+            if !tab.url.absoluteString.starts(with: "gemini://") {
+                let u = tab.url.absoluteString
+                tab.url = URL(string: "gemini://" + u) ?? URL(string: "gemini://about/")!
+            }
             tab.load()
         }
     }

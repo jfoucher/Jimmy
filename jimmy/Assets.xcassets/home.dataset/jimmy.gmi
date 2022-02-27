@@ -14,5 +14,4 @@ Here are some sites you can visit to start off:
 => gemini://medusae.space/
 => gemini://transjovian.org/
 => gemini://geminispace.info/
-
 => gemini://gemini.6px.eu/ My personal capsule
