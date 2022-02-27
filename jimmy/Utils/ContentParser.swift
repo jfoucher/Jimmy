@@ -118,47 +118,19 @@ class ContentParser {
             if (blockType != nextBlockType) || blockType == .link || blockType == .title1 || blockType == .title2 || blockType == .title3 {
                 // output previous block
                 
-
-                var url: URL? = nil
-                
-                
-                let image: NSMutableAttributedString = NSMutableAttributedString(string: "")
                 if blockType == .quote {
                     str = "\n" + str
                 }
+                
                 if blockType == .link {
-                    // create our NSTextAttachment
-                    let image1Attachment = NSTextAttachment()
-                    image1Attachment.image = NSImage(systemSymbolName: "arrow.right", accessibilityDescription: "")
+                    let linkAS = getLinkAS(str)
+                    result.append(linkAS)
+                } else {
+                    let attr = getAttributesForType(blockType, link: nil)
 
-                    // wrap the attachment in its own attributed string so we can append it
-                    let image1String = NSMutableAttributedString(attachment: image1Attachment)
-                    let pst = NSMutableParagraphStyle()
-                    pst.alignment = .left
-                    pst.lineSpacing = 0
-                    pst.paragraphSpacing = tab.fontSize / 2
-                    pst.paragraphSpacingBefore = tab.fontSize / 2
-                    
-                    image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor, range: NSRange(location: 0, length: 1))
-                    image1String.addAttribute(.font, value: NSFont.systemFont(ofSize: tab.fontSize), range: NSRange(location: 0, length: 1))
-                    image1String.addAttribute(.paragraphStyle, value: pst, range: NSRange(location: 0, length: 1))
-
-                    // add the NSTextAttachment wrapper to our full string, then add some more text.
-                    image.append(image1String)
-                    image.append(NSAttributedString(string: " "))
-                    
-                    let link = parseLink(str)
-                    if let label = link.label {
-                        str = label + "\n"
-                    } else {
-                        str = link.original + "\n"
-                    }
-                    url = link.link
+                    result.append(NSAttributedString(string: str.trimmingCharacters(in: .whitespaces), attributes: attr))
                 }
-                let attr = getAttributesForType(blockType, link: url)
-                image.append(NSAttributedString(string: str.trimmingCharacters(in: .whitespaces), attributes: attr))
-                let pstr = image
-                result.append(pstr)
+                
                 //self.parsed.append(LineView(data: Data(str.utf8), type: self.header.contentType, tab: self.tab))
                 str = ""
             }
@@ -187,6 +159,51 @@ class ContentParser {
         }
     }
     
+    func getLinkAS(_ str: String) -> NSAttributedString {
+        // create our NSTextAttachment
+        let image1Attachment = NSTextAttachment()
+        let newStr = str.replacingOccurrences(of: "=>", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
+        
+        
+        let link = parseLink(newStr)
+        
+        var linkLabel = ""
+        if let label = link.label {
+            linkLabel = label + "\n"
+        } else {
+            linkLabel = link.original + "\n"
+        }
+        let url = link.link
+        let attr = getAttributesForType(.link, link: url)
+        if linkLabel.startsWithEmoji {
+            return  NSAttributedString(string: linkLabel, attributes: attr)
+        }
+        var imgName = "arrow.right"
+        if let scheme = url.scheme {
+            if scheme.starts(with: "http") {
+                imgName = "network"
+            }
+        }
+
+
+        image1Attachment.image = NSImage(systemSymbolName: imgName, accessibilityDescription: "")
+        
+//        // wrap the attachment in its own attributed string so we can append it
+        let image1String = NSMutableAttributedString(attachment: image1Attachment)
+
+        image1String.append(NSAttributedString(string: " "))
+
+        image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor.blended(withFraction: 0.3, of: NSColor.green), range: NSRange(location: 0, length: 2))
+        image1String.addAttribute(.font, value: NSFont.systemFont(ofSize: tab.fontSize * 1.4), range: NSRange(location: 0, length: 2))
+        image1String.addAttribute(.baselineOffset, value: -tab.fontSize * 0.1, range: NSRange(location: 0, length: 2))
+        image1String.addAttribute(.paragraphStyle, value:attr[.paragraphStyle], range: NSRange(location: 0, length: 2))
+
+        image1String.append(NSAttributedString(string: linkLabel, attributes: attr))
+
+        //
+        return image1String
+    }
+    
     func getLineForType(_ str: String, type: BlockType) -> String {
         switch type {
         case .text, .pre:
@@ -196,7 +213,7 @@ class ContentParser {
             return str.replacingOccurrences(of: "*", with: "•", options: [], range: .init(NSRange(location: 0, length: 1), in: str)).trimmingCharacters(in: .whitespaces)
         
         case .link:
-            return str.replacingOccurrences(of: "=>", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
+            return str
             
         case .title1:
             return str.replacingOccurrences(of: "#", with: "", options: [], range: .init(NSRange(location: 0, length: 1), in: str)).trimmingCharacters(in: .whitespaces)
@@ -225,7 +242,7 @@ class ContentParser {
             let font = NSFont.systemFont(ofSize: tab.fontSize)
             return [
                 .font: font,
-                .foregroundColor: NSColor.white,
+                .foregroundColor: NSColor.textColor,
                 .paragraphStyle: pst
             ]
         case .pre:
@@ -243,18 +260,26 @@ class ContentParser {
                 .paragraphStyle: pst
             ]
         case .list:
+            let pst = NSMutableParagraphStyle()
+            pst.alignment = .left
+            pst.lineSpacing = 0
+            pst.headIndent = tab.fontSize * 3
+            pst.firstLineHeadIndent = tab.fontSize * 3
+            pst.lineSpacing = tab.fontSize / 2
+            
             let font = NSFont.systemFont(ofSize: tab.fontSize)
             return [
                 .font: font,
-                .foregroundColor: NSColor.textColor
+                .foregroundColor: NSColor.textColor,
+                .paragraphStyle: pst
             ]
         case .link:
             let pst = NSMutableParagraphStyle()
             pst.alignment = .left
-            pst.lineSpacing = tab.fontSize * 2
-            pst.paragraphSpacing = tab.fontSize * 1.4
-            pst.paragraphSpacingBefore = tab.fontSize * 3
-            let font = NSFont.systemFont(ofSize: tab.fontSize)
+            pst.lineSpacing = 0
+            pst.paragraphSpacing = tab.fontSize / 2
+            pst.paragraphSpacingBefore = tab.fontSize / 2
+            let font = NSFont.systemFont(ofSize: tab.fontSize, weight: .bold)
 
             return [
                 .font: font,
@@ -354,4 +379,38 @@ struct Link {
     var link: URL
     var label: String?
     var original: String
+}
+
+extension Character {
+    /// A simple emoji is one scalar and presented to the user as an Emoji
+    var isSimpleEmoji: Bool {
+        guard let firstScalar = unicodeScalars.first else { return false }
+        return firstScalar.properties.isEmoji && firstScalar.value > 0x238C
+    }
+
+    /// Checks if the scalars will be merged into an emoji
+    var isCombinedIntoEmoji: Bool { unicodeScalars.count > 1 && unicodeScalars.first?.properties.isEmoji ?? false }
+
+    var isEmoji: Bool { isSimpleEmoji || isCombinedIntoEmoji }
+}
+
+extension String {
+    var isSingleEmoji: Bool { count == 1 && containsEmoji }
+
+    var containsEmoji: Bool { contains { $0.isEmoji } }
+    
+    var startsWithEmoji: Bool {
+        if let f = self.first {
+            return f.isEmoji
+        }
+        return false
+    }
+
+    var containsOnlyEmoji: Bool { !isEmpty && !contains { !$0.isEmoji } }
+
+    var emojiString: String { emojis.map { String($0) }.reduce("", +) }
+
+    var emojis: [Character] { filter { $0.isEmoji } }
+
+    var emojiScalars: [UnicodeScalar] { filter { $0.isEmoji }.flatMap { $0.unicodeScalars } }
 }

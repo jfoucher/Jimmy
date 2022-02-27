@@ -19,7 +19,7 @@ struct ContentView: View {
     var body: some View {
 
         VStack {
-            TabContentView(tab: tab)
+            TabContentWrapperView(tab: tab)
         }
         
         .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host ?? ""))

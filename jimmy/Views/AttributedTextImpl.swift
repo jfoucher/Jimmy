@@ -73,6 +73,11 @@ extension AttributedTextImpl: NSViewRepresentable {
         nsView.maxLayoutWidth = maxLayoutWidth
         nsView.onLinkHover = self.onHoverLink
         
+        nsView.linkTextAttributes = [
+            NSAttributedString.Key.foregroundColor: NSColor.controlAccentColor
+        ]
+        nsView.alllinks = []
+        
         nsView.textContainer?.maximumNumberOfLines = context.environment.lineLimit ?? 0
         nsView.textContainer?.lineBreakMode = NSLineBreakMode(
             truncationMode: context.environment.truncationMode
@@ -89,6 +94,7 @@ extension AttributedTextImpl: NSViewRepresentable {
 extension AttributedTextImpl {
 
     final class TextView: NSTextView {
+        var wasHovered: Bool = false
         var maxLayoutWidth: CGFloat {
             get { textContainer?.containerSize.width ?? 0 }
             set {
@@ -102,7 +108,16 @@ extension AttributedTextImpl {
 //            print("link clicked")
 //        }
         
+        func hoveringLink(url: URL?, hovered: Bool) {
+            if let onlinkHover = onLinkHover {
+                onlinkHover(url, hovered)
+            }
+        }
+        
         var onLinkHover: ((URL?, Bool) -> Void)? = nil
+        
+        var alllinks: [AttributedStringLink] = []
+        
 
 
         override func mouseMoved(with event: NSEvent) {
@@ -117,41 +132,69 @@ extension AttributedTextImpl {
             
             let wholeRange = NSRange(self.string.startIndex..., in: self.string)
             let attributes = storage.attributes(at: char, effectiveRange: nil)
+
             
             
+            
+            var hoveredUrl: URL? = nil
 
             if let url = attributes[.link] as? URL  {
+                wasHovered = true
                 self.addCursorRect(self.bounds, cursor: .pointingHand)
                 storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
+//                    storage.addAttributes([
+//                        .underlineStyle: 0x1,
+//                        .underlineColor: NSColor.controlAccentColor,
+//                        .backgroundColor: NSColor.red
+//                    ], range: range)
                     if let u = value as? URL {
                         
                         if url == u {
-                            storage.addAttributes([
-                                .underlineStyle: 0x1,
-                                .underlineColor: NSColor.controlAccentColor
-                            ], range: range)
-
-                            if let onlinkHover = onLinkHover {
-                                onlinkHover(u, true)
-                            }
+                            // Hovering this link
+                            hoveredUrl = url
+                            
+//                            storage.removeAttribute(.link, range: range)
+                            self.linkTextAttributes = [
+                                NSAttributedString.Key.foregroundColor: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor)
+                            ]
+                            
+                            storage.addAttribute(.foregroundColor, value: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor), range: range)
                         } else {
-                            storage.removeAttribute(.underlineStyle, range: range)
-                            storage.removeAttribute(.underlineColor, range: range)
+                            
+                            // not hovering this link
+                            storage.removeAttribute(.link, range: range)
+                            storage.addAttribute(.foregroundColor, value: NSColor.controlAccentColor, range: range)
+                            alllinks.append(AttributedStringLink(url: u, range: range))
                         }
                     }
                 }
-                
             } else {
                 // not a link
-                self.addCursorRect(self.bounds, cursor: .iBeam)
-                storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
-                        storage.removeAttribute(.underlineStyle, range: range)
-                        storage.removeAttribute(.underlineColor, range: range)
-                    if let onlinkHover = onLinkHover {
-//                        print("unhover")
-                        onlinkHover(nil, false)
-                    }
+                
+                self.linkTextAttributes = [
+                    NSAttributedString.Key.foregroundColor: NSColor.controlAccentColor
+                ]
+                for oldlink in alllinks {
+                    storage.addAttribute(.link, value: oldlink.url, range: oldlink.range)
                 }
+                hoveredUrl = nil
+                if wasHovered {
+                    self.addCursorRect(self.bounds, cursor: .iBeam)
+                    hoveringLink(url: nil, hovered: false)
+                    wasHovered = false
+                }
+            }
+            
+            if let hu = hoveredUrl {
+                
+                
+                self.hoveringLink(url: hu, hovered: true)
+                
+                
+                
+//                for oldlink in oldlinks {
+//                    storage.addAttribute(.link, value: oldlink.url, range: oldlink.range)
+//                }
             }
         }
         
@@ -160,7 +203,6 @@ extension AttributedTextImpl {
 //        }
 
         override func menu(for event: NSEvent) -> NSMenu? {
-            print("event", event)
             let menu = super.menu(for: event)
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return menu }
             
@@ -172,7 +214,7 @@ extension AttributedTextImpl {
             
 
             if let url = attributes[.link] as? URL  {
-                let item = CustomMenuItem(title: "Open Link in New Tab", action: #selector(self.newTab), keyEquivalent: "k")
+                let item = CustomMenuItem(title: "Open Link in New Tab", action: #selector(self.newTab), keyEquivalent: "")
                 
                 item.url = url
                 
@@ -182,8 +224,11 @@ extension AttributedTextImpl {
             return menu
         }
         @objc func newTab(_ sender: CustomMenuItem) {
-            print("nestab yesssss", sender.target, sender.url)
             if let url = sender.url {
+                self.linkTextAttributes = [
+                    NSAttributedString.Key.foregroundColor: NSColor.controlAccentColor
+                ]
+                self.alllinks = []
                 NSWorkspace.shared.open(url)
             }
         }
@@ -213,7 +258,7 @@ extension AttributedTextImpl {
             else {
                 return false
             }
-            
+
             openLink(url)
             return true
         }
@@ -240,4 +285,10 @@ extension NSLineBreakMode {
       self = .byWordWrapping
     }
   }
+}
+
+
+struct AttributedStringLink {
+    var url: URL
+    var range: NSRange
 }
