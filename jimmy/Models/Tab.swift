@@ -166,6 +166,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
                     self.textContent = parsedMessage.attrStr
+                    self.content = parsedMessage.parsed
                     // Add to history
                     self.history.append(self.url)
                     self.globalHistory.addItem(self.url)
