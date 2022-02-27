@@ -27,6 +27,7 @@ class ContentParser {
     var header: Header
     var attrStr: NSAttributedString
     let tab: Tab
+    let fontManager: NSFontManager = NSFontManager.shared
     
     init(content: Data, tab: Tab) {
         print("got response")
@@ -54,7 +55,7 @@ class ContentParser {
                     
 
                 } else if self.header.contentType.starts(with: "text/") {
-                    self.attrStr = NSMutableAttributedString(string: String(decoding: contentData, as: UTF8.self))
+                    self.attrStr = NSMutableAttributedString(string: String(decoding: contentData, as: UTF8.self), attributes: self.getAttributesForType(.pre, link: nil))
                         //.font(.system(size: 14, weight: .light, design: .monospaced))
                 } else {
                     // Download unknown file type
@@ -87,6 +88,7 @@ class ContentParser {
     }
     
     func parseGemText(_ content: String) -> NSAttributedString {
+        print("CONTENT -----------", content)
         let lines = content.split(separator: "\n")
         let result = NSMutableAttributedString(string: "")
         var str: String = ""
@@ -162,8 +164,10 @@ class ContentParser {
     func getLinkAS(_ str: String) -> NSAttributedString {
         // create our NSTextAttachment
         let image1Attachment = NSTextAttachment()
-        let newStr = str.replacingOccurrences(of: "=>", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
-        
+        var newStr = str.replacingOccurrences(of: "=>", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespaces)
+        if newStr.starts(with: "//") {
+            newStr = newStr.replacingOccurrences(of: "//", with: "gemini://")
+        }
         
         let link = parseLink(newStr)
         
@@ -231,8 +235,51 @@ class ContentParser {
         }
     }
     
+    var title1Style: [NSAttributedString.Key: Any] {
+        let pst = NSMutableParagraphStyle()
+        pst.alignment = .center
+        pst.lineSpacing = 0
+        pst.paragraphSpacing = tab.fontSize
+        pst.paragraphSpacingBefore = tab.fontSize * 3
+        let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.unitalicFontMask, weight: 400, size: tab.fontSize * 2) ?? NSFont.systemFont(ofSize: tab.fontSize * 2, weight: .heavy)
+        
+        return [
+            .font: italic,
+            .paragraphStyle: pst,
+            .foregroundColor: NSColor.textColor
+        ]
+    }
+    
+    var title2Style: [NSAttributedString.Key: Any] {
+        let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.italicFontMask, weight: 0, size: tab.fontSize * 1.5) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.5, weight: .thin)
+        let pst = NSMutableParagraphStyle()
+        pst.alignment = .left
+        pst.paragraphSpacing = 0
+        pst.paragraphSpacingBefore = tab.fontSize * 1.2
+
+        return [
+            .font: italic,
+            .paragraphStyle: pst,
+            .foregroundColor: NSColor.textColor
+        ]
+    }
+    
+    var title3Style: [NSAttributedString.Key: Any] {
+        let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFont", traits: NSFontTraitMask.unitalicFontMask, weight: 0, size: tab.fontSize * 1.3) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.3, weight: .thin)
+        let pst = NSMutableParagraphStyle()
+        pst.alignment = .left
+        pst.paragraphSpacing = 0
+        pst.paragraphSpacingBefore = tab.fontSize * 1.2
+
+        return [
+            .font: italic,
+            .paragraphStyle: pst,
+            .foregroundColor: NSColor.textColor
+        ]
+    }
+    
     func getAttributesForType(_ type: BlockType, link: URL?) -> [NSAttributedString.Key: Any] {
-        let fontManager: NSFontManager = NSFontManager.shared
+        
         
         switch type {
         case .text:
@@ -292,42 +339,11 @@ class ContentParser {
                 .paragraphStyle: pst
             ]
         case .title1:
-            let pst = NSMutableParagraphStyle()
-            pst.alignment = .center
-            pst.lineSpacing = 0
-            pst.paragraphSpacing = tab.fontSize
-            pst.paragraphSpacingBefore = tab.fontSize * 3
-            let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.unitalicFontMask, weight: 400, size: tab.fontSize * 2) ?? NSFont.systemFont(ofSize: tab.fontSize * 2, weight: .heavy)
-            
-            return [
-                .font: italic,
-                .paragraphStyle: pst,
-                .foregroundColor: NSColor.textColor
-            ]
+            return title1Style
         case .title2:
-            let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.italicFontMask, weight: 0, size: tab.fontSize * 1.5) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.5, weight: .thin)
-            let pst = NSMutableParagraphStyle()
-            pst.alignment = .left
-            pst.paragraphSpacing = 0
-            pst.paragraphSpacingBefore = tab.fontSize * 1.2
-
-            return [
-                .font: italic,
-                .paragraphStyle: pst,
-                .foregroundColor: NSColor.textColor
-            ]
+            return title2Style
         case .title3:
-            let italic: NSFont = fontManager.font(withFamily: ".AppleSystemUIFont", traits: NSFontTraitMask.unitalicFontMask, weight: 0, size: tab.fontSize * 1.3) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.3, weight: .thin)
-            let pst = NSMutableParagraphStyle()
-            pst.alignment = .left
-            pst.paragraphSpacing = 0
-            pst.paragraphSpacingBefore = tab.fontSize * 1.2
-
-            return [
-                .font: italic,
-                .paragraphStyle: pst,
-                .foregroundColor: NSColor.textColor
-            ]
+            return title3Style
         case .quote:
             let pst = NSMutableParagraphStyle()
             pst.alignment = .left
@@ -359,17 +375,21 @@ class ContentParser {
 
         
         let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
+        
+        print("linkString", linkString)
+        
+        
         let original = linkString
         var link = URLParser(baseURL: tab.url, link: linkString).toAbsolute()
         if linkString.starts(with: "gemini://") {
-            if let p = URL(string: linkString) {
+            if let p = URL(string: String(linkString)) {
                 link = p
             }
         }
         
         var label = String(line[end..<line.endIndex]).trimmingCharacters(in: .whitespaces)
         if end == line.endIndex {
-            label = link.absoluteString
+            label = link.absoluteString.decodedURLString ?? link.absoluteString
         }
         
         return Link(link: link, label: label, original: original)

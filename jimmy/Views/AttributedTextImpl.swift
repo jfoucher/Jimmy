@@ -104,10 +104,6 @@ extension AttributedTextImpl {
             }
         }
         
-//        override func clicked(onLink link: Any, at charIndex: Int) {
-//            print("link clicked")
-//        }
-        
         func hoveringLink(url: URL?, hovered: Bool) {
             if let onlinkHover = onLinkHover {
                 onlinkHover(url, hovered)
@@ -118,8 +114,6 @@ extension AttributedTextImpl {
         
         var alllinks: [AttributedStringLink] = []
         
-
-
         override func mouseMoved(with event: NSEvent) {
             //super.mouseMoved(with: event)
             
@@ -132,9 +126,6 @@ extension AttributedTextImpl {
             
             let wholeRange = NSRange(self.string.startIndex..., in: self.string)
             let attributes = storage.attributes(at: char, effectiveRange: nil)
-
-            
-            
             
             var hoveredUrl: URL? = nil
 
@@ -142,14 +133,9 @@ extension AttributedTextImpl {
                 wasHovered = true
                 self.addCursorRect(self.bounds, cursor: .pointingHand)
                 storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
-//                    storage.addAttributes([
-//                        .underlineStyle: 0x1,
-//                        .underlineColor: NSColor.controlAccentColor,
-//                        .backgroundColor: NSColor.red
-//                    ], range: range)
                     if let u = value as? URL {
                         
-                        if url == u {
+                        if url == u && range.contains(char) {
                             // Hovering this link
                             hoveredUrl = url
                             
@@ -186,21 +172,9 @@ extension AttributedTextImpl {
             }
             
             if let hu = hoveredUrl {
-                
-                
                 self.hoveringLink(url: hu, hovered: true)
-                
-                
-                
-//                for oldlink in oldlinks {
-//                    storage.addAttribute(.link, value: oldlink.url, range: oldlink.range)
-//                }
             }
         }
-        
-//        func hoveredLink() -> URL {
-//            
-//        }
 
         override func menu(for event: NSEvent) -> NSMenu? {
             let menu = super.menu(for: event)
@@ -214,7 +188,7 @@ extension AttributedTextImpl {
             
 
             if let url = attributes[.link] as? URL  {
-                let item = CustomMenuItem(title: "Open Link in New Tab", action: #selector(self.newTab), keyEquivalent: "")
+                let item = CustomMenuItem(title: String(localized: "Open Link in New Tab"), action: #selector(self.newTab), keyEquivalent: "")
                 
                 item.url = url
                 

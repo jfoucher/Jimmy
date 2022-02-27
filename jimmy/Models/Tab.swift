@@ -104,31 +104,40 @@ class Tab: ObservableObject, Hashable, Identifiable {
             if let error = error {
                 self.history.append(self.url)
                 self.globalHistory.addItem(self.url)
-                
+                let contentParser = ContentParser(content: Data([]), tab: self)
                 if error == NWError.tls(-9808) {
                     
+                    
+                    let ats = NSMutableAttributedString(string: String(localized: "Invalid certificate"), attributes: contentParser.title1Style)
+                    
+                    let format = NSLocalizedString("😔 The SSL certificate for %@%@ is invalid.", comment:"SSL certificate invalid for this host. first argument is the emoji, the second the host name")
+
+                    let ats2 = NSMutableAttributedString(string: String(format: format, Emojis(self.url.host ?? "").emoji, (self.url.host ?? "")), attributes: contentParser.title3Style)
+                    
                     self.content = [
-                        LineView(data: Data("# Invalid certificate".utf8), type: "text/gemini", tab: self),
-                        
-                        LineView(data: Data(("### 😔 The SSL certificate for " + Emojis(self.url.host ?? "").emoji + " " + (self.url.host ?? "") + " is invalid.").utf8), type: "text/gemini", tab: self),
-                        
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
                         LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
                     ]
                     
-                } else if error == NWError.dns(-65554) {
+                } else if error == NWError.dns(-65554) || error == NWError.dns(0)  {
+                    let ats = NSMutableAttributedString(string: String(localized: "Could not connect"), attributes: contentParser.title1Style)
                     
+                    let ats2 = NSMutableAttributedString(string: String(localized: "Please make sure your internet conection is working properly"), attributes: contentParser.title3Style)
                     self.content = [
-                        LineView(data: Data("# Could not connect".utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data(("### Please make sure your internet conection is working properly.").utf8), type: "text/gemini", tab: self)
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
                     ]
                     
                 } else {
+                    let ats = NSMutableAttributedString(string: String(localized: "Unknown Error"), attributes: contentParser.title1Style)
+                    
+                    let ats2 = NSMutableAttributedString(string: error.localizedDescription, attributes: contentParser.title1Style)
                     
                     self.content = [
-                        LineView(data: Data("# ERROR".utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data(error.localizedDescription.utf8), type: "text/plain", tab: self)
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
                     ]
-                    
                 }
                 
             } else if let message = message {
@@ -146,8 +155,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 
                 if (10...19).contains(parsedMessage.header.code) {
                     // Input, show answer input box
+                    let ats = NSMutableAttributedString(string: parsedMessage.header.contentType, attributes: parsedMessage.title1Style)
                     self.content = [
-                        LineView(data: Data(parsedMessage.header.contentType.utf8), type: "text/gemini", tab: self),
+                        LineView(attributed: ats, tab: self),
                         LineView(data: Data(), type: "text/answer", tab: self),
                     ]
                     // Add to history
@@ -155,7 +165,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.globalHistory.addItem(self.url)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
-                    self.content = parsedMessage.parsed
                     self.textContent = parsedMessage.attrStr
                     // Add to history
                     self.history.append(self.url)
@@ -170,23 +179,34 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     // Server Error
                     self.history.append(self.url)
                     self.globalHistory.addItem(self.url)
+
+                    let format = NSLocalizedString("%d Page Not Found", comment:"page not found title. First argument is the error code")
+
+                    let ats = NSMutableAttributedString(string: String(format: format, parsedMessage.header.code), attributes: parsedMessage.title1Style)
                     
-                    var msg = "### Sorry, the page " + self.url.path + " was not found"
-                    if let host = self.url.host {
-                        msg = "### Sorry, the page " + self.url.path + " was not found on " + host
-                    }
+                    let format2 = NSLocalizedString("Sorry, the page %@ was not found on %@%@", comment:"Page not found error subtitle. first argument is the path, second the icon, third the host name")
+
+                    let ats2 = NSMutableAttributedString(string: String(format: format2, self.url.path, Emojis(self.url.host ?? "").emoji, (self.url.host ?? "")), attributes: parsedMessage.title3Style)
+                    
                     self.content = [
-                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " Not found").utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data(), type: "text/gemini", tab: self),
-                        LineView(data: Data(msg.utf8), type: "text/gemini", tab: self)
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
                     ]
                 } else {
                     // Server Error
                     self.history.append(self.url)
+                    self.globalHistory.addItem(self.url)
+                    
+
+                    let ats = NSMutableAttributedString(string: String(localized: "Server Error"), attributes: parsedMessage.title1Style)
+                    
+                    let format = NSLocalizedString("Could not load %@", comment:"Generic server error subtitle. First param is full url")
+
+                    let ats2 = NSMutableAttributedString(string: String(format: format, self.url.absoluteString), attributes: parsedMessage.title3Style)
+                    
                     self.content = [
-                        LineView(data: Data(("#" + String(parsedMessage.header.code) + " Server Error").utf8), type: "text/gemini", tab: self),
-                        LineView(data: Data(), type: "text/gemini", tab: self),
-                        LineView(data: Data(("#" + parsedMessage.header.contentType).utf8), type: "text/gemini", tab: self)
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
                     ]
                 }
             }

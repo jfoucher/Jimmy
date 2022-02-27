@@ -1,0 +1,6 @@
+/* Bundle name */
+"CFBundleName" = "Jimmy";
+
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "Copyright 2022 Jonathan Foucher";
+

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 class URLParser {
     var baseURL: URL
     var link: String
@@ -20,11 +19,11 @@ class URLParser {
     func toAbsolute() -> URL {
         // If link start with gemini, replace everything
         if link.contains("gemini://") {
-            if let url = URL(string: link) {
+            if let url = URL(unicodeString: link) {
                 return url
             }
         } else {
-            if let parsedUrl = URL(string: link, relativeTo: baseURL) {
+            if let parsedUrl = URL(unicodeString: link, relativeTo: baseURL) {
                 return parsedUrl
             }
         }
