@@ -252,14 +252,20 @@ extension AttributedTextImpl {
         var openLink: ((URL) -> Void)?
         
         func textView(_: NSTextView, clickedOnLink link: Any, at _: Int) -> Bool {
-            print("something in the view")
             guard let openLink = self.openLink,
                   let url = (link as? URL) ?? (link as? String).flatMap(URL.init(string:))
             else {
                 return false
             }
 
-            openLink(url)
+            if let scheme = url.scheme {
+                if scheme == "gemini" {
+                    openLink(url)
+                } else {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            
             return true
         }
     

@@ -183,6 +183,9 @@ class ContentParser {
             if scheme.starts(with: "http") {
                 imgName = "network"
             }
+            if scheme.starts(with: "mailto") {
+                imgName = "mail"
+            }
         }
 
 

@@ -17,7 +17,6 @@ struct TabTextView: View {
             AttributedText(
                 tab.textContent,
                 onOpenLink: { url in
-                    print("open url", url)
                     tab.url = url
                     tab.load()
                 },
