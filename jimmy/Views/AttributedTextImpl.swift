@@ -81,6 +81,16 @@ extension AttributedTextImpl: NSViewRepresentable {
         )
         context.coordinator.openLink = onOpenLink ?? { context.environment.openURL($0) }
         textSizeViewModel.didUpdateTextView(nsView)
+        //Find green range and scroll to it
+        guard let storage = nsView.textStorage else { return }
+        let wholeRange = NSRange(nsView.string.startIndex..., in: nsView.string)
+        storage.enumerateAttribute(.backgroundColor, in: wholeRange, options: []) { (value, range, pointee) in
+            if let v = value as? NSColor {
+                if v == NSColor.green {
+                    nsView.scrollRangeToVisible(range)
+                }
+            }
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -108,8 +118,6 @@ extension AttributedTextImpl {
         }
         
         var onLinkHover: ((URL?, Bool) -> Void)? = nil
-        
-        var scrollToSearchRange: ((NSRange) -> Void)? = nil
         
         var alllinks: [AttributedStringLink] = []
         

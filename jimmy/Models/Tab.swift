@@ -25,6 +25,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
     
     
     private var client: Client
+    private var ranges: [Range<String.Index>]?
+    private var selectedRangeIndex = 0
     
     
     init(url: URL) {
@@ -53,7 +55,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
     
     func load() {
         self.client.stop()
-        
+        selectedRangeIndex = 0
+        self.ranges = []
         guard let host = self.url.host else {
             return
         }
@@ -222,13 +225,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
         content.removeAttribute(.backgroundColor, range: wholeRange)
         
         if content.string.contains(str) {
-            let ranges = content.string.ranges(of: str, options: [])
-            print(ranges)
-            for range in ranges {
+            self.ranges = content.string.ranges(of: str, options: [])
+
+            for range in ranges! {
                 content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
             }
             self.textContent = content
-            return ranges
+            return ranges!
             
         }
         
@@ -236,6 +239,32 @@ class Tab: ObservableObject, Hashable, Identifiable {
         
         return []
     }
+    
+    func enterSearch() {
+        if let ranges = self.ranges {
+            let content = NSMutableAttributedString("")
+            content.append(self.textContent)
+            for range in ranges {
+                content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
+            }
+            
+            if selectedRangeIndex >= ranges.count {
+                selectedRangeIndex = 0
+            }
+            
+            let range = ranges[selectedRangeIndex]
+            
+            content.addAttribute(.backgroundColor, value: NSColor.green, range: range.nsRange(in: content.string))
+            
+            selectedRangeIndex += 1
+
+            
+            self.textContent = content
+        }
+        
+
+    }
+    
 }
 
 extension RangeExpression where Bound == String.Index  {

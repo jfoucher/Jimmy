@@ -14,7 +14,7 @@ struct TabTextView: View {
     @State var textRanges: [Range<String.Index>] = []
     
     @ViewBuilder
-    var textView: AttributedText {
+    var textView: some View {
         AttributedText(
             tab.textContent,
             onOpenLink: { url in
@@ -47,6 +47,7 @@ struct TabTextView: View {
             })
             .onSubmit(of: .search) {
                 print("searching for", text)
+                tab.enterSearch()
             }
             .frame(minWidth: 200, maxWidth: 800, alignment: .leading)
             .padding(.top, 24)
@@ -57,5 +58,13 @@ struct TabTextView: View {
 
         
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+    }
+}
+
+extension Text {
+    init(_ string: String, configure: ((inout AttributedString) -> Void)) {
+        var attributedString = AttributedString(string) /// create an `AttributedString`
+        configure(&attributedString) /// configure using the closure
+        self.init(attributedString) /// initialize a `Text`
     }
 }
