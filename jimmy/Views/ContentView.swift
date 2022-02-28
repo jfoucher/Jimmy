@@ -19,7 +19,6 @@ struct ContentView: View {
 
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
-
     
     var body: some View {
 
@@ -58,6 +57,7 @@ struct ContentView: View {
         })
         .onAppear(perform: {
             DispatchQueue.main.async {
+                
                 guard let firstWindow = NSApp.windows.first(where: { win in
                     return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
                 }) else { return }
@@ -69,7 +69,7 @@ struct ContentView: View {
                 }
                 let w = getCurrentWindows()
                 print(w.count)
-                print(w.first?.tabGroup?.isTabBarVisible)
+                
                 if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
                     
                     w.first!.toggleTabBar(self)
@@ -77,7 +77,7 @@ struct ContentView: View {
                     NSApp.keyWindow?.toggleTabBar(self)
                 }
 
-                var lastWindow = NSApp.windows.first(where: {win in
+                let lastWindow = NSApp.windows.first(where: {win in
                     return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
                 })
 
@@ -94,7 +94,6 @@ struct ContentView: View {
                     last.makeKeyAndOrderFront(nil)
                 }
                 tab.load()
-
             }
         })
     }

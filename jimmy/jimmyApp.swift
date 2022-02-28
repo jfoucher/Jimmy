@@ -11,14 +11,10 @@ import Foundation
 
 @main
 struct jimmyApp: App {
-    
-    let tabs = TabList()
     let bookmarks = Bookmarks()
     let history = History()
     let certificates = IgnoredCertificates()
     let actions = Actions()
-    let store = UserDefaults()
-
 
     var body: some Scene {
         WindowGroup {
@@ -41,18 +37,5 @@ struct jimmyApp: App {
                 
             }
         })
-        .defaultAppStorage(Store())
-            
-    }
-    
-
-    func getCurrentWindows() -> [NSWindow] {
-        return NSApp.windows.filter{ NSStringFromClass(type(of: $0)) == "SwiftUI.SwiftUIWindow" }
-    }
-
-}
-
-class Store: UserDefaults {
-    override func set(_ value: Int, forKey defaultName: String) {
     }
 }

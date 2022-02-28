@@ -11,17 +11,14 @@
 		AB042ABF27C160AD00FB9503 /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042ABE27C160AD00FB9503 /* BookmarksView.swift */; };
 		AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC027C1615700FB9503 /* Bookmark.swift */; };
 		AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC227C1761800FB9503 /* BookmarkView.swift */; };
-		AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB042AC427C191D100FB9503 /* LinkContextMenu.swift */; };
 		AB15E4D427C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB15E4D327C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf */; };
 		AB15E4FB27C82BFF00B36174 /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E4FA27C82BFF00B36174 /* Actions.swift */; };
 		AB15E4FD27C940D500B36174 /* AttributedTextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E4FC27C940D500B36174 /* AttributedTextImpl.swift */; };
 		AB15E4FF27C941D600B36174 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E4FE27C941D600B36174 /* AttributedText.swift */; };
 		AB15E50127CC032900B36174 /* TabTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E50027CC032900B36174 /* TabTextView.swift */; };
 		AB15E50327CC038000B36174 /* TabLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E50227CC038000B36174 /* TabLineView.swift */; };
-		AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639B27BE3D3E004F93E0 /* TabList.swift */; };
 		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
 		AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639F27BE64AA004F93E0 /* ContentParser.swift */; };
-		AB3263A227BE76EF004F93E0 /* LinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A127BE76EF004F93E0 /* LinkView.swift */; };
 		AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A527BE7A5A004F93E0 /* LineView.swift */; };
 		AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A727BE7D6E004F93E0 /* Header.swift */; };
 		AB3263AD27C02316004F93E0 /* TabContentWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263AC27C02316004F93E0 /* TabContentWrapperView.swift */; };
@@ -52,7 +49,6 @@
 		AB042ABE27C160AD00FB9503 /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
 		AB042AC027C1615700FB9503 /* Bookmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark.swift; sourceTree = "<group>"; };
 		AB042AC227C1761800FB9503 /* BookmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
-		AB042AC427C191D100FB9503 /* LinkContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContextMenu.swift; sourceTree = "<group>"; };
 		AB15E4D227C7DE4800B36174 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AB15E4D327C81A6200B36174 /* SourceCodePro-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceCodePro-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		AB15E4FA27C82BFF00B36174 /* Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Actions.swift; sourceTree = "<group>"; };
@@ -60,10 +56,8 @@
 		AB15E4FE27C941D600B36174 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		AB15E50027CC032900B36174 /* TabTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTextView.swift; sourceTree = "<group>"; };
 		AB15E50227CC038000B36174 /* TabLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLineView.swift; sourceTree = "<group>"; };
-		AB32639B27BE3D3E004F93E0 /* TabList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabList.swift; sourceTree = "<group>"; };
 		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		AB32639F27BE64AA004F93E0 /* ContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentParser.swift; sourceTree = "<group>"; };
-		AB3263A127BE76EF004F93E0 /* LinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkView.swift; sourceTree = "<group>"; };
 		AB3263A527BE7A5A004F93E0 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		AB3263A727BE7D6E004F93E0 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		AB3263AB27BF0D32004F93E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -122,7 +116,6 @@
 				ABF369F227C6E7350071A557 /* History.swift */,
 				ABF369F427C6E7A00071A557 /* IgnoredCertificates.swift */,
 				AB042AC027C1615700FB9503 /* Bookmark.swift */,
-				AB32639B27BE3D3E004F93E0 /* TabList.swift */,
 				AB32639D27BE3D5D004F93E0 /* Tab.swift */,
 				AB15E4FA27C82BFF00B36174 /* Actions.swift */,
 			);
@@ -132,8 +125,6 @@
 		ABA46DE327C3D25400C3DC41 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				AB3263A127BE76EF004F93E0 /* LinkView.swift */,
-				AB042AC427C191D100FB9503 /* LinkContextMenu.swift */,
 				AB3263A527BE7A5A004F93E0 /* LineView.swift */,
 				AB042ABE27C160AD00FB9503 /* BookmarksView.swift */,
 				AB042AC227C1761800FB9503 /* BookmarkView.swift */,
@@ -310,7 +301,6 @@
 				AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */,
 				ABE3E18D27BDB29400418606 /* Client.swift in Sources */,
 				ABF369F327C6E7350071A557 /* History.swift in Sources */,
-				AB32639C27BE3D3E004F93E0 /* TabList.swift in Sources */,
 				AB15E4FF27C941D600B36174 /* AttributedText.swift in Sources */,
 				AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */,
 				ABA5CEA027CC31D700403CB2 /* Data+Extensions.swift in Sources */,
@@ -321,8 +311,6 @@
 				AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */,
 				AB3263AD27C02316004F93E0 /* TabContentWrapperView.swift in Sources */,
 				AB15E4FD27C940D500B36174 /* AttributedTextImpl.swift in Sources */,
-				AB042AC527C191D100FB9503 /* LinkContextMenu.swift in Sources */,
-				AB3263A227BE76EF004F93E0 /* LinkView.swift in Sources */,
 				AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */,
 				ABA5CEA127CC31D700403CB2 /* UTS46+Loading.swift in Sources */,
 				ABE3E17C27BDADBE00418606 /* jimmyApp.swift in Sources */,

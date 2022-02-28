@@ -30,8 +30,6 @@ class ContentParser {
     let fontManager: NSFontManager = NSFontManager.shared
     
     init(content: Data, tab: Tab) {
-        print("got response")
-        print(content)
         self.attrStr = NSAttributedString(string: "")
         self.tab = tab
         self.parsed = []
@@ -88,7 +86,6 @@ class ContentParser {
     }
     
     func parseGemText(_ content: String) -> NSAttributedString {
-        print("CONTENT -----------", content)
         let lines = content.split(separator: "\n")
         let result = NSMutableAttributedString(string: "")
         var str: String = ""
@@ -127,6 +124,9 @@ class ContentParser {
                 if blockType == .link {
                     let linkAS = getLinkAS(str)
                     result.append(linkAS)
+                } else if blockType == .quote {
+                    let quoteAS = getQuoteAS(str)
+                    result.append(quoteAS)
                 } else {
                     let attr = getAttributesForType(blockType, link: nil)
 
@@ -200,14 +200,49 @@ class ContentParser {
 
         image1String.append(NSAttributedString(string: " "))
 
-        image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor.blended(withFraction: 0.3, of: NSColor.green), range: NSRange(location: 0, length: 2))
+        image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor.blended(withFraction: 0.3, of: NSColor.green) ?? NSColor.green, range: NSRange(location: 0, length: 2))
         image1String.addAttribute(.font, value: NSFont.systemFont(ofSize: tab.fontSize * 1.4), range: NSRange(location: 0, length: 2))
         image1String.addAttribute(.baselineOffset, value: -tab.fontSize * 0.1, range: NSRange(location: 0, length: 2))
-        image1String.addAttribute(.paragraphStyle, value:attr[.paragraphStyle], range: NSRange(location: 0, length: 2))
+        image1String.addAttribute(.paragraphStyle, value: attr[.paragraphStyle] ?? [], range: NSRange(location: 0, length: 2))
 
         image1String.append(NSAttributedString(string: linkLabel, attributes: attr))
 
         //
+        return image1String
+    }
+    
+    
+    func getQuoteAS(_ str: String) -> NSAttributedString {
+        // create our NSTextAttachment
+        let image1Attachment = NSTextAttachment()
+        var newStr = str.replacingOccurrences(of: ">", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let attr = getAttributesForType(.quote, link: nil)
+
+        let imgName = "quote.opening"
+
+        image1Attachment.image = NSImage(systemSymbolName: imgName, accessibilityDescription: "")
+        
+//        // wrap the attachment in its own attributed string so we can append it
+        let image1String = NSMutableAttributedString(attachment: image1Attachment)
+
+        image1String.append(NSAttributedString(string: " "))
+        
+        let range = NSRange(location: 0, length: image1String.string.count)
+
+        image1String.addAttribute(.foregroundColor, value: NSColor.controlAccentColor.blended(withFraction: 0.3, of: NSColor.green) ?? NSColor.green, range: range)
+        image1String.addAttribute(.font, value: NSFont.systemFont(ofSize: tab.fontSize * 1.4), range: range)
+        image1String.addAttribute(.baselineOffset, value: -tab.fontSize * 0.1, range: range)
+        image1String.addAttribute(.kern, value: tab.fontSize * 2, range: range)
+        let pst: NSMutableParagraphStyle = attr[.paragraphStyle] as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
+        
+        pst.paragraphSpacingBefore = tab.fontSize
+    
+        image1String.addAttribute(.paragraphStyle, value: pst, range: range)
+
+        image1String.append(NSAttributedString(string: newStr, attributes: attr))
+
+        
         return image1String
     }
     
@@ -333,7 +368,7 @@ class ContentParser {
 
             return [
                 .font: font,
-                .link: link,
+                .link: link ?? URL(string: "gemini://about")!,
                 .foregroundColor: NSColor.systemGray,
                 .cursor: NSCursor.pointingHand,
                 .paragraphStyle: pst
@@ -349,7 +384,7 @@ class ContentParser {
             pst.alignment = .left
             pst.lineSpacing = tab.fontSize / 3
             pst.headIndent = tab.fontSize * 4
-            pst.firstLineHeadIndent = tab.fontSize * 6
+            pst.firstLineHeadIndent = 0 //tab.fontSize * 2
             
             let font: NSFont = fontManager.font(withFamily: ".AppleSystemUIFontSerif", traits: NSFontTraitMask.italicFontMask, weight: 0, size: tab.fontSize * 1.3) ?? NSFont.systemFont(ofSize: tab.fontSize * 1.3, weight: .thin)
             return [
@@ -375,8 +410,6 @@ class ContentParser {
 
         
         let linkString = line[start..<end].trimmingCharacters(in: .whitespaces)
-        
-        print("linkString", linkString)
         
         
         let original = linkString

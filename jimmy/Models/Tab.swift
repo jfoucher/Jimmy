@@ -26,6 +26,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     
     private var client: Client
     
+    
     init(url: URL) {
         self.url = url
         self.content = []
@@ -212,6 +213,42 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 }
             }
         }
+    }
+    
+    func search(_ str: String) -> [Range<String.Index>] {
+        let wholeRange = NSRange(location: 0, length: self.textContent.string.count + 1)
+        let content = NSMutableAttributedString("")
+        content.append(self.textContent)
+        content.removeAttribute(.backgroundColor, range: wholeRange)
+        
+        if content.string.contains(str) {
+            let ranges = content.string.ranges(of: str, options: [])
+            print(ranges)
+            for range in ranges {
+                content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
+            }
+            self.textContent = content
+            return ranges
+            
+        }
+        
+        self.textContent = content
+        
+        return []
+    }
+}
+
+extension RangeExpression where Bound == String.Index  {
+    func nsRange<S: StringProtocol>(in string: S) -> NSRange { .init(self, in: string) }
+}
+
+extension String {
+    func ranges(of substring: String, options: CompareOptions = [], locale: Locale? = nil) -> [Range<Index>] {
+        var ranges: [Range<Index>] = []
+        while let range = range(of: substring, options: options, range: (ranges.last?.upperBound ?? self.startIndex)..<self.endIndex, locale: locale) {
+            ranges.append(range)
+        }
+        return ranges
     }
 }
 

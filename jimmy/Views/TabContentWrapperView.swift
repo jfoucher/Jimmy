@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TabContentWrapperView: View {
-    @EnvironmentObject private var tabList: TabList
     @ObservedObject var tab: Tab
     @State var text = ""
     
@@ -18,26 +17,21 @@ struct TabContentWrapperView: View {
     
     @ViewBuilder
     private var tabView: some View {
-//        if tab.id == tabList.activeTabId {
-            ZStack(alignment: .bottomLeading) {
-                HStack {
-                    ScrollView {
-                        if (tab.content.count > 0) {
-                            TabLineView(tab: tab)
-                        } else {
-                            TabTextView(tab: tab)
-                        }
+        ZStack(alignment: .bottomLeading) {
+            HStack {
+                ScrollView {
+                    if (tab.content.count > 0) {
+                        TabLineView(tab: tab)
+                    } else {
+                        TabTextView(tab: tab)
                     }
-                    
-                    .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-                    .background(Color("background"))
                 }
-                status
+                
+                .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+                .background(Color("background"))
             }
-            .onTapGesture(count: 1, perform: {
-                print("click")
-            })
-//        }
+            status
+        }
     }
     
     @ViewBuilder

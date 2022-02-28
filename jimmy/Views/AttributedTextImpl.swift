@@ -27,13 +27,11 @@ import SwiftUI
 import Cocoa
 
 final class TextSizeViewModel: ObservableObject {
-  @Published var textSize: CGSize?
-
-  func didUpdateTextView(_ textView: AttributedTextImpl.TextView) {
-    textSize = textView.intrinsicContentSize
-  }
+    @Published var textSize: CGSize?
     
-
+    func didUpdateTextView(_ textView: AttributedTextImpl.TextView) {
+        textSize = textView.intrinsicContentSize
+    }
 }
 
 struct AttributedTextImpl {
@@ -42,15 +40,14 @@ struct AttributedTextImpl {
     var textSizeViewModel: TextSizeViewModel
     var onOpenLink: ((URL) -> Void)?
     var onHoverLink: ((URL?, Bool) -> Void)?
-    
-
 }
 
 extension AttributedTextImpl: NSViewRepresentable {
     func makeNSView(context: Context) -> TextView {
         let nsView = TextView(frame: .zero)
-
+        
         nsView.onLinkHover = self.onHoverLink
+        
         nsView.drawsBackground = false
         nsView.textContainerInset = .zero
         nsView.isEditable = false
@@ -61,10 +58,10 @@ extension AttributedTextImpl: NSViewRepresentable {
         nsView.linkTextAttributes = [
             NSAttributedString.Key.foregroundColor: NSColor.controlAccentColor
         ]
-
+        
         nsView.displaysLinkToolTips = false
         nsView.delegate = context.coordinator
-        
+
         return nsView
     }
     
@@ -92,7 +89,7 @@ extension AttributedTextImpl: NSViewRepresentable {
 }
 
 extension AttributedTextImpl {
-
+    
     final class TextView: NSTextView {
         var wasHovered: Bool = false
         var maxLayoutWidth: CGFloat {
@@ -112,6 +109,8 @@ extension AttributedTextImpl {
         
         var onLinkHover: ((URL?, Bool) -> Void)? = nil
         
+        var scrollToSearchRange: ((NSRange) -> Void)? = nil
+        
         var alllinks: [AttributedStringLink] = []
         
         override func mouseMoved(with event: NSEvent) {
@@ -120,15 +119,15 @@ extension AttributedTextImpl {
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return }
             
             let char = self.characterIndex(for: point)
-
+            
             guard let storage = self.textStorage else { return }
-
+            
             
             let wholeRange = NSRange(self.string.startIndex..., in: self.string)
             let attributes = storage.attributes(at: char, effectiveRange: nil)
             
             var hoveredUrl: URL? = nil
-
+            
             if let url = attributes[.link] as? URL  {
                 wasHovered = true
                 self.addCursorRect(self.bounds, cursor: .pointingHand)
@@ -139,12 +138,12 @@ extension AttributedTextImpl {
                             // Hovering this link
                             hoveredUrl = url
                             
-//                            storage.removeAttribute(.link, range: range)
+                            //                            storage.removeAttribute(.link, range: range)
                             self.linkTextAttributes = [
-                                NSAttributedString.Key.foregroundColor: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor)
+                                NSAttributedString.Key.foregroundColor: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor) ?? NSColor.green
                             ]
                             
-                            storage.addAttribute(.foregroundColor, value: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor), range: range)
+                            storage.addAttribute(.foregroundColor, value: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor) ?? NSColor.green, range: range)
                         } else {
                             
                             // not hovering this link
@@ -175,18 +174,18 @@ extension AttributedTextImpl {
                 self.hoveringLink(url: hu, hovered: true)
             }
         }
-
+        
         override func menu(for event: NSEvent) -> NSMenu? {
             let menu = super.menu(for: event)
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return menu }
             
             let char = self.characterIndex(for: point)
-
+            
             guard let storage = self.textStorage else { return menu }
             
             let attributes = storage.attributes(at: char, effectiveRange: nil)
             
-
+            
             if let url = attributes[.link] as? URL  {
                 let item = CustomMenuItem(title: String(localized: "Open Link in New Tab"), action: #selector(self.newTab), keyEquivalent: "")
                 
@@ -194,7 +193,7 @@ extension AttributedTextImpl {
                 
                 menu?.insertItem(item, at: 1)
             }
-                
+            
             return menu
         }
         @objc func newTab(_ sender: CustomMenuItem) {
@@ -218,8 +217,6 @@ extension AttributedTextImpl {
             return layoutManager.usedRect(for: textContainer).size
         }
         
-        
-        
     }
     
     final class Coordinator: NSObject, NSTextViewDelegate {
@@ -231,7 +228,7 @@ extension AttributedTextImpl {
             else {
                 return false
             }
-
+            
             if let scheme = url.scheme {
                 if scheme == "gemini" {
                     openLink(url)
@@ -242,29 +239,29 @@ extension AttributedTextImpl {
             
             return true
         }
-    
+        
     }
     
-
+    
 }
 
 class CustomMenuItem: NSMenuItem {
-  var url: URL?
+    var url: URL?
 }
 
 extension NSLineBreakMode {
-  init(truncationMode: Text.TruncationMode) {
-    switch truncationMode {
-    case .head:
-      self = .byTruncatingHead
-    case .tail:
-      self = .byTruncatingTail
-    case .middle:
-      self = .byTruncatingMiddle
-    @unknown default:
-      self = .byWordWrapping
+    init(truncationMode: Text.TruncationMode) {
+        switch truncationMode {
+        case .head:
+            self = .byTruncatingHead
+        case .tail:
+            self = .byTruncatingTail
+        case .middle:
+            self = .byTruncatingMiddle
+        @unknown default:
+            self = .byWordWrapping
+        }
     }
-  }
 }
 
 
