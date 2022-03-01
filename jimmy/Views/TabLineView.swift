@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabLineView: View {
     @ObservedObject var tab: Tab
-    
+    @State var search = ""
     var body: some View {
         ForEach(tab.content, id: \.self) { view in
             view
@@ -19,5 +19,6 @@ struct TabLineView: View {
         }
         .padding(48)
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .center)
+        .searchable(text: $search)
     }
 }
