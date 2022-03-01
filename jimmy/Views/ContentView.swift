@@ -110,14 +110,18 @@ struct ContentView: View {
         )
         
         ToolbarItem(placement: .navigation) { // (1) we can specify location for each ToolbarItem
+
             Button(action: back) {
                 Image(systemName: "arrow.backward").imageScale(.large).padding(.trailing, 8)
             }
             .disabled(tab.history.count <= 1)
             .buttonStyle(.borderless)
         }
+        
         ToolbarItemGroup(placement: .principal) {
+            
             ZStack(alignment: .trailing) {
+                
                 TextField("example.org", text: url)
                     .onSubmit {
                         go()
@@ -129,14 +133,22 @@ struct ContentView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 if (tab.loading) {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .foregroundColor(Color.gray)
+                    .foregroundColor(Color.gray)
                     .rotationEffect(Angle(degrees: rotation))
                         .onReceive(timer) { time in
                             $rotation.wrappedValue += 1.0
                         }
-                        .padding(.trailing, 12)
+                        .padding(.trailing, 8)
                         
                 }
+                
+                Button(action: toggleValidateCert) {
+                    Image(systemName: (tab.ignoredCertValidation ? "lock.open" : "lock"))
+                        .foregroundColor((tab.ignoredCertValidation ? Color.red : Color.green))
+                        .imageScale(.large).padding(.leading, 0)
+                        .opacity(0.7)
+                }.disabled(!tab.ignoredCertValidation)
+                    .padding(.trailing, tab.loading ? 20 : 0)
             }
 //            .background(Color.red)
 
@@ -147,7 +159,7 @@ struct ContentView: View {
             .buttonStyle(.borderless)
             .disabled(url.wrappedValue.isEmpty)
             
-            Spacer()
+            Spacer(minLength: 50)
         }
         
         ToolbarItemGroup(placement: .primaryAction, content: {
@@ -211,5 +223,14 @@ struct ContentView: View {
     func getCurrentWindows() -> [NSWindow] {
         return NSApp.windows.filter{ NSStringFromClass(type(of: $0)) == "SwiftUI.SwiftUIWindow" }
     }
+    
+    func toggleValidateCert() {
+        print("ignored cert validation", tab.certs.items.contains(tab.url.host ?? ""))
+        if tab.certs.items.contains(tab.url.host ?? "") {
+            tab.certs.items.removeAll(where: {$0 == tab.url.host})
+            tab.load()
+        } else {
+            tab.certs.items.append(tab.url.host ?? "")
+        }
+    }
 }
-

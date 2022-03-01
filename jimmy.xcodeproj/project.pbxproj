@@ -37,7 +37,6 @@
 		ABE3E18327BDADBF00418606 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABE3E18227BDADBF00418606 /* Preview Assets.xcassets */; };
 		ABE3E18B27BDB1E000418606 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18A27BDB1E000418606 /* ClientConnection.swift */; };
 		ABE3E18D27BDB29400418606 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18C27BDB29400418606 /* Client.swift */; };
-		ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE3E18E27BDC4D400418606 /* UrlView.swift */; };
 		ABF369F127C6DCB70071A557 /* CommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF369F027C6DCB70071A557 /* CommandsView.swift */; };
 		ABF369F327C6E7350071A557 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF369F227C6E7350071A557 /* History.swift */; };
 		ABF369F527C6E7A00071A557 /* IgnoredCertificates.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF369F427C6E7A00071A557 /* IgnoredCertificates.swift */; };
@@ -82,7 +81,6 @@
 		ABE3E18427BDADBF00418606 /* jimmy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = jimmy.entitlements; sourceTree = "<group>"; };
 		ABE3E18A27BDB1E000418606 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
 		ABE3E18C27BDB29400418606 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
-		ABE3E18E27BDC4D400418606 /* UrlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlView.swift; sourceTree = "<group>"; };
 		ABF369F027C6DCB70071A557 /* CommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsView.swift; sourceTree = "<group>"; };
 		ABF369F227C6E7350071A557 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		ABF369F427C6E7A00071A557 /* IgnoredCertificates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoredCertificates.swift; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 				AB3263AC27C02316004F93E0 /* TabContentWrapperView.swift */,
 				AB15E50027CC032900B36174 /* TabTextView.swift */,
 				AB15E50227CC038000B36174 /* TabLineView.swift */,
-				ABE3E18E27BDC4D400418606 /* UrlView.swift */,
 				ABF369F027C6DCB70071A557 /* CommandsView.swift */,
 				AB15E4FC27C940D500B36174 /* AttributedTextImpl.swift */,
 				AB15E4FE27C941D600B36174 /* AttributedText.swift */,
@@ -297,7 +294,6 @@
 				ABF369F527C6E7A00071A557 /* IgnoredCertificates.swift in Sources */,
 				AB15E50127CC032900B36174 /* TabTextView.swift in Sources */,
 				AB15E50327CC038000B36174 /* TabLineView.swift in Sources */,
-				ABE3E18F27BDC4D400418606 /* UrlView.swift in Sources */,
 				AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */,
 				ABE3E18D27BDB29400418606 /* Client.swift in Sources */,
 				ABF369F327C6E7350071A557 /* History.swift in Sources */,
