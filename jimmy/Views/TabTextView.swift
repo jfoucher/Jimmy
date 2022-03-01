@@ -42,11 +42,9 @@ struct TabTextView: View {
             .textSelection(.enabled)
             .searchable(text: $text)
             .onChange(of: text, perform: { newValue in
-                print("new search", text)
                 textRanges = tab.search(text)
             })
             .onSubmit(of: .search) {
-                print("searching for", text)
                 tab.enterSearch()
             }
             .frame(minWidth: 200, maxWidth: 800, alignment: .leading)

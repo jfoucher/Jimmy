@@ -215,7 +215,7 @@ class ContentParser {
     func getQuoteAS(_ str: String) -> NSAttributedString {
         // create our NSTextAttachment
         let image1Attachment = NSTextAttachment()
-        var newStr = str.replacingOccurrences(of: ">", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespacesAndNewlines)
+        let newStr = str.replacingOccurrences(of: ">", with: "", options: [], range: .init(NSRange(location: 0, length: 2), in: str)).trimmingCharacters(in: .whitespacesAndNewlines)
 
         let attr = getAttributesForType(.quote, link: nil)
 
@@ -240,7 +240,7 @@ class ContentParser {
     
         image1String.addAttribute(.paragraphStyle, value: pst, range: range)
 
-        image1String.append(NSAttributedString(string: newStr, attributes: attr))
+        image1String.append(NSAttributedString(string: newStr + "\n", attributes: attr))
 
         
         return image1String

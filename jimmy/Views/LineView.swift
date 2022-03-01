@@ -51,7 +51,7 @@ struct LineView: View, Hashable {
                     tab.load()
                 }
             }, label: {
-                Text("Ignore certificate validation for " + (Emojis(tab.url.host ?? "").emoji) + (tab.url.host ?? ""))
+                Text("Ignore certificate validation for " + (tab.emojis.emoji(tab.url.host ?? "")) + (tab.url.host ?? ""))
             })
         } else if type.starts(with: "text/answer") {
             // Line for an answer. The question should be above this

@@ -111,6 +111,7 @@
 		ABA46DE227C3D23500C3DC41 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ABF9747C27C2F4B300812AE4 /* Emojis.swift */,
 				AB3263A727BE7D6E004F93E0 /* Header.swift */,
 				AB042ABC27C15EA800FB9503 /* Bookmarks.swift */,
 				ABF369F227C6E7350071A557 /* History.swift */,
@@ -159,7 +160,6 @@
 				ABA5CE9A27CC31D700403CB2 /* UTS46.swift */,
 				ABA5CE9C27CC31D700403CB2 /* UTS46+Loading.swift */,
 				AB3263B027C04946004F93E0 /* URLParser.swift */,
-				ABF9747C27C2F4B300812AE4 /* Emojis.swift */,
 				ABA5CE9727CC30B200403CB2 /* String+IDNA.swift */,
 			);
 			path = Utils;
@@ -482,7 +482,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = "0.2.1 ";
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.6px.jimmy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -513,7 +513,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = "0.2.1 ";
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.6px.jimmy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

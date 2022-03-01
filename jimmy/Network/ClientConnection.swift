@@ -28,7 +28,6 @@ class ClientConnection {
     var didStopCallback: ((NWError?, Data?) -> Void)? = nil
 
     func start() {
-        print("connection will start")
         nwConnection.stateUpdateHandler = stateDidChange(to:)
         setupReceive()
         nwConnection.start(queue: queue)
@@ -54,12 +53,10 @@ class ClientConnection {
             }
             
             if isComplete {
-                print("Done receiving")
                 self.connectionDidEnd()
             } else if let error = error {
                 self.connectionDidFail(error: error)
             } else {
-                print("receiving...")
                 self.setupReceive()
             }
         }
@@ -71,22 +68,18 @@ class ClientConnection {
                 self.connectionDidFail(error: error)
                 return
             }
-            print("Sent message: " + String(decoding: data, as: UTF8.self))
         }))
     }
 
     func stop() {
-        print("connection will stop")
         stop(error: nil, message: nil)
     }
 
     private func connectionDidFail(error: NWError) {
-        print("connection did fail, error: \(error)")
         self.stop(error: error, message: nil)
     }
 
     private func connectionDidEnd() {
-        print("connection did end")
         self.stop(error: nil, message: self.data)
     }
 

@@ -21,90 +21,90 @@ struct ContentView: View {
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
     var body: some View {
-
-        VStack {
-            TabContentWrapperView(tab: tab)
-        }
-        .onReceive(Just(actions.reload)) { val in
-            //tab.load()
-            if old != val {
-                old = val
-                DispatchQueue.main.async{
-                    tab.load()
+        GeometryReader { geometry in
+            VStack {
+                TabContentWrapperView(tab: tab)
+            }
+            .onReceive(Just(actions.reload)) { val in
+                //tab.load()
+                if old != val {
+                    old = val
+                    DispatchQueue.main.async{
+                        tab.load()
+                    }
                 }
+                
+            }
+            .navigationTitle(tab.emojis.emoji(tab.url.host ?? "") + " " + (tab.url.host?.idnaDecoded ?? ""))
+            
+            .frame(maxWidth: .infinity, minHeight: 200)
+            .toolbar{
+                urlToolBarContent(geometry)
             }
             
-        }
-        .navigationTitle(Emojis(tab.url.host ?? "").emoji + " " + (tab.url.host?.idnaDecoded ?? ""))
-        
-        .frame(maxWidth: .infinity, minHeight: 200)
-        .toolbar{
-            urlToolBarContent()
-        }
-        
-        .onOpenURL(perform: { url in
-            tab.url = url
-            tab.load()
-        })
-        .onDisappear(perform: {
-            print("disappearing", getCurrentWindows().count)
-            DispatchQueue.main.async {
-                let w = getCurrentWindows()
-                if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
-                    w.first!.toggleTabBar(self)
-                }
-            }
-        })
-        .onAppear(perform: {
-            DispatchQueue.main.async {
-                
-                guard let firstWindow = NSApp.windows.first(where: { win in
-                    return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
-                }) else { return }
-
-                //firstWindow.makeKeyAndOrderFront(nil)
-                var group = firstWindow
-                if let g = firstWindow.tabGroup?.selectedWindow {
-                    group = g
-                }
-                let w = getCurrentWindows()
-                print(w.count)
-                
-                if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
-                    
-                    w.first!.toggleTabBar(self)
-                } else if w.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
-                    NSApp.keyWindow?.toggleTabBar(self)
-                }
-
-                let lastWindow = NSApp.windows.first(where: {win in
-                    return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
-                })
-
-                NSApp.windows.forEach({win in
-                    let className = NSStringFromClass(type(of: win))
-                    if win != firstWindow && className == "SwiftUI.SwiftUIWindow" && win.tabbedWindows?.count == nil {
-                        print("adding window", win)
-
-                        group.addTabbedWindow(win, ordered: .above)
-                    }
-                })
-
-                if let last = lastWindow {
-                    last.makeKeyAndOrderFront(nil)
-                }
+            .onOpenURL(perform: { url in
+                tab.url = url
                 tab.load()
-            }
-        })
+            })
+            .onDisappear(perform: {
+                print("disappearing", getCurrentWindows().count)
+                DispatchQueue.main.async {
+                    let w = getCurrentWindows()
+                    if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                        w.first!.toggleTabBar(self)
+                    }
+                }
+            })
+            .onAppear(perform: {
+                DispatchQueue.main.async {
+                    
+                    guard let firstWindow = NSApp.windows.first(where: { win in
+                        return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
+                    }) else { return }
+
+                    //firstWindow.makeKeyAndOrderFront(nil)
+                    var group = firstWindow
+                    if let g = firstWindow.tabGroup?.selectedWindow {
+                        group = g
+                    }
+                    let w = getCurrentWindows()
+                    print(w.count)
+                    
+                    if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
+                        
+                        w.first!.toggleTabBar(self)
+                    } else if w.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
+                        NSApp.keyWindow?.toggleTabBar(self)
+                    }
+
+                    let lastWindow = NSApp.windows.first(where: {win in
+                        return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
+                    })
+
+                    NSApp.windows.forEach({win in
+                        let className = NSStringFromClass(type(of: win))
+                        if win != firstWindow && className == "SwiftUI.SwiftUIWindow" && win.tabbedWindows?.count == nil {
+                            print("adding window", win)
+
+                            group.addTabbedWindow(win, ordered: .above)
+                        }
+                    })
+
+                    if let last = lastWindow {
+                        last.makeKeyAndOrderFront(nil)
+                    }
+                    tab.load()
+                }
+            })
+        }
     }
     
     @ToolbarContentBuilder
-    func urlToolBarContent() -> some ToolbarContent {
-        
+    func urlToolBarContent(_ geometry: GeometryProxy) -> some ToolbarContent {
         let url = Binding<String>(
-          get: { tab.url.absoluteString },
+            get: { tab.url.absoluteString.decodedURLString! },
           set: { s in
-              tab.url = URL(string: s) ?? URL(string: "gemini://about")!
+              tab.url = URL(unicodeString: s) ?? URL(string: "gemini://about")!
               self.urlChanged(s)
           }
         )
@@ -122,7 +122,8 @@ struct ContentView: View {
                     .onSubmit {
                         go()
                     }
-                    .frame(idealWidth: 600, maxWidth: .infinity)
+                    .frame(minWidth: 600, maxWidth: .infinity)
+                    
                     .background(Color("urlbackground"))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -137,8 +138,7 @@ struct ContentView: View {
                         
                 }
             }
-            
-            
+//            .background(Color.red)
 
             Button(action: go) {
                 Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))
@@ -146,6 +146,7 @@ struct ContentView: View {
             }
             .buttonStyle(.borderless)
             .disabled(url.wrappedValue.isEmpty)
+            
             Spacer()
         }
         
@@ -163,6 +164,7 @@ struct ContentView: View {
                 BookmarksView(tab: tab, close: { showPopover = false }).frame(maxWidth: .infinity)
             }
         })
+        
     }
     
     func urlChanged(_ url: String) {

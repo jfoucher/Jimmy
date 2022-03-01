@@ -20,7 +20,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var history: [URL]
     @Published var status = ""
     @Published var icon = ""
+    @Published var ignoredCertValidation = false
     @Published var fontSize = 16.0
+    var emojis = Emojis()
     private var globalHistory: History = History()
     
     
@@ -61,7 +63,9 @@ class Tab: ObservableObject, Hashable, Identifiable {
             return
         }
         
-        self.icon = Emojis(host).emoji
+        
+        
+        self.icon = emojis.emoji(host)
         
         if (host == "about") {
             if let asset = NSDataAsset(name: "home") {
@@ -77,6 +81,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
         DispatchQueue.main.async {
             self.loading = true
             self.status = "Loading " + self.url.absoluteString.replacingOccurrences(of: "gemini://", with: "")
+            self.ignoredCertValidation = self.certs.items.contains(self.url.host ?? "")
         }
         
         self.client = Client(host: host, port: 1965, validateCert: !certs.items.contains(url.host ?? ""))
@@ -109,14 +114,14 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 self.history.append(self.url)
                 self.globalHistory.addItem(self.url)
                 let contentParser = ContentParser(content: Data([]), tab: self)
-                if error == NWError.tls(-9808) {
+                if error == NWError.tls(-9808) || error == NWError.tls(-9813) {
                     
                     
                     let ats = NSMutableAttributedString(string: String(localized: "Invalid certificate"), attributes: contentParser.title1Style)
                     
                     let format = NSLocalizedString("😔 The SSL certificate for %@%@ is invalid.", comment:"SSL certificate invalid for this host. first argument is the emoji, the second the host name")
 
-                    let ats2 = NSMutableAttributedString(string: String(format: format, Emojis(self.url.host ?? "").emoji, (self.url.host ?? "")), attributes: contentParser.title3Style)
+                    let ats2 = NSMutableAttributedString(string: String(format: format, self.emojis.emoji(self.url.host ?? ""), (self.url.host ?? "")), attributes: contentParser.title3Style)
                     
                     self.content = [
                         LineView(attributed: ats, tab: self),
@@ -191,7 +196,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     
                     let format2 = NSLocalizedString("Sorry, the page %@ was not found on %@%@", comment:"Page not found error subtitle. first argument is the path, second the icon, third the host name")
 
-                    let ats2 = NSMutableAttributedString(string: String(format: format2, self.url.path, Emojis(self.url.host ?? "").emoji, (self.url.host ?? "")), attributes: parsedMessage.title3Style)
+                    let ats2 = NSMutableAttributedString(string: String(format: format2, self.url.path, self.emojis.emoji(self.url.host ?? ""), (self.url.host ?? "")), attributes: parsedMessage.title3Style)
                     
                     self.content = [
                         LineView(attributed: ats, tab: self),
@@ -202,12 +207,15 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     self.history.append(self.url)
                     self.globalHistory.addItem(self.url)
                     
-
-                    let ats = NSMutableAttributedString(string: String(localized: "Server Error"), attributes: parsedMessage.title1Style)
+                    let format1 = NSLocalizedString("%d Server Error", comment:"Generic server error title. First param is the error code")
+                    
+                    let ats = NSMutableAttributedString(string: String(format: format1, parsedMessage.header.code), attributes: parsedMessage.title1Style)
                     
                     let format = NSLocalizedString("Could not load %@", comment:"Generic server error subtitle. First param is full url")
 
-                    let ats2 = NSMutableAttributedString(string: String(format: format, self.url.absoluteString), attributes: parsedMessage.title3Style)
+                    let ats2 = NSMutableAttributedString(string: String(format: format, self.url.absoluteString), attributes: parsedMessage.title2Style)
+                    
+                    ats2.append(NSAttributedString(string: "\n" + parsedMessage.header.contentType, attributes: parsedMessage.title3Style))
                     
                     self.content = [
                         LineView(attributed: ats, tab: self),
@@ -232,7 +240,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
             }
             self.textContent = content
             return ranges!
-            
         }
         
         self.textContent = content
