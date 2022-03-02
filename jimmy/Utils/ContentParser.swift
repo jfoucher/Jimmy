@@ -28,12 +28,14 @@ class ContentParser {
     var attrStr: NSAttributedString
     let tab: Tab
     let fontManager: NSFontManager = NSFontManager.shared
+    var firstTitle = ""
     
     init(content: Data, tab: Tab) {
         self.attrStr = NSAttributedString(string: "")
         self.tab = tab
         self.parsed = []
         self.header = Header(line: "")
+        self.firstTitle = ""
         
         if let range = content.firstRange(of: Data("\r\n".utf8)) {
             let headerRange = content.startIndex..<range.lowerBound
@@ -90,6 +92,7 @@ class ContentParser {
         let result = NSMutableAttributedString(string: "")
         var str: String = ""
         var pre = false
+        var firstTitle: String? = nil
         for (index, line) in lines.enumerated() {
             let blockType = getBlockType(String(line))
             if blockType == .pre {
@@ -119,6 +122,11 @@ class ContentParser {
                 
                 if blockType == .quote {
                     str = "\n" + str
+                }
+                
+                if (blockType == .title1 || blockType == .title2 || blockType == .title3)  && firstTitle == nil {
+                    firstTitle = str.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                    self.firstTitle = firstTitle!
                 }
                 
                 if blockType == .link {
@@ -324,7 +332,7 @@ class ContentParser {
             pst.lineSpacing = tab.fontSize / 3
             pst.paragraphSpacingBefore = tab.fontSize
                 
-            let font = NSFont.systemFont(ofSize: tab.fontSize)
+            let font = NSFont.systemFont(ofSize: tab.fontSize, weight: .light)
             return [
                 .font: font,
                 .foregroundColor: NSColor.textColor,

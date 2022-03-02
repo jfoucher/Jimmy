@@ -17,6 +17,9 @@
 		AB15E4FF27C941D600B36174 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E4FE27C941D600B36174 /* AttributedText.swift */; };
 		AB15E50127CC032900B36174 /* TabTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E50027CC032900B36174 /* TabTextView.swift */; };
 		AB15E50327CC038000B36174 /* TabLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15E50227CC038000B36174 /* TabLineView.swift */; };
+		AB251EB927CFC977001ED0DB /* HistoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB251EB827CFC977001ED0DB /* HistoryItemView.swift */; };
+		AB251EBB27CFCC2C001ED0DB /* HistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB251EBA27CFCC2C001ED0DB /* HistoryItem.swift */; };
+		AB251EBD27CFED2B001ED0DB /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB251EBC27CFED2B001ED0DB /* HistoryView.swift */; };
 		AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639D27BE3D5D004F93E0 /* Tab.swift */; };
 		AB3263A027BE64AA004F93E0 /* ContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB32639F27BE64AA004F93E0 /* ContentParser.swift */; };
 		AB3263A627BE7A5A004F93E0 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3263A527BE7A5A004F93E0 /* LineView.swift */; };
@@ -55,6 +58,9 @@
 		AB15E4FE27C941D600B36174 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		AB15E50027CC032900B36174 /* TabTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTextView.swift; sourceTree = "<group>"; };
 		AB15E50227CC038000B36174 /* TabLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLineView.swift; sourceTree = "<group>"; };
+		AB251EB827CFC977001ED0DB /* HistoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryItemView.swift; sourceTree = "<group>"; };
+		AB251EBA27CFCC2C001ED0DB /* HistoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryItem.swift; sourceTree = "<group>"; };
+		AB251EBC27CFED2B001ED0DB /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		AB32639D27BE3D5D004F93E0 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		AB32639F27BE64AA004F93E0 /* ContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentParser.swift; sourceTree = "<group>"; };
 		AB3263A527BE7A5A004F93E0 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
@@ -117,6 +123,7 @@
 				AB042AC027C1615700FB9503 /* Bookmark.swift */,
 				AB32639D27BE3D5D004F93E0 /* Tab.swift */,
 				AB15E4FA27C82BFF00B36174 /* Actions.swift */,
+				AB251EBA27CFCC2C001ED0DB /* HistoryItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -128,12 +135,14 @@
 				AB042ABE27C160AD00FB9503 /* BookmarksView.swift */,
 				AB042AC227C1761800FB9503 /* BookmarkView.swift */,
 				ABE3E17D27BDADBE00418606 /* ContentView.swift */,
+				AB251EB827CFC977001ED0DB /* HistoryItemView.swift */,
 				AB3263AC27C02316004F93E0 /* TabContentWrapperView.swift */,
 				AB15E50027CC032900B36174 /* TabTextView.swift */,
 				AB15E50227CC038000B36174 /* TabLineView.swift */,
 				ABF369F027C6DCB70071A557 /* CommandsView.swift */,
 				AB15E4FC27C940D500B36174 /* AttributedTextImpl.swift */,
 				AB15E4FE27C941D600B36174 /* AttributedText.swift */,
+				AB251EBC27CFED2B001ED0DB /* HistoryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -299,6 +308,7 @@
 				ABF369F327C6E7350071A557 /* History.swift in Sources */,
 				AB15E4FF27C941D600B36174 /* AttributedText.swift in Sources */,
 				AB32639E27BE3D5D004F93E0 /* Tab.swift in Sources */,
+				AB251EBD27CFED2B001ED0DB /* HistoryView.swift in Sources */,
 				ABA5CEA027CC31D700403CB2 /* Data+Extensions.swift in Sources */,
 				AB042ABF27C160AD00FB9503 /* BookmarksView.swift in Sources */,
 				ABA5CE9827CC30B200403CB2 /* String+IDNA.swift in Sources */,
@@ -306,8 +316,10 @@
 				ABA5CE9E27CC31D700403CB2 /* Scanner+Extensions.swift in Sources */,
 				AB3263A827BE7D6E004F93E0 /* Header.swift in Sources */,
 				AB3263AD27C02316004F93E0 /* TabContentWrapperView.swift in Sources */,
+				AB251EBB27CFCC2C001ED0DB /* HistoryItem.swift in Sources */,
 				AB15E4FD27C940D500B36174 /* AttributedTextImpl.swift in Sources */,
 				AB042AC327C1761800FB9503 /* BookmarkView.swift in Sources */,
+				AB251EB927CFC977001ED0DB /* HistoryItemView.swift in Sources */,
 				ABA5CEA127CC31D700403CB2 /* UTS46+Loading.swift in Sources */,
 				ABE3E17C27BDADBE00418606 /* jimmyApp.swift in Sources */,
 				AB042AC127C1615700FB9503 /* Bookmark.swift in Sources */,

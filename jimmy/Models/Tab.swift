@@ -23,7 +23,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var ignoredCertValidation = false
     @Published var fontSize = 16.0
     var emojis = Emojis()
-    private var globalHistory: History = History()
+    private var globalHistory: History
     
     
     private var client: Client
@@ -36,9 +36,14 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.content = []
         self.id = UUID()
         self.history = []
+        self.globalHistory = History()
         self.client = Client(host: "localhost", port: 1965, validateCert: true)
         self.certs = IgnoredCertificates()
         self.textContent = NSAttributedString(string: "")
+    }
+    
+    func setHistory(_ histo: History) {
+        globalHistory = histo
     }
     
     static func == (lhs: Tab, rhs: Tab) -> Bool {
@@ -112,8 +117,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
             
             if let error = error {
                 self.history.append(self.url)
-                
-                self.globalHistory.addItem(self.url)
+                let historyItem = HistoryItem(url: self.url, date: Date(), snippet: "Error")
+                self.globalHistory.addItem(historyItem)
                 
                 
                 let contentParser = ContentParser(content: Data([]), tab: self)
@@ -155,13 +160,15 @@ class Tab: ObservableObject, Hashable, Identifiable {
             } else if let message = message {
                 // Parse the request response
                 let parsedMessage = ContentParser(content: message, tab: self)
+                
+                let historyItem = HistoryItem(url: self.url, date: Date(), snippet: String(parsedMessage.firstTitle))
                 //            print(parsedMessage.header.code)
                 //            print(parsedMessage.header.contentType)
                 if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
                     // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
                     // Add to history
                     self.history.append(self.url)
-                    self.globalHistory.addItem(self.url)
+                    self.globalHistory.addItem(historyItem)
                     return
                 }
                 
@@ -174,14 +181,14 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     ]
                     // Add to history
                     self.history.append(self.url)
-                    self.globalHistory.addItem(self.url)
+                    self.globalHistory.addItem(historyItem)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
                     self.textContent = parsedMessage.attrStr
                     self.content = parsedMessage.parsed
                     // Add to history
                     self.history.append(self.url)
-                    self.globalHistory.addItem(self.url)
+                    self.globalHistory.addItem(historyItem)
                 } else if (30...39).contains(parsedMessage.header.code) {
                     // Redirect
                     if let redirect = URL(string: parsedMessage.header.contentType) {
@@ -191,7 +198,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else if parsedMessage.header.code == 51 {
                     // Server Error
                     self.history.append(self.url)
-                    self.globalHistory.addItem(self.url)
+                    self.globalHistory.addItem(historyItem)
 
                     let format = NSLocalizedString("%d Page Not Found", comment:"page not found title. First argument is the error code")
 
@@ -208,7 +215,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 } else {
                     // Server Error
                     self.history.append(self.url)
-                    self.globalHistory.addItem(self.url)
+                    self.globalHistory.addItem(historyItem)
                     
                     let format1 = NSLocalizedString("%d Server Error", comment:"Generic server error title. First param is the error code")
                     

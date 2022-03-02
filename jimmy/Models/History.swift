@@ -9,11 +9,11 @@
 import Foundation
 
 class History: ObservableObject {
-    @Published var items: [URL]
+    @Published var items: [HistoryItem]
     
     init() {
         if let data = UserDefaults.standard.data(forKey: "history") {
-            if let decoded = try? JSONDecoder().decode([URL].self, from: data) {
+            if let decoded = try? JSONDecoder().decode([HistoryItem].self, from: data) {
                 items = decoded
                 return
             }
@@ -22,9 +22,9 @@ class History: ObservableObject {
         items = []
     }
     
-    private func load() -> [URL] {
+    private func load() -> [HistoryItem] {
         if let data = UserDefaults.standard.data(forKey: "history") {
-            if let decoded = try? JSONDecoder().decode([URL].self, from: data) {
+            if let decoded = try? JSONDecoder().decode([HistoryItem].self, from: data) {
                 return decoded
             }
         }
@@ -37,17 +37,29 @@ class History: ObservableObject {
         }
     }
     
-    func addItem(_ url: URL) {
+    func addItem(_ item: HistoryItem) {
         items = load()
-        if !self.items.contains(url) {
-            self.items.append(url)
-            self.save()
+        if self.items.contains(item) {
+            let oldItem = self.items.first(where: {$0 == item})!
+            oldItem.date = Date()
+            self.items = self.items.map { i in
+                return i == oldItem ? oldItem : i
+            }
+        } else {
+            self.items.append(item)
         }
+        
+        self.save()
     }
     
-    func remove(item: URL) {
+    func remove(item: HistoryItem) {
         items = load()
-        self.items = self.items.filter({$0.absoluteString != item.absoluteString})
+        self.items = self.items.filter({$0 != item})
         self.save();
+    }
+    
+    func clear() {
+        self.items = []
+        self.save()
     }
 }

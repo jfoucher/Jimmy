@@ -9,10 +9,11 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
-    @StateObject var tab: Tab = Tab(url: URL(string: "gemini://about")!)
+    
     @EnvironmentObject var bookmarks: Bookmarks
     @EnvironmentObject var actions: Actions
     @EnvironmentObject var history: History
+    @StateObject var tab: Tab = Tab(url: URL(string: "gemini://about")!)
     @State var showPopover = false
     @State private var old = 0
     @State private var rotation = 0.0
@@ -20,6 +21,10 @@ struct ContentView: View {
     @State var urlsearch = ""
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+    
+    init() {
+        
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -57,6 +62,7 @@ struct ContentView: View {
                 }
             })
             .onAppear(perform: {
+                tab.setHistory(history)
                 DispatchQueue.main.async {
                     
                     guard let firstWindow = NSApp.windows.first(where: { win in
@@ -105,6 +111,7 @@ struct ContentView: View {
         let url = Binding<String>(
             get: { tab.url.absoluteString.decodedURLString! },
           set: { s in
+              urlsearch = s
               tab.url = URL(unicodeString: s) ?? URL(string: "gemini://about")!
           }
         )
@@ -127,12 +134,20 @@ struct ContentView: View {
                         go()
                     }
                     .onChange(of: urlsearch, perform: { u in
+                        print("url changed", u)
                         showHistorySearch = history.items.contains(where: { hist in
-                            hist.absoluteString.contains(u)
+                            hist.url.absoluteString.replacingOccurrences(of: "gemini://", with: "").contains(u.replacingOccurrences(of: "gemini://", with: ""))
                         })
+                        
+                        print(showHistorySearch, history.items)
                     })
                     .popover(isPresented: $showHistorySearch,attachmentAnchor: .point(.bottom), arrowEdge: .bottom , content: {
-                        historySearch
+                        HistoryView(close: {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                                self.showHistorySearch = false
+                            }
+                        })
+                            .environmentObject(tab)
                     })
                     .frame(minWidth: 600, maxWidth: .infinity)
                     
@@ -185,21 +200,6 @@ struct ContentView: View {
             }
         })
         
-    }
-    
-    @ViewBuilder
-    var historySearch: some View {
-        let histItems = history.items.filter({ hist in
-            hist.absoluteString.contains(tab.url.absoluteString)
-        })
-        
-        ForEach(histItems, id: \.self) { item in
-            Button(action: {}) {
-                Text(tab.emojis.emoji(item.host ?? "") + item.absoluteString.replacingOccurrences(of: "gemini://", with: ""))
-            }
-            .padding()
-        }
-        .padding()
     }
 
     
