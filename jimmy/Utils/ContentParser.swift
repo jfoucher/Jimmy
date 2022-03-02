@@ -120,11 +120,11 @@ class ContentParser {
             if (blockType != nextBlockType) || blockType == .link || blockType == .title1 || blockType == .title2 || blockType == .title3 {
                 // output previous block
                 
-                if blockType == .quote {
+                if blockType == .quote || blockType == .list {
                     str = "\n" + str
                 }
                 
-                if (blockType == .title1 || blockType == .title2 || blockType == .title3)  && firstTitle == nil {
+                if (blockType == .title1 || blockType == .title1 || blockType == .title3)  && firstTitle == nil {
                     firstTitle = str.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
                     self.firstTitle = firstTitle!
                 }
