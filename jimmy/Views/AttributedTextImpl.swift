@@ -126,10 +126,16 @@ extension AttributedTextImpl {
             
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return }
             
-            let char = self.characterIndex(for: point)
+            var char = self.characterIndex(for: point)
             
+            let rect = self.firstRect(forCharacterRange: NSRange(location: char, length: 1), actualRange: nil)
+            
+            let mouseOnChar = NSPointInRect(point, rect)
+
             guard let storage = self.textStorage else { return }
-            
+            if char > self.string.count {
+                char = self.string.count
+            }
             
             let wholeRange = NSRange(self.string.startIndex..., in: self.string)
             let attributes = storage.attributes(at: char, effectiveRange: nil)
@@ -137,15 +143,15 @@ extension AttributedTextImpl {
             var hoveredUrl: URL? = nil
             
             if let url = attributes[.link] as? URL  {
-                wasHovered = true
-                self.addCursorRect(self.bounds, cursor: .pointingHand)
+                
                 storage.enumerateAttribute(.link, in: wholeRange, options: []) { (value, range, pointee) in
                     if let u = value as? URL {
                         
-                        if url == u && range.contains(char) {
+                        if url == u && range.contains(char) && mouseOnChar {
                             // Hovering this link
                             hoveredUrl = url
-                            
+                            wasHovered = true
+                            self.addCursorRect(self.bounds, cursor: .pointingHand)
                             //                            storage.removeAttribute(.link, range: range)
                             self.linkTextAttributes = [
                                 NSAttributedString.Key.foregroundColor: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor) ?? NSColor.green
