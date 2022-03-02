@@ -1,7 +1,7 @@
 # 🥳 Welcome to Jimmy 🎉
 
 
-### Jimmy is a simple gemini browser for MacOs
+### Jimmy is a simple gemini browser for macOs
 
 Just type the URL you want to visit above, and press enter!
 
