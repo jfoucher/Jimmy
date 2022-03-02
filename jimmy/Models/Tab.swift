@@ -237,7 +237,7 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func search(_ str: String) -> [Range<String.Index>] {
-        let wholeRange = NSRange(location: 0, length: self.textContent.string.count + 1)
+        let wholeRange = NSRange(self.textContent.string.startIndex..., in: self.textContent.string)
         let content = NSMutableAttributedString("")
         content.append(self.textContent)
         content.removeAttribute(.backgroundColor, range: wholeRange)
@@ -248,8 +248,11 @@ class Tab: ObservableObject, Hashable, Identifiable {
             for range in ranges! {
                 content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
             }
+            
             self.textContent = content
             return ranges!
+        } else {
+            self.ranges = []
         }
         
         self.textContent = content
@@ -258,30 +261,29 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func enterSearch() {
-        if let ranges = self.ranges {
-            let content = NSMutableAttributedString("")
-            content.append(self.textContent)
-            for range in ranges {
-                content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
-            }
-            
-            if selectedRangeIndex >= ranges.count {
-                selectedRangeIndex = 0
-            }
-            
-            let range = ranges[selectedRangeIndex]
-            
-            content.addAttribute(.backgroundColor, value: NSColor.green, range: range.nsRange(in: content.string))
-            
-            selectedRangeIndex += 1
-
-            
-            self.textContent = content
+        guard let ranges = self.ranges else { return }
+        if ranges.count == 0 {
+            return
+        }
+        let content = NSMutableAttributedString("")
+        content.append(self.textContent)
+        for range in ranges {
+            content.addAttribute(.backgroundColor, value: NSColor.systemGray.blended(withFraction: 0.5, of: NSColor.textBackgroundColor) ?? NSColor.gray, range: range.nsRange(in: content.string))
         }
         
+        if selectedRangeIndex >= ranges.count {
+            selectedRangeIndex = 0
+        }
+        
+        let range = ranges[selectedRangeIndex]
+        
+        content.addAttribute(.backgroundColor, value: NSColor.green, range: range.nsRange(in: content.string))
+        
+        selectedRangeIndex += 1
 
+        
+        self.textContent = content
     }
-    
 }
 
 extension RangeExpression where Bound == String.Index  {
