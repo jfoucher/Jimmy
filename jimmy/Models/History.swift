@@ -42,6 +42,7 @@ class History: ObservableObject {
         if self.items.contains(item) {
             let oldItem = self.items.first(where: {$0 == item})!
             oldItem.date = Date()
+            oldItem.snippet = item.snippet
             self.items = self.items.map { i in
                 return i == oldItem ? oldItem : i
             }
