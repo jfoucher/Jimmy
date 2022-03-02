@@ -13,6 +13,8 @@ struct TabTextView: View {
     @State var text = ""
     @State var textRanges: [Range<String.Index>] = []
     
+    var close: () -> Void
+    
     @ViewBuilder
     var textView: some View {
         AttributedText(
@@ -20,6 +22,7 @@ struct TabTextView: View {
             onOpenLink: { url in
                 tab.url = url
                 tab.load()
+                close()
             },
             onHoverLink: { url, hovered in
                 let loadingStatus = tab.loading ? "Loading " + tab.url.absoluteString : ""

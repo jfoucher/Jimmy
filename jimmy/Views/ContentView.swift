@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var rotation = 0.0
     @State var showHistorySearch = false
     @State var urlsearch = ""
+    @State var typing = false
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
@@ -29,7 +30,11 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                TabContentWrapperView(tab: tab)
+                TabContentWrapperView(tab: tab, close: {
+                    DispatchQueue.main.async {
+                        showHistorySearch = false
+                    }
+                })
             }
             .onReceive(Just(actions.reload)) { val in
                 //tab.load()
@@ -50,6 +55,9 @@ struct ContentView: View {
             
             .onOpenURL(perform: { url in
                 tab.url = url
+                DispatchQueue.main.async {
+                    self.showHistorySearch = false
+                }
                 tab.load()
             })
             .onDisappear(perform: {
@@ -129,7 +137,9 @@ struct ContentView: View {
             
             ZStack(alignment: .trailing) {
                 
-                TextField("example.org", text: url)
+                TextField("example.org", text: url, onEditingChanged: { focused in
+                        typing = focused
+                    })
                     .onSubmit {
                         go()
                     }
@@ -137,11 +147,9 @@ struct ContentView: View {
                         print("url changed", u)
                         showHistorySearch = history.items.contains(where: { hist in
                             hist.url.absoluteString.replacingOccurrences(of: "gemini://", with: "").contains(u.replacingOccurrences(of: "gemini://", with: ""))
-                        })
-                        
-                        print(showHistorySearch, history.items)
+                        }) && typing
                     })
-                    .popover(isPresented: $showHistorySearch,attachmentAnchor: .point(.bottom), arrowEdge: .bottom , content: {
+                    .popover(isPresented: $showHistorySearch, attachmentAnchor: .point(.bottom), arrowEdge: .bottom , content: {
                         HistoryView(close: {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                                 self.showHistorySearch = false

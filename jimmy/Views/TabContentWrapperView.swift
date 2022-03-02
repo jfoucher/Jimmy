@@ -11,6 +11,8 @@ struct TabContentWrapperView: View {
     @ObservedObject var tab: Tab
     @State var text = ""
     
+    var close: () -> Void
+    
     var body: some View {
         tabView
     }
@@ -23,7 +25,7 @@ struct TabContentWrapperView: View {
                     if (tab.content.count > 0) {
                         TabLineView(tab: tab)
                     } else {
-                        TabTextView(tab: tab)
+                        TabTextView(tab: tab, close: close)
                     }
                 }
                 
