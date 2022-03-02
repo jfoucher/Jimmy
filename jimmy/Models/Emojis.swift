@@ -39,7 +39,7 @@ class Emojis {
         } else {
             emojis = []
         }
-        
+
         if let data = UserDefaults.standard.data(forKey: "officialemojis"), let decoded = try? JSONDecoder().decode([Emoji].self, from: data) {
             officalEmojis = decoded
         } else {
@@ -62,7 +62,7 @@ class Emojis {
                 let now = Date()
                 
                 let interval = now.timeIntervalSince(d)
-                if interval > 3600.0 {
+                if interval > 3600.0 && requestInProgress == false {
                     print("Updating cached emoji")
                     
                     self.requestEmoji(host)
@@ -181,7 +181,7 @@ class Emojis {
 extension Date {
     func toString() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm"
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let stringDate: String = dateFormatter.string(from: self)
         return stringDate
     }
@@ -190,7 +190,7 @@ extension Date {
 extension String {
     func toDate() -> Date? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm"
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let d = dateFormatter.date(from: self)
         
         return d
