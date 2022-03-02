@@ -18,8 +18,17 @@ class History: ObservableObject {
                 return
             }
         }
-
+        
         items = []
+    }
+    
+    private func load() -> [URL] {
+        if let data = UserDefaults.standard.data(forKey: "history") {
+            if let decoded = try? JSONDecoder().decode([URL].self, from: data) {
+                return decoded
+            }
+        }
+        return []
     }
     
     func save() {
@@ -29,11 +38,15 @@ class History: ObservableObject {
     }
     
     func addItem(_ url: URL) {
-        self.items.append(url)
-        self.save()
+        items = load()
+        if !self.items.contains(url) {
+            self.items.append(url)
+            self.save()
+        }
     }
     
     func remove(item: URL) {
+        items = load()
         self.items = self.items.filter({$0.absoluteString != item.absoluteString})
         self.save();
     }

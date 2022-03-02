@@ -16,7 +16,8 @@ struct ContentView: View {
     @State var showPopover = false
     @State private var old = 0
     @State private var rotation = 0.0
-
+    @State var showHistorySearch = false
+    @State var urlsearch = ""
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
@@ -105,7 +106,6 @@ struct ContentView: View {
             get: { tab.url.absoluteString.decodedURLString! },
           set: { s in
               tab.url = URL(unicodeString: s) ?? URL(string: "gemini://about")!
-              self.urlChanged(s)
           }
         )
         
@@ -126,6 +126,14 @@ struct ContentView: View {
                     .onSubmit {
                         go()
                     }
+                    .onChange(of: urlsearch, perform: { u in
+                        showHistorySearch = history.items.contains(where: { hist in
+                            hist.absoluteString.contains(u)
+                        })
+                    })
+                    .popover(isPresented: $showHistorySearch,attachmentAnchor: .point(.bottom), arrowEdge: .bottom , content: {
+                        historySearch
+                    })
                     .frame(minWidth: 600, maxWidth: .infinity)
                     
                     .background(Color("urlbackground"))
@@ -179,12 +187,21 @@ struct ContentView: View {
         
     }
     
-    func urlChanged(_ url: String) {
-        guard let url = URL(string: url) else { return }
-        if history.items.contains(url) {
-            print(url)
+    @ViewBuilder
+    var historySearch: some View {
+        let histItems = history.items.filter({ hist in
+            hist.absoluteString.contains(tab.url.absoluteString)
+        })
+        
+        ForEach(histItems, id: \.self) { item in
+            Button(action: {}) {
+                Text(tab.emojis.emoji(item.host ?? "") + item.absoluteString.replacingOccurrences(of: "gemini://", with: ""))
+            }
+            .padding()
         }
+        .padding()
     }
+
     
     func showBookmarks() {
         self.showPopover = !self.showPopover
@@ -205,6 +222,7 @@ struct ContentView: View {
     }
     
     func go() {
+
         if (tab.loading) {
             tab.stop()
         } else {
@@ -212,12 +230,19 @@ struct ContentView: View {
                 let u = tab.url.absoluteString
                 tab.url = URL(string: "gemini://" + u) ?? URL(string: "gemini://about/")!
             }
+            
             tab.load()
+        }
+        DispatchQueue.main.async {
+            showHistorySearch = false
         }
     }
     
     func back() {
         tab.back()
+        DispatchQueue.main.async {
+            showHistorySearch = false
+        }
     }
     
     func getCurrentWindows() -> [NSWindow] {

@@ -112,7 +112,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
             
             if let error = error {
                 self.history.append(self.url)
+                
                 self.globalHistory.addItem(self.url)
+                
+                
                 let contentParser = ContentParser(content: Data([]), tab: self)
                 if error == NWError.tls(-9808) || error == NWError.tls(-9813) {
                     
