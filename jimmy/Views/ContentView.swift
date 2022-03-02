@@ -144,7 +144,6 @@ struct ContentView: View {
                         go()
                     }
                     .onChange(of: urlsearch, perform: { u in
-                        print("url changed", u)
                         showHistorySearch = history.items.contains(where: { hist in
                             hist.url.absoluteString.replacingOccurrences(of: "gemini://", with: "").contains(u.replacingOccurrences(of: "gemini://", with: ""))
                         }) && typing

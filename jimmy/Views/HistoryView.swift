@@ -19,19 +19,21 @@ struct HistoryView: View {
             hist.url.absoluteString.replacingOccurrences(of: "gemini://", with: "").contains(tab.url.absoluteString.replacingOccurrences(of: "gemini://", with: ""))
         })
         ZStack(alignment: .topTrailing){
-            
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(histItems, id: \.self) { item in
-                    HistoryItemView(item: item, close: {
-                        close()
-                    }).environmentObject(tab)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(histItems, id: \.self) { item in
+                        HistoryItemView(item: item, close: {
+                            close()
+                        }).environmentObject(tab)
+                    }
                 }
             }
+            .frame(maxHeight: 400)
             Button(action: {
                 clearHistory()
             }) {
                 HStack {
-                    Image(systemName: "xmark.app.fill")
+                    Image(systemName: "clear.fill")
                     if hoverClearHistoryButton {
                         Text("Clear history")
                     }
@@ -52,6 +54,7 @@ struct HistoryView: View {
             .padding(.top, -12)
             
         }
+        .frame(maxHeight: 400)
         
     }
     
