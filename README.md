@@ -37,4 +37,4 @@ What does work, also known as:
 Download the latest release zip file from [here](https://github.com/jfoucher/Jimmy/releases/latest), unzip and place the app in your Applications folder.
 
 ## Development log
-I have a [devlog on gemini]
+I have a [devlog on gemini](gemini://gemini.6px.eu/jimmy/devlog/)
