@@ -15,3 +15,7 @@ Here are some sites you can visit to start off:
 => gemini://transjovian.org/
 => gemini://geminispace.info/
 => gemini://gemini.6px.eu/ My personal capsule
+
+### Any problems?
+=> https://github.com/jfoucher/Jimmy/issues Open an issue on GitHub
+=> mailto:jfoucher@6px.fr Contact me by email
