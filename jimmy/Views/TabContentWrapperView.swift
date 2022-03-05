@@ -31,6 +31,7 @@ struct TabContentWrapperView: View {
                 
                 .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                 .background(Color("background"))
+                .coordinateSpace(name: "scroll")
             }
             status
         }

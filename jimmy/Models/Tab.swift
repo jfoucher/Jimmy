@@ -17,11 +17,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
     @Published var textContent: NSAttributedString
     @Published var id: UUID
     @Published var loading: Bool = false
-    @Published var history: [URL]
+    @Published var history: [TabHistoryItem]
     @Published var status = ""
     @Published var icon = ""
     @Published var ignoredCertValidation = false
     @Published var fontSize = 16.0
+    @Published var scrollPos: Double = 0.0
+    
     var emojis = Emojis()
     private var globalHistory: History
     
@@ -61,6 +63,11 @@ class Tab: ObservableObject, Hashable, Identifiable {
     }
     
     func load() {
+        if history.count > 1 {
+            var last = history.removeLast()
+            last.scrollposition = self.scrollPos
+            history.append(last)
+        }
         self.client.stop()
         selectedRangeIndex = 0
         self.ranges = []
@@ -100,9 +107,13 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.client.stop()
         if self.history.count > 1 {
             self.history.removeLast()
-            let url = self.history.removeLast()
-            self.url = url;
-            self.load()
+            let item = self.history.removeLast()
+            self.url = item.url;
+            print("scroll pos was", item.scrollposition)
+            cb(error: item.error, message: item.message)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.scrollPos = item.scrollposition * 1.3
+            }
         }
     }
     
@@ -116,14 +127,14 @@ class Tab: ObservableObject, Hashable, Identifiable {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             
             if let error = error {
-                self.history.append(self.url)
+                
+                self.history.append(TabHistoryItem(url: self.url, scrollposition: 0.0, error: error, message: message))
                 let historyItem = HistoryItem(url: self.url, date: Date(), snippet: "Error")
                 self.globalHistory.addItem(historyItem)
                 
                 
                 let contentParser = ContentParser(content: Data([]), tab: self)
                 if error == NWError.tls(-9808) || error == NWError.tls(-9813) {
-                    
                     
                     let ats = NSMutableAttributedString(string: String(localized: "Invalid certificate"), attributes: contentParser.title1Style)
                     
@@ -162,13 +173,15 @@ class Tab: ObservableObject, Hashable, Identifiable {
                 let parsedMessage = ContentParser(content: message, tab: self)
                 
                 let historyItem = HistoryItem(url: self.url, date: Date(), snippet: String(parsedMessage.firstTitle))
-                //            print(parsedMessage.header.code)
-                //            print(parsedMessage.header.contentType)
+                if !(30...39).contains(parsedMessage.header.code) {
+                    self.history.append(TabHistoryItem(url: self.url, scrollposition: 0.0, error: error, message: message))
+                    self.globalHistory.addItem(historyItem)
+                }
+                
                 if (20...29).contains(parsedMessage.header.code) && !parsedMessage.header.contentType.starts(with: "text/") && !parsedMessage.header.contentType.starts(with: "image/") {
                     // If we have a success response but not of a type we can handle, let ContentParser trigger the file save dialog
                     // Add to history
-                    self.history.append(self.url)
-                    self.globalHistory.addItem(historyItem)
+                    
                     return
                 }
                 
@@ -179,16 +192,10 @@ class Tab: ObservableObject, Hashable, Identifiable {
                         LineView(attributed: ats, tab: self),
                         LineView(data: Data(), type: "text/answer", tab: self),
                     ]
-                    // Add to history
-                    self.history.append(self.url)
-                    self.globalHistory.addItem(historyItem)
                 } else if (20...29).contains(parsedMessage.header.code) {
                     // Success, show parsed content
                     self.textContent = parsedMessage.attrStr
                     self.content = parsedMessage.parsed
-                    // Add to history
-                    self.history.append(self.url)
-                    self.globalHistory.addItem(historyItem)
                 } else if (30...39).contains(parsedMessage.header.code) {
                     // Redirect
                     if let redirect = URL(string: parsedMessage.header.contentType) {
@@ -196,10 +203,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
                         self.load()
                     }
                 } else if parsedMessage.header.code == 51 {
-                    // Server Error
-                    self.history.append(self.url)
-                    self.globalHistory.addItem(historyItem)
-
                     let format = NSLocalizedString("%d Page Not Found", comment:"page not found title. First argument is the error code")
 
                     let ats = NSMutableAttributedString(string: String(format: format, parsedMessage.header.code), attributes: parsedMessage.title1Style)
@@ -213,9 +216,6 @@ class Tab: ObservableObject, Hashable, Identifiable {
                         LineView(attributed: ats2, tab: self),
                     ]
                 } else {
-                    // Server Error
-                    self.history.append(self.url)
-                    self.globalHistory.addItem(historyItem)
                     
                     let format1 = NSLocalizedString("%d Server Error", comment:"Generic server error title. First param is the error code")
                     

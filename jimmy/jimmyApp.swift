@@ -25,7 +25,6 @@ struct jimmyApp: App {
                 .environmentObject(actions)
                 .frame(maxWidth: .infinity, minHeight: 200, alignment: .center)
                 
-                
         }
         .handlesExternalEvents(matching: ["*"])
         .windowStyle(.titleBar)

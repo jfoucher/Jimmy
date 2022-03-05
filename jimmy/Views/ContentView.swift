@@ -20,6 +20,7 @@ struct ContentView: View {
     @State var showHistorySearch = false
     @State var urlsearch = ""
     @State var typing = false
+    @GestureState var isDetectingLongPress = false
 
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
@@ -125,12 +126,18 @@ struct ContentView: View {
         )
         
         ToolbarItem(placement: .navigation) { // (1) we can specify location for each ToolbarItem
-
+            let press = LongPressGesture(minimumDuration: 3)
+                .updating($isDetectingLongPress) { currentState, gestureState, transaction in
+                    print(currentState, transaction)
+                    gestureState = currentState
+                }
             Button(action: back) {
                 Image(systemName: "arrow.backward").imageScale(.large).padding(.trailing, 8)
             }
             .disabled(tab.history.count <= 1)
             .buttonStyle(.borderless)
+            .gesture(press)
+
         }
         
         ToolbarItemGroup(placement: .principal) {
@@ -156,11 +163,12 @@ struct ContentView: View {
                         })
                             .environmentObject(tab)
                     })
-                    .frame(minWidth: 600, maxWidth: .infinity)
+                    
+                    .frame(minWidth: 300, idealWidth: geometry.size.width/2, maxWidth: .infinity)
                     
                     .background(Color("urlbackground"))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
                 if (tab.loading) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                     .foregroundColor(Color.gray)
@@ -180,7 +188,6 @@ struct ContentView: View {
                 }.disabled(!tab.ignoredCertValidation)
                     .padding(.trailing, tab.loading ? 20 : 0)
             }
-//            .background(Color.red)
 
             Button(action: go) {
                 Image(systemName: (tab.loading ? "xmark" : "arrow.clockwise"))

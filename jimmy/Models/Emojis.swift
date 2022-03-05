@@ -157,8 +157,6 @@ class Emojis {
                             
                             self.officalEmojis.append(Emoji(host: host, time: t.toString(), emoji: emo))
                             self.save()
-                            
-                            
                         }
                     } else {
                         print("emoji response from server is ", String(decoding: message, as: UTF8.self))
@@ -174,8 +172,6 @@ class Emojis {
             self.requestInProgress = false
         }
     }
-    
-    
 }
 
 extension Date {

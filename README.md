@@ -1,4 +1,6 @@
+<img src="logo.svg" align="right" width="80">
 #  Jimmy
+
 
 ## A gemini client for MacOS
 

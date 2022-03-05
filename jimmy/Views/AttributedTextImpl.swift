@@ -40,6 +40,8 @@ struct AttributedTextImpl {
     var textSizeViewModel: TextSizeViewModel
     var onOpenLink: ((URL) -> Void)?
     var onHoverLink: ((URL?, Bool) -> Void)?
+    
+    @Binding var scrollPosition: Double?
 }
 
 extension AttributedTextImpl: NSViewRepresentable {
@@ -91,6 +93,11 @@ extension AttributedTextImpl: NSViewRepresentable {
                 }
             }
         }
+       // print("scroll", scrollPosition)
+        //nsView.scroll(NSPoint(x: 0, y: (scrollPosition ?? 0.0)))
+
+       nsView.scrollToVisible(NSRect(x: 0, y: Int(scrollPosition ?? 0.0), width: 1, height: 1))
+
     }
     
     func makeCoordinator() -> Coordinator {

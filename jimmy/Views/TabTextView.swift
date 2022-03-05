@@ -17,6 +17,15 @@ struct TabTextView: View {
     
     @ViewBuilder
     var textView: some View {
+        let scroll = Binding<Double?>(
+            get: {
+                tab.scrollPos
+            },
+            set: {val in
+                tab.scrollPos = val ?? 0.0
+            }
+        )
+        
         AttributedText(
             tab.textContent,
             onOpenLink: { url in
@@ -35,8 +44,16 @@ struct TabTextView: View {
                 if hovered == false {
                     tab.status = loadingStatus
                 }
-            }
+            },
+            scrollPos: scroll
         )
+            .background(GeometryReader {
+                            Color.clear.preference(key: ViewOffsetKey.self,
+                                value: -$0.frame(in: .named("scroll")).origin.y)
+                        })
+            .onPreferenceChange(ViewOffsetKey.self) { val in
+                tab.scrollPos = val
+            }
     }
     
     var body: some View {
@@ -44,6 +61,7 @@ struct TabTextView: View {
             textView
             .textSelection(.enabled)
             .searchable(text: $text)
+            
             .onChange(of: text, perform: { newValue in
                 textRanges = tab.search(text)
             })
@@ -67,5 +85,13 @@ extension Text {
         var attributedString = AttributedString(string) /// create an `AttributedString`
         configure(&attributedString) /// configure using the closure
         self.init(attributedString) /// initialize a `Text`
+    }
+}
+
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue = CGFloat.zero
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value += nextValue()
     }
 }
