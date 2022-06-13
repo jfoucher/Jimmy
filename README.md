@@ -3,9 +3,9 @@
 #  Jimmy
 
 
-## A gemini client for MacOS
+## A gemini client for macOS
 
-Jimmy is a native [gemini](https://en.wikipedia.org/wiki/Gemini_(protocol)) client for MacOs, written in SwiftUI. It aims to be lightweight and efficient, while having a design that integrates perfectly with MacOs
+Jimmy is a native [gemini](https://en.wikipedia.org/wiki/Gemini_(protocol)) client for macOS, written in SwiftUI. It aims to be lightweight and efficient, while having a design that integrates perfectly with macOS
 
 It is currently a very early prototype, but most things are starting to work.
 
