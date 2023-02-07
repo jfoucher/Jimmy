@@ -27,6 +27,11 @@
         <target>%d Page Not Found</target>
         <note>page not found title. First argument is the error code</note>
       </trans-unit>
+      <trans-unit id="%d Server Error" xml:space="preserve">
+        <source>%d Server Error</source>
+        <target>%d Server Error</target>
+        <note>Generic server error title. First param is the error code</note>
+      </trans-unit>
       <trans-unit id="Answer" xml:space="preserve">
         <source>Answer</source>
         <target>Answer</target>
@@ -35,6 +40,11 @@
       <trans-unit id="Bookmarks" xml:space="preserve">
         <source>Bookmarks</source>
         <target>Bookmarks</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Clear history" xml:space="preserve">
+        <source>Clear history</source>
+        <target>Clear history</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Copy link address" xml:space="preserve">
@@ -51,6 +61,11 @@
         <source>Could not load %@</source>
         <target>Could not load %@</target>
         <note>Generic server error subtitle. First param is full url</note>
+      </trans-unit>
+      <trans-unit id="Ignore certificate validation for %@%@" xml:space="preserve">
+        <source>Ignore certificate validation for %1$@%2$@</source>
+        <target>Ignore certificate validation for %1$@%2$@</target>
+        <note>Button label to ignore certificate validation for this host</note>
       </trans-unit>
       <trans-unit id="Invalid certificate" xml:space="preserve">
         <source>Invalid certificate</source>
@@ -87,11 +102,6 @@
         <target>Send</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
-      <trans-unit id="Server Error" xml:space="preserve">
-        <source>Server Error</source>
-        <target>Server Error</target>
-        <note>No comment provided by engineer.</note>
-      </trans-unit>
       <trans-unit id="Sorry, the page %@ was not found on %@%@" xml:space="preserve">
         <source>Sorry, the page %1$@ was not found on %2$@%3$@</source>
         <target>Sorry, the page %1$@ was not found on %2$@%3$@</target>
@@ -105,11 +115,6 @@
       <trans-unit id="example.org" xml:space="preserve">
         <source>example.org</source>
         <target>example.org</target>
-        <note>No comment provided by engineer.</note>
-      </trans-unit>
-      <trans-unit id="gemini://" xml:space="preserve">
-        <source>gemini://</source>
-        <target>gemini://</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="😔 The SSL certificate for %@%@ is invalid." xml:space="preserve">

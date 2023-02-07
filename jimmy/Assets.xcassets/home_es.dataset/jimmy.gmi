@@ -1,0 +1,21 @@
+# 🥳 Bienvenido a Jimmy 🎉
+
+
+### Jimmy es un navegador gemini para macOs
+
+Simplemente entra una URL gemini en la barra de URL y haga clic en Enter!
+
+Guarda tus capsulas favoritas y Abrelas facilmente desde el menu favoritos.
+
+## 🚀 Algunos enlaces
+
+Aqui estan algunos enlaces para empezar:
+
+=> gemini://medusae.space/
+=> gemini://transjovian.org/
+=> gemini://geminispace.info/
+=> gemini://gemini.6px.eu/ Mi capsula personal
+
+### Algún problema?
+=> https://github.com/jfoucher/Jimmy/issues Abre una issue en GitHub
+=> mailto:jfoucher@6px.fr Contactame por email

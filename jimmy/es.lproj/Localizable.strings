@@ -1,14 +1,20 @@
 /* page not found title. First argument is the error code */
 "%d Page Not Found" = "%d Pagina indisponible";
 
+/* Generic server error title. First param is the error code */
+"%d Server Error" = "Error del servidor %d";
+"Expired certificate" = "Certificado expirado";
 /* SSL certificate invalid for this host. first argument is the emoji, the second the host name */
 "😔 The SSL certificate for %@%@ is invalid." = "😔 El certificado SSL de %1$@%2$@ esta invalido";
-
+"😔 The SSL certificate for %@%@ has expired." = "😔 El certificado SSL de %1$@%2$@ ha expirado";
 /* No comment provided by engineer. */
 "Answer" = "Respuesta";
 
 /* No comment provided by engineer. */
 "Bookmarks" = "Favoritos";
+
+/* No comment provided by engineer. */
+"Clear history" = "Vaciar historico";
 
 /* No comment provided by engineer. */
 "Copy link address" = "Copiar el enlace";
@@ -22,8 +28,8 @@
 /* No comment provided by engineer. */
 "example.org" = "example.org";
 
-/* No comment provided by engineer. */
-"gemini://" = "gemini://";
+/* Button label to ignore certificate validation for this host */
+"Ignore certificate validation for %@%@" = "Aceptar el certificado de %1$@%2$@";
 
 /* No comment provided by engineer. */
 "Invalid certificate" = "Certificado invalido";
@@ -45,9 +51,6 @@
 
 /* No comment provided by engineer. */
 "Send" = "Enviar";
-
-/* No comment provided by engineer. */
-"Server Error" = "Error del servidor";
 
 /* Page not found error subtitle. first argument is the path, second the icon, third the host name */
 "Sorry, the page %@ was not found on %@%@" = "Lo sentimos, la pagina %1$@ no se encontró en %2$@%3$@";

@@ -1,14 +1,20 @@
 /* page not found title. First argument is the error code */
 "%d Page Not Found" = "%d Page Introuvable";
 
+/* Generic server error title. First param is the error code */
+"%d Server Error" = "Erreur Serveur %d";
+"Expired certificate" = "Certificat expiré";
 /* SSL certificate invalid for this host. first argument is the emoji, the second the host name */
-"😔 The SSL certificate for %@%@ is invalid." = "😔 Le certificat SSL de %1$@%2$@ est  invalide";
-
+"😔 The SSL certificate for %@%@ is invalid." = "😔 Le certificat SSL de %1$@%2$@ est invalide";
+"😔 The SSL certificate for %@%@ has expired." = "😔 Le certificat SSL de %1$@%2$@ a expiré";
 /* No comment provided by engineer. */
 "Answer" = "Réponse";
 
 /* No comment provided by engineer. */
 "Bookmarks" = "Favoris";
+
+/* No comment provided by engineer. */
+"Clear history" = "Vider l'historique";
 
 /* No comment provided by engineer. */
 "Copy link address" = "Copier le lien";
@@ -22,8 +28,8 @@
 /* No comment provided by engineer. */
 "example.org" = "example.org";
 
-/* No comment provided by engineer. */
-"gemini://" = "gemini://";
+/* Button label to ignore certificate validation for this host */
+"Ignore certificate validation for %@%@" = "Ignorer la validation du certificat pour %1$@%2$@";
 
 /* No comment provided by engineer. */
 "Invalid certificate" = "Certificat invalide";
@@ -45,9 +51,6 @@
 
 /* No comment provided by engineer. */
 "Send" = "Envoyer";
-
-/* No comment provided by engineer. */
-"Server Error" = "Erreur serveur";
 
 /* Page not found error subtitle. first argument is the path, second the icon, third the host name */
 "Sorry, the page %@ was not found on %@%@" = "Désolé, la page %1$@ n'a pas été trouvée sur %2$@%3$@";
