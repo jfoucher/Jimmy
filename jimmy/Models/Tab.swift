@@ -62,12 +62,17 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.status = ""
     }
     
+    
+    
     func load() {
         if history.count > 1 {
             var last = history.removeLast()
             last.scrollposition = self.scrollPos
-            history.append(last)
+            if (last.url != self.url) {
+                history.append(last)
+            }
         }
+
         self.client.stop()
         selectedRangeIndex = 0
         self.ranges = []
@@ -80,7 +85,15 @@ class Tab: ObservableObject, Hashable, Identifiable {
         self.icon = emojis.emoji(host)
         
         if (host == "about") {
-            if let asset = NSDataAsset(name: "home") {
+            let pre = Locale.preferredLanguages[0].prefix(2)
+            let filename = "home_"+pre
+            if let asset = NSDataAsset(name: filename) {
+                let data = asset.data
+                if let text = String(bytes: data, encoding: .utf8) {
+                    cb(error: nil, message: Data(("20 text/gemini\r\n" + text).utf8))
+                    return
+                }
+            } else if let asset = NSDataAsset(name: "home") {
                 let data = asset.data
                 if let text = String(bytes: data, encoding: .utf8) {
                     cb(error: nil, message: Data(("20 text/gemini\r\n" + text).utf8))
@@ -148,6 +161,20 @@ class Tab: ObservableObject, Hashable, Identifiable {
                         LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
                     ]
                     
+                } else if  error == NWError.tls(-9814) {
+                    
+                    let ats = NSMutableAttributedString(string: String(localized: "Expired certificate"), attributes: contentParser.title1Style)
+                    
+                    let format = NSLocalizedString("😔 The SSL certificate for %@%@ has expired.", comment:"SSL certificate expired for this host. first argument is the emoji, the second the host name")
+
+                    let ats2 = NSMutableAttributedString(string: String(format: format, self.emojis.emoji(self.url.host ?? ""), (self.url.host ?? "")), attributes: contentParser.title3Style)
+                    
+                    self.content = [
+                        LineView(attributed: ats, tab: self),
+                        LineView(attributed: ats2, tab: self),
+                        LineView(data: Data("".utf8), type: "text/ignore-cert", tab: self)
+                    ]
+                    
                 } else if error == NWError.dns(-65554) || error == NWError.dns(0)  {
                     let ats = NSMutableAttributedString(string: String(localized: "Could not connect"), attributes: contentParser.title1Style)
                     
@@ -161,6 +188,8 @@ class Tab: ObservableObject, Hashable, Identifiable {
                     let ats = NSMutableAttributedString(string: String(localized: "Unknown Error"), attributes: contentParser.title1Style)
                     
                     let ats2 = NSMutableAttributedString(string: error.localizedDescription, attributes: contentParser.title1Style)
+                    
+                    debugPrint(error)
                     
                     self.content = [
                         LineView(attributed: ats, tab: self),
