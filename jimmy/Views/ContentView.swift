@@ -144,7 +144,7 @@ struct ContentView: View {
             
             ZStack(alignment: .trailing) {
                 
-                TextField("example.org", text: url, onEditingChanged: { focused in
+                TextField("gemini://", text: url, onEditingChanged: { focused in
                         typing = focused
                     })
                     .onSubmit {
@@ -153,7 +153,10 @@ struct ContentView: View {
                     .onChange(of: urlsearch, perform: { u in
                         showHistorySearch = history.items.contains(where: { hist in
                             hist.url.absoluteString.replacingOccurrences(of: "gemini://", with: "").contains(u.replacingOccurrences(of: "gemini://", with: ""))
-                        }) && typing
+                        }) && typing && u.starts(with: "gemini://")
+                        if !u.starts(with: "gemini://") {
+                            urlsearch = "gemini://" + u
+                        }
                     })
                     .popover(isPresented: $showHistorySearch, attachmentAnchor: .point(.bottom), arrowEdge: .bottom , content: {
                         HistoryView(close: {
