@@ -43,6 +43,8 @@ struct LineView: View, Hashable {
     @ViewBuilder
     private var textView: some View {
         if type.starts(with: "text/ignore-cert") {
+            let format = NSLocalizedString("Ignore certificate validation for %@%@", comment:"Button label to ignore certificate validation for this host")
+            
             Button(action: {
                 if let host = tab.url.host {
                     certs.items.append(host)
@@ -51,7 +53,7 @@ struct LineView: View, Hashable {
                     tab.load()
                 }
             }, label: {
-                Text("Ignore certificate validation for " + (tab.emojis.emoji(tab.url.host ?? "")) + (tab.url.host ?? ""))
+                Text(String(format: format, tab.emojis.emoji(tab.url.host ?? ""), (tab.url.host ?? "")))
             })
         } else if type.starts(with: "text/answer") {
             // Line for an answer. The question should be above this
