@@ -75,9 +75,10 @@ struct ContentView: View {
                 DispatchQueue.main.async {
                     
                     guard let firstWindow = NSApp.windows.first(where: { win in
-                        return NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow"
+                        return (NSStringFromClass(type(of: win)) == "SwiftUI.AppKitWindow" || NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow")
                     }) else { return }
 
+                    
                     //firstWindow.makeKeyAndOrderFront(nil)
                     var group = firstWindow
                     if let g = firstWindow.tabGroup?.selectedWindow {
@@ -87,21 +88,18 @@ struct ContentView: View {
                     print(w.count)
                     
                     if w.count == 1 && (w.first!.tabGroup == nil || w.first!.tabGroup?.isTabBarVisible == false) {
-                        
                         w.first!.toggleTabBar(self)
                     } else if w.count > 1 && NSApp.keyWindow?.tabGroup?.isTabBarVisible == true {
                         NSApp.keyWindow?.toggleTabBar(self)
                     }
 
                     let lastWindow = NSApp.windows.first(where: {win in
-                        return win.tabbedWindows?.count == nil && NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow" && win != group
+                        return win.tabbedWindows?.count == nil && (NSStringFromClass(type(of: win)) == "SwiftUI.AppKitWindow" || NSStringFromClass(type(of: win)) == "SwiftUI.SwiftUIWindow") && win != group
                     })
 
                     NSApp.windows.forEach({win in
                         let className = NSStringFromClass(type(of: win))
-                        if win != firstWindow && className == "SwiftUI.SwiftUIWindow" && win.tabbedWindows?.count == nil {
-                            print("adding window", win)
-
+                        if win != firstWindow && (className == "SwiftUI.SwiftUIWindow" || className == "SwiftUI.AppKitWindow") && win.tabbedWindows?.count == nil {
                             group.addTabbedWindow(win, ordered: .above)
                         }
                     })
