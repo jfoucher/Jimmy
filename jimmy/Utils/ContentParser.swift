@@ -93,7 +93,8 @@ class ContentParser {
         var str: String = ""
         var pre = false
         var firstTitle: String? = nil
-        for (index, line) in lines.enumerated() {
+        for (index, l) in lines.enumerated() {
+            let line = l.trimmingCharacters(in: CharacterSet(charactersIn: "\u{FEFF}"))
             let blockType = getBlockType(String(line))
             if blockType == .pre {
                 pre = !pre
@@ -149,7 +150,8 @@ class ContentParser {
         return result
     }
     
-    func getBlockType(_ line: String) -> BlockType {
+    func getBlockType(_ l: String) -> BlockType {
+        let line = l.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: CharacterSet(charactersIn: "\u{FEFF}"))
         if line.starts(with: "###") {
             return .title3
         } else if line.starts(with: "##") {
