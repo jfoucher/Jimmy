@@ -129,7 +129,7 @@ extension AttributedTextImpl {
         var alllinks: [AttributedStringLink] = []
         
         override func mouseMoved(with event: NSEvent) {
-            //super.mouseMoved(with: event)
+            super.mouseMoved(with: event)
             
             guard let point = event.window?.convertPoint(toScreen: event.locationInWindow) else { return }
             
@@ -158,7 +158,7 @@ extension AttributedTextImpl {
                             // Hovering this link
                             hoveredUrl = url
                             wasHovered = true
-                            self.addCursorRect(self.bounds, cursor: .pointingHand)
+//                            self.addCursorRect(self.bounds, cursor: .pointingHand)
                             //                            storage.removeAttribute(.link, range: range)
                             self.linkTextAttributes = [
                                 NSAttributedString.Key.foregroundColor: NSColor.green.blended(withFraction: 0.5, of: NSColor.controlAccentColor) ?? NSColor.green
@@ -185,8 +185,8 @@ extension AttributedTextImpl {
                 }
                 hoveredUrl = nil
                 if wasHovered {
-                    self.addCursorRect(self.bounds, cursor: .iBeam)
-                    hoveringLink(url: nil, hovered: false)
+                    // self.addCursorRect(self.bounds, cursor: .iBeam)
+                     hoveringLink(url: nil, hovered: false)
                     wasHovered = false
                 }
             }
